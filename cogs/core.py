@@ -13,7 +13,7 @@ class Core(commands.Cog):
 
     @commands.command(name='info', description='Information about the server')
     @commands.cooldown(2, 5, commands.BucketType.user)
-    async def info(self):
+    async def info(self, ctx):
         embed = discord.Embed(
             title = 'Information',
             description = 'Information about the server',
