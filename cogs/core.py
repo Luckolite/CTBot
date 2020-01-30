@@ -11,6 +11,19 @@ class Core(commands.Cog):
         self.bot = bot
         self.suggest_channel_id = 672135121469571092
 
+    @commands.command(name='info', description='Information about the server')
+    async def info(self):
+        embed = discord.Embed(
+            title = 'Information',
+            description = 'Information about the server',
+            color = discord.colors.blue()
+        )
+
+        embed.set_footer(text='Information')
+        embed.add_field(name='Whos confirmed to contribute so far:', value='Luck#1574, elongated muskrat#0001, ProgrammerPlays#8264')
+        embed.add_field(name='Whos going to contribute:', value='Boris NL#3982, Tother#5201, Rogue#2754, Lefton#7913, Lach993#4250')
+        await client.send_message(channel, embed=embed)
+        
     @commands.command(name='suggest', description='submit a suggestion')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def suggest(self, ctx, *, suggestion):
