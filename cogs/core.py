@@ -17,7 +17,7 @@ class Core(commands.Cog):
         embed = discord.Embed(
             title = 'Information',
             description = 'Information about the server',
-            color = discord.colors.blue()
+            color = discord.Color.blue()
         )
 
         embed.set_footer(text='Information')
