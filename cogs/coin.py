@@ -18,15 +18,16 @@ class Coin(commands.Cog):
     async def on_message(self, message):
         if message.author == self.bot.user:
             return
-        with open('../data/coindb.json') as c:
+        with open('./data/coindb.json', 'r') as c:
             coindb = json.load(c)
-        if coindb[message.author.id]:
-            coindb[message.author.id] = 0
+        user_id = str(message.author.id)
+        if user_id not in coindb:
+            coindb[user_id] = 0
         randomctint = randint(1, 250)
         if randomctint == 250:
-            coindb[message.author.id] += 1
+            coindb[user_id] += 1
             message.channel.reply("you just earned a crafting table!")
-        with open('../data/coindb.json') as d:
+        with open('./data/coindb.json', 'w') as d:
             json.dump(coindb, d, indent=2)
 
 

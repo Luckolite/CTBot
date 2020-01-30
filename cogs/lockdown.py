@@ -3,15 +3,16 @@
 import discord
 from discord.ext import commands
 
+from utils import checks
+
 
 def has_required_permissions():
 	""" Only allow Elon and/or the server owner """
 	async def predicate(ctx):
 		# if ctx.guild.id != 1234:  # replace with crafting table id
 		#	await ctx.send("This can only be used in the crafting table!")
-		whitelist = [544911653058248734, 264838866480005122, 611108193275478018]  # devs & elon
-		if not ctx.author.id in whitelist or not ctx.author.id == ctx.guild.owner.id:
-			await ctx.send("Only Elon and/or the server owner can use this")
+		if not ctx.author.id in checks.owner_ids:
+			await ctx.send("Only Elon can use this")
 			return False
 		return True
 	return commands.check(predicate)
