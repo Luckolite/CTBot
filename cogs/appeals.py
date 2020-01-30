@@ -30,7 +30,7 @@ class Appeals(commands.Cog):
 		with open(self.path, 'w+') as f:
 			json.dump(self.blacklist, f)
 
-	@commands.command(name='appeal')
+	@commands.command(name='appeal', description='request a ban appeal')
 	@commands.cooldown(2, 30, commands.BucketType.user)
 	@commands.cooldown(1, 1)
 	async def appeal(self, ctx, *, appeal):
