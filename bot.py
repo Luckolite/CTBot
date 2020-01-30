@@ -39,8 +39,7 @@ async def on_ready():
     bot.loop.create_task(status_task())
     print('Logged in as', bot.user, "with user id", bot.user.id)
     for error in errors:
-        print(error)
-    
+        print(error) 
 
 if __name__ == '__main__':
     for cog in initial_extensions:
