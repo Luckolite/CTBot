@@ -26,9 +26,9 @@ errors = []
 
 
 async def status_task():
+    await bot.change_presence(status=discord.Status.dnd, activity=discord.Game(name='Back Online'))
     while True:
         activities = ['With Crafting Tables']
-        await bot.change_presence(status=discord.Status.dnd, activity=discord.Game(name='Back Online'))
         for activity in activities:
             await asyncio.sleep(15)
             await bot.change_presence(status=discord.Status.online, activity=discord.Game(name=activity))
