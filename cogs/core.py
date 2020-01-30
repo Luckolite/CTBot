@@ -12,6 +12,7 @@ class Core(commands.Cog):
         self.suggest_channel_id = 672135121469571092
 
     @commands.command(name='info', description='Information about the server')
+    @commands.cooldown(2, 5, commands.BucketType.user)
     async def info(self):
         embed = discord.Embed(
             title = 'Information',
