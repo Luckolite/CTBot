@@ -40,7 +40,7 @@ async def on_ready():
     print('Logged in as', bot.user, "with user id", bot.user.id)
     for error in errors:
         print(error)
-
+    
 
 if __name__ == '__main__':
     for cog in initial_extensions:
