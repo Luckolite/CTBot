@@ -23,8 +23,8 @@ class Appeals(commands.Cog):
 		if path.isfile(self.path):
 			with open(self.path, 'r') as f:
 				self.blacklist = json.load(f)  # type: dict
-		self.ct_id = 614889263183560840
-		self.channel_id = 12345  # dedicated appeals channel
+		self.ct_id = 614889263183560840  # server id
+		self.channel_id = 672498231103455233  # dedicated appeals channel
 
 	def save_data(self):
 		with open(self.path, 'w+') as f:
