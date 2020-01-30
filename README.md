@@ -10,8 +10,6 @@ Feel free to open a pull request and add any changes you might like! Join the de
 - Boris NL
 - Elongated Muskrat
 - ProgrammerPlays
-- Lefton
-- Tother 
 
 # What are the Followers of the Crafting Table?
 
