@@ -1,3 +1,4 @@
 /.idea/
 /.idea/*
 testing.py
+.*.sw*
