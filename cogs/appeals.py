@@ -80,6 +80,7 @@ class Appeals(commands.Cog):
 			await appeal.add_reaction('👍')
 			await appeal.add_reaction('👎')
 			await appeal.add_reaction('🛑')
+			await ctx.send('Sent your appeal request to CT')
 		elif str(reaction.emoji) == '👎':
 			await ctx.send("Alright, feel free to resubmit with the correct parameters")
 		else:
@@ -91,14 +92,21 @@ class Appeals(commands.Cog):
 			channel = self.bot.get_channel(payload.channel_id)
 			msg = await channel.fetch_message(payload.message_id)
 			user = channel.guild.get_member(payload.user_id)
+			if user.bot:
+				return
 			if not user.guild_permissions.administrator:
 				return await msg.remove_reaction(payload.emoji, user)
 			target_id = msg.embeds[0].footer.text
 			target = self.bot.get_user(int(target_id))
 			emoji = str(payload.emoji)
 			if emoji == '👍':
-				await channel.guild.unban(user, reason=f"Appeal by {user}")
-			if emoji == '👎':
+				await channel.guild.unban(target, reason=f"Appeal by {user}")
+				await msg.edit(content=f"Unbanned by {user}", embed=msg.embeds[0])
+				try:
+					await target.send("Your appeal request was accepted")
+				except discord.errors.Forbidden:
+					pass
+			elif emoji == '👎':
 				await msg.edit(content=f"Appeal rejected by {user}", embed=msg.embeds[0])
 				await msg.clear_reactions()
 				self.blacklist[target_id] = {
@@ -126,11 +134,11 @@ class Appeals(commands.Cog):
 				await msg.clear_reaction(payload.emoji)
 
 	@commands.Cog.listener()
-	async def on_member_ban(self, member):
-		if member.guild.id == self.ct_id:
+	async def on_member_ban(self, guild, user):
+		if guild.id == self.ct_id:
 			try:
-				await member.send("Seems you were banned in the crafting table..\n"
-				                  "you can use `ct!appeal your_appeal` to request an unban")
+				await user.send("Seems you were banned in the crafting table..\n"
+				                "you can use `ct!appeal your_appeal` to request an unban")
 			except discord.errors.Forbidden:
 				pass
 
