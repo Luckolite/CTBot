@@ -11,21 +11,22 @@ class Core(commands.Cog):
         self.bot = bot
         self.suggest_channel_id = 672135121469571092
 
-    @commands.command(name='suggest')
+    @commands.command(name='suggest', description='submit a suggestion')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def suggest(self, ctx, *, suggestion):
         """ submit a suggestion to a dedicated channel """
         channel = self.bot.get_channel(self.suggest_channel_id)
         e = discord.Embed(color=colors.theme())
         e.set_author(name=str(ctx.author), icon_url=ctx.author.avatar_url)
-        e.description = suggestion
+        e.description = str(ctx.author.id)
+        e.add_field(name='Suggestion', value=suggestion)
         msg = await channel.send(embed=e)
         e.set_footer(text=str(msg.id))
         await msg.edit(embed=e)
-        await ctx.send(f"Sent your suggestion to the dev server."
+        await ctx.send(f"Sent your suggestion to the dev server. "
                        f"Use `ct!edit {msg.id} your_modified_suggestion` to update it")
 
-    @commands.command(name='edit')
+    @commands.command(name='edit', description='edit a suggestion')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def edit(self, ctx, msg_id: int, *, new_suggestion):
         """ edit an existing suggestion """
@@ -35,8 +36,9 @@ class Core(commands.Cog):
         except discord.errors.NotFound:
             return await ctx.send("There's no suggestion under that id")
         e = msg.embeds[0]
-        e.description = new_suggestion
+        e.fields[0].value = new_suggestion
         await msg.edit(embed=e)
+        await ctx.send("Updated your suggestion")
 
     @commands.command(name='help', hidden=True)
     @commands.cooldown(2, 5, commands.BucketType.user)
