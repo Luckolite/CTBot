@@ -36,6 +36,8 @@ class ModCommands(commands.Cog):
     @commands.bot_has_guild_permissions(embed_links=True, manage_roles=True)
     async def mute(self, ctx, member: discord.Member):
         """mutes a user based on a mention"""
+        if member.top_role.position >= ctx.author.top_role.position:
+            return await ctx.send("That member has equal or higher permissions than you")
         muted = discord.utils.get(member.guild.roles, name="Muted")
         await member.add_roles(muted)
         e = discord.Embed()
@@ -54,6 +56,9 @@ class ModCommands(commands.Cog):
         if not reason:
             reason = f"Kicked by {ctx.author}"
         for member in members:
+            if member.top_role.position >= ctx.author.top_role.position:
+                await ctx.send("That member has equal or higher permissions than you")
+                continue
             try:
                 await member.send(f"You've been kicked from {ctx.guild} for {reason}")
             except discord.errors.Forbidden:
@@ -84,6 +89,8 @@ class ModCommands(commands.Cog):
         member = await commands.UserConverter().convert(ctx, locator)
         if not member:
             return await ctx.send("I can't find that member")
+        if member.top_role.position >= ctx.author.top_role.position:
+            return await ctx.send("That member has equal or higher permissions than you")
         try:
             inv = f'https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=0&scope=bot'
             e = discord.Embed(color=colors.theme())
