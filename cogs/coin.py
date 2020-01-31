@@ -16,7 +16,7 @@ class Coin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author == self.bot.user:
+        if message.author.bot:
             return
         with open('./data/coindb.json', 'r') as c:
             coindb = json.load(c)
