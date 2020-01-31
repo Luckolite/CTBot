@@ -4,6 +4,8 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Greedy
 
+from utils import colors
+
 
 def has_required_permissions(**kwargs):
     """ Permission and/or role check """
@@ -83,13 +85,15 @@ class ModCommands(commands.Cog):
         if not member:
             return await ctx.send("I can't find that member")
         try:
+            inv = f'https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=0&scope=bot'
+            e = discord.Embed(color=colors.theme())
+            e.description = f"[incase you need my invite to dm me]({inv})."
             await member.send("Seems you were banned in the crafting table..\n"  # we want them to appeal with the bot
-                              "you can use `ct!appeal your_appeal` to request an unban")
+                              "You can either use `ct!appeal your_appeal` to request an unban, "
+                              "or fill out a form at https://forms.gle/dCLv2QZq5LHdyTuL8. Do note "
+                              "that the command is more likely to get a response", embed=e)
         except discord.errors.Forbidden:
             pass
-        # await member.send(f"""you have been banned from {ctx.guild.name}.
-        #                     fill out the forum to appeal for an unban.
-        #                     https://forms.gle/dCLv2QZq5LHdyTuL8""")
         await ctx.guild.ban(member, reason)
         e = discord.Embed()
         e.set_author(name=f"{member} was banned", icon_url=member.avatar_url)
