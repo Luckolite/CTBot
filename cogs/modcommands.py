@@ -47,9 +47,15 @@ class ModCommands(commands.Cog):
     @commands.guild_only()
     @has_required_permissions(kick_members=True)
     @commands.bot_has_permissions(embed_links=True, kick_members=True)
-    async def kick(self, ctx, members: Greedy[discord.Member], *, reason):
+    async def kick(self, ctx, members: Greedy[discord.Member], *, reason=None):
         """Kicks a user based on a mention"""
+        if not reason:
+            reason = f"Kicked by {ctx.author}"
         for member in members:
+            try:
+                await member.send(f"You've been kicked from {ctx.guild} for {reason}")
+            except discord.errors.Forbidden:
+                pass
             await member.kick(reason=reason)
             e = discord.Embed()
             e.set_author(name=f"{member} was kicked", icon_url=member.avatar_url)
