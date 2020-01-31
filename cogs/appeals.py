@@ -52,7 +52,7 @@ class Appeals(commands.Cog):
 		e = discord.Embed(color=colors.theme())
 		e.description = "Appeals need to contain the reason for your ban, and your reason " \
 		                "for being unbanned. Lack of either, or abuse of this command results " \
-		                "in you being blocked from using it permanently"
+		                "in being blocked from using it permanently"
 		for text_group in [appeal[i:i + 1000] for i in range(0, len(appeal), 1000)]:
 			e.add_field(name='◈ Your Appeal', value=text_group, inline=False)
 		e.set_footer(text='React to accept/deny')
