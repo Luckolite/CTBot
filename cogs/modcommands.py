@@ -1,26 +1,36 @@
-import asyncio
-import json
+from typing import *
 
 import discord
 from discord.ext import commands
-from discord.utils import get
+from discord.ext.commands import Greedy
 
-from utils import colors
 
-from random import random
-from random import randint
+def has_required_permissions():
+    """ Permission and/or role check """
+    async def predicate(ctx):
+        if ctx.author.guild_permissions.administrator:
+            return True
+        config = {
+            'kick': [],  # Role ids that can access
+            'ban': []
+        }
+        return any(role.id in config[ctx.command.name] for role in ctx.author.roles)
+
 
 class ModCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.suggest_channel_id = 672135121469571092
 
-    @commands.command(name = "kick")
-    async def kick(self, ctx, member: discord.Member):
+    @commands.command(name="kick")
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    @commands.cooldown(5, 60, commands.BucketType.user)
+    @commands.cooldown(10, 60, commands.BucketType.guild)
+    @commands.guild_only()
+    @commands.bot_has_permissions(kick_members=True)
+    async def kick(self, ctx, members: Greedy[discord.Member], *, reason):
         """Kicks a user based on a mention"""
-        role = discord.utils.get(ctx.guild.roles, name = "Support")
-        if role in ctx.author.roles:
-            await self.bot.kick(member)
+        for member in members:
+            await member.kick(reason=reason)
     
     @commands.command(name = "mute")
     async def mute(self, ctx, member: discord.Member):
@@ -32,7 +42,7 @@ class ModCommands(commands.Cog):
             await ctx.send("User muted")
    
     @commands.command(name = "ban")
-    async def ban(self, ctx, locator: str = None, *, reason: str = None) 
+    async def ban(self, ctx, locator: str = None, *, reason: str = None):
         """Bans a user from the guild
            locator can be the following message types:
                 Mention      - @Persons name
