@@ -5,53 +5,63 @@ from discord.ext import commands
 from discord.ext.commands import Greedy
 
 
-def has_required_permissions():
+def has_required_permissions(**kwargs):
     """ Permission and/or role check """
     async def predicate(ctx):
-        if ctx.author.guild_permissions.administrator:
-            return True
+        perms = ctx.author.guild_permissions
+        if all(eval(f"{perms}.{perm}") == value for perm, value in kwargs.items()):
+            if kwargs:  # Make sure it's not empty because all() returns True if empty
+                return True
         config = {
-            'kick': [],  # Role ids that can access
+            'mute': [],  # Role ids that can access
+            'kick': [],
             'ban': []
         }
         return any(role.id in config[ctx.command.name] for role in ctx.author.roles)
     return commands.check(predicate)
 
-def ban_members(): # ill remove later when "has_required_permisions" has roles setup in it.
-    """Quick ban members check"""
-    async def predicate(ctx):
-        member = ctx.guild.get_member(ctx.author.id)
-        return member.permissions_in(ctx.channel).ban_members:        
-    return commands.check(predicate)
 
 class ModCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command(name="mute")
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    @commands.cooldown(5, 60, commands.BucketType.user)
+    @commands.cooldown(10, 60, commands.BucketType.guild)
+    @commands.guild_only()
+    @has_required_permissions(manage_roles=True)
+    @commands.bot_has_guild_permissions(embed_links=True, manage_roles=True)
+    async def mute(self, ctx, member: discord.Member):
+        """mutes a user based on a mention"""
+        muted = discord.utils.get(member.guild.roles, name="Muted")
+        await member.add_roles(muted)
+        e = discord.Embed()
+        e.set_author(name=f"{member} was muted", icon_url=member.avatar_url)
+        await ctx.send(embed=e)
 
     @commands.command(name="kick")
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.cooldown(5, 60, commands.BucketType.user)
     @commands.cooldown(10, 60, commands.BucketType.guild)
     @commands.guild_only()
-    @commands.bot_has_permissions(kick_members=True)
+    @has_required_permissions(kick_members=True)
+    @commands.bot_has_permissions(embed_links=True, kick_members=True)
     async def kick(self, ctx, members: Greedy[discord.Member], *, reason):
         """Kicks a user based on a mention"""
         for member in members:
             await member.kick(reason=reason)
-    
-    @commands.command(name = "mute")
-    async def mute(self, ctx, member: discord.Member):
-        """mutes a user based on a mention"""
-        role = discord.utils.get(ctx.guild.roles, name = "Support")
-        if role in ctx.author.roles:
-            muted = discord.utils.get(member.guild.roles, name = "Muted")
-            await self.bot.add_roles(member, muted)
-            await ctx.send("User muted")
+            e = discord.Embed()
+            e.set_author(name=f"{member} was kicked", icon_url=member.avatar_url)
+            await ctx.send(embed=e)
    
     @commands.command(name="ban")
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    @commands.cooldown(5, 60, commands.BucketType.user)
+    @commands.cooldown(10, 60, commands.BucketType.guild)
     @commands.guild_only()
-    @commands.bot_has_permissions(ban_members=True)
-    @ban_members()
+    @has_required_permissions(ban_members=True)  # i swapped out the ban one cuz this one has a perm check as well
+    @commands.bot_has_permissions(embed_links=True, ban_members=True)
     async def ban(self, ctx, locator: str, *, reason: str = None):
         """Bans a user from the guild 
            locator can be the following message formats:
@@ -64,12 +74,21 @@ class ModCommands(commands.Cog):
                 ban idk#4567 
         """
         member = await commands.UserConverter().convert(ctx, locator)
-        await user.send(f"""you have been banned from {ctx.guild.name}.
-                            fill out the forum to appeal for an unban.
-                            https://forms.gle/dCLv2QZq5LHdyTuL8""")
+        if not member:
+            return await ctx.send("I can't find that member")
+        try:
+            await member.send("Seems you were banned in the crafting table..\n"  # we want them to appeal with the bot
+                              "you can use `ct!appeal your_appeal` to request an unban")
+        except discord.errors.Forbidden:
+            pass
+        # await member.send(f"""you have been banned from {ctx.guild.name}.
+        #                     fill out the forum to appeal for an unban.
+        #                     https://forms.gle/dCLv2QZq5LHdyTuL8""")
         await ctx.guild.ban(member, reason)
-        await ctx.send(f"banned {member}.")
-            
+        e = discord.Embed()
+        e.set_author(name=f"{member} was banned", icon_url=member.avatar_url)
+        await ctx.send(embed=e)
+
 
 def setup(bot):
     bot.add_cog(ModCommands(bot))
