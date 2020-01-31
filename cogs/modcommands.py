@@ -51,7 +51,7 @@ class ModCommands(commands.Cog):
     @commands.cooldown(10, 60, commands.BucketType.guild)
     @commands.guild_only()
     @has_required_permissions(manage_roles=True)
-    @commands.bot_has_guild-permissions(embed_links=True, manage_roles=True)
+    @commands.bot_has_guild_permissions(embed_links=True, manage_roles=True)
     async def mute(self, ctx, member: discord.Member):
         support = discord.utils.get(ctx.guild.roles, name="Support")
         if member.top_role.position >= ctx.author.top_role.position:
