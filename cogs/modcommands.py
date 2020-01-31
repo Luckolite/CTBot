@@ -104,7 +104,7 @@ class ModCommands(commands.Cog):
                               "that the command is more likely to get a response", embed=e)
         except discord.errors.Forbidden:
             pass
-        await ctx.guild.ban(member, reason)
+        await ctx.guild.ban(member, reason=reason)
         e = discord.Embed()
         e.set_author(name=f"{member} was banned", icon_url=member.avatar_url)
         await ctx.send(embed=e)
