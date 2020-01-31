@@ -15,6 +15,7 @@ def has_required_permissions():
             'ban': []
         }
         return any(role.id in config[ctx.command.name] for role in ctx.author.roles)
+    return commands.check(predicate)
 
 
 class ModCommands(commands.Cog):
