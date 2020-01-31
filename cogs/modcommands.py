@@ -17,6 +17,12 @@ def has_required_permissions():
         return any(role.id in config[ctx.command.name] for role in ctx.author.roles)
     return commands.check(predicate)
 
+def ban_members(): # ill remove later when "has_required_permisions" has roles setup in it.
+    """Quick ban members check"""
+    async def predicate(ctx):
+        member = ctx.guild.get_member(ctx.author.id)
+        return member.permissions_in(ctx.channel).ban_members:        
+    return commands.check(predicate)
 
 class ModCommands(commands.Cog):
     def __init__(self, bot):
@@ -42,10 +48,13 @@ class ModCommands(commands.Cog):
             await self.bot.add_roles(member, muted)
             await ctx.send("User muted")
    
-    @commands.command(name = "ban")
-    async def ban(self, ctx, locator: str = None, *, reason: str = None):
-        """Bans a user from the guild
-           locator can be the following message types:
+    @commands.command(name="ban")
+    @commands.guild_only()
+    @commands.bot_has_permissions(ban_members=True)
+    @ban_members()
+    async def ban(self, ctx, locator: str, *, reason: str = None):
+        """Bans a user from the guild 
+           locator can be the following message formats:
                 Mention      - @Persons name
                 ID           - 1234568765473
                 name#discrim - Person12#1234
@@ -54,21 +63,12 @@ class ModCommands(commands.Cog):
                 ban 2347832428 He was disrespecting staff
                 ban idk#4567 
         """
-                
-        try:
-            user = await commands.UserConverter().convert(ctx, locator)
-            # send a message to the user explaining they have been banned and how to get unbanned
-            await user.send(f"""Hi you have been banned from {ctx.guild.name}.
-                                if you would like to come back. please fill out this forum.
-                                https://forms.gle/dCLv2QZq5LHdyTuL8""")
-            # ban the user from the guild. NOTE THIS IS SET TO NOT DELETE MESSAGES. 
-            # REMOVE "delete_messages_days = 0" OR CHANGE VALUE TO DELETE MESSAGES!
-            await ctx.guild.ban(user, reason, delete_message_days = 0)
-            await ctx.send(f"the ban hammer has spoken:\n\t{user} has been banned.")
-
-        # if the bot cannot find the user tell the person in chat.
-        except commands.errors.BadArgument:
-            await ctx.send(f"The user you where looking for {locator} could not be found.")
+        member = await commands.UserConverter().convert(ctx, locator)
+        await user.send(f"""you have been banned from {ctx.guild.name}.
+                            fill out the forum to appeal for an unban.
+                            https://forms.gle/dCLv2QZq5LHdyTuL8""")
+        await ctx.guild.ban(member, reason)
+        await ctx.send(f"banned {member}.")
             
 
 def setup(bot):
