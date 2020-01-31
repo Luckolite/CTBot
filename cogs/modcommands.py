@@ -86,11 +86,14 @@ class ModCommands(commands.Cog):
                 ban 2347832428 He was disrespecting staff
                 ban idk#4567 
         """
-        member = await commands.UserConverter().convert(ctx, locator)
+        member = await commands.MemberConverter().convert(ctx, locator)
+        if not member:
+            member = await commands.UserConverter().convert(ctx, locator)
         if not member:
             return await ctx.send("I can't find that member")
-        if member.top_role.position >= ctx.author.top_role.position:
-            return await ctx.send("That member has equal or higher permissions than you")
+        if isinstance(member, discord.Member):
+            if member.top_role.position >= ctx.author.top_role.position:
+                return await ctx.send("That member has equal or higher permissions than you")
         try:
             inv = f'https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=0&scope=bot'
             e = discord.Embed(color=colors.theme())
