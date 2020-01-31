@@ -43,6 +43,22 @@ class ModCommands(commands.Cog):
         e = discord.Embed()
         e.set_author(name=f"{member} was muted", icon_url=member.avatar_url)
         await ctx.send(embed=e)
+    
+    @commands.command(name="unmute")
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    @commands.cooldown(5, 60, commands.BucketType.user)
+    @commands.cooldown(10, 60, commands.BucketType.guild)
+    @commands.guild_only()
+    @has_required_permissions(manage_roles=True)
+    @commands.bot_has_guild-permissions(embed_links=True, manage_roles=True)
+    async def mute(self, ctx, member: discord.Member):
+        if member.top_role.position >= ctx.author.top_role.position:
+            return await ctx.send("That member has a higher rank than you")
+        muted = discord.utils.get(member.guild.roles, name="Muted")
+        await member.remove_roles(muted)
+        e = discord.Embed()
+        e.set_author(name=f"{member} was unmuted", icon_url=member.avatar_url)
+        await ctx.send(embed=e)
 
     @commands.command(name="kick")
     @commands.cooldown(2, 5, commands.BucketType.user)
