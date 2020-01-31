@@ -88,7 +88,7 @@ class ModCommands(commands.Cog):
             inv = f'https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=0&scope=bot'
             e = discord.Embed(color=colors.theme())
             e.description = f"[incase you need my invite to dm me]({inv})."
-            await member.send("Seems you were banned in the crafting table..\n"  # we want them to appeal with the bot
+            await member.send("Seems you were banned in the crafting table..\n"
                               "You can either use `ct!appeal your_appeal` to request an unban, "
                               "or fill out a form at https://forms.gle/dCLv2QZq5LHdyTuL8. Do note "
                               "that the command is more likely to get a response", embed=e)
