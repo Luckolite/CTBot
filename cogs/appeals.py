@@ -133,15 +133,6 @@ class Appeals(commands.Cog):
 			else:
 				await msg.clear_reaction(payload.emoji)
 
-	@commands.Cog.listener()
-	async def on_member_ban(self, guild, user):
-		if guild.id == self.ct_id:
-			try:
-				await user.send("Seems you were banned in the crafting table..\n"
-				                "you can use `ct!appeal your_appeal` to request an unban")
-			except discord.errors.Forbidden:
-				pass
-
 
 def setup(bot):
 	bot.add_cog(Appeals(bot))
