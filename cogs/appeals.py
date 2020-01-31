@@ -81,6 +81,11 @@ class Appeals(commands.Cog):
 			await appeal.add_reaction('👎')
 			await appeal.add_reaction('🛑')
 			await ctx.send('Sent your appeal request to CT')
+			self.blacklist[user_id] = {
+				'cooldown': time() + 60*60*2,
+				'banned': False
+			}
+			self.save_data()
 		elif str(reaction.emoji) == '👎':
 			await ctx.send("Alright, feel free to resubmit with the correct parameters")
 		else:
