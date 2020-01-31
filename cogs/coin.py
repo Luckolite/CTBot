@@ -27,8 +27,8 @@ class Coin(commands.Cog):
         if randomctint == 250:
             coindb[user_id] += 1
             message.channel.reply("you just earned a crafting table!")
-        with open('./data/coindb.json', 'w') as d:
-            json.dump(coindb, d, indent=2)
+            with open('./data/coindb.json', 'w') as d:
+                json.dump(coindb, d, indent=2)
 
 
 def setup(bot):
