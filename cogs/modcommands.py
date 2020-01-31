@@ -11,7 +11,7 @@ def has_required_permissions(**kwargs):
     """ Permission and/or role check """
     async def predicate(ctx):
         perms = ctx.author.guild_permissions
-        if all(eval(f"{perms}.{perm}") == value for perm, value in kwargs.items()):
+        if all((perm, value) in list(perms) for perm, value in kwargs.items()):
             if kwargs:  # Make sure it's not empty because all() returns True if empty
                 return True
         config = {
