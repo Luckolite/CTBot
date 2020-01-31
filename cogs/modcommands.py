@@ -76,16 +76,6 @@ class ModCommands(commands.Cog):
     @has_required_permissions(ban_members=True)  # i swapped out the ban one cuz this one has a perm check as well
     @commands.bot_has_permissions(embed_links=True, ban_members=True)
     async def ban(self, ctx, locator: str, *, reason: str = None):
-        """Bans a user from the guild 
-           locator can be the following message formats:
-                Mention      - @Persons name
-                ID           - 1234568765473
-                name#discrim - Person12#1234
-           Usage:
-                ban [locator] {OPTIONAL: reason can be multiple words}
-                ban 2347832428 He was disrespecting staff
-                ban idk#4567 
-        """
         member = await commands.MemberConverter().convert(ctx, locator)
         if not member:
             member = await commands.UserConverter().convert(ctx, locator)
@@ -108,7 +98,28 @@ class ModCommands(commands.Cog):
         e = discord.Embed()
         e.set_author(name=f"{member} was banned", icon_url=member.avatar_url)
         await ctx.send(embed=e)
+    @commands.command(name='unban')
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    @commands.cooldown(2, 60, commands.BucketType.user)
+    @commands.cooldown(10, 60, commands.BucketType.guild)
+    @commands.guild_only()
+    @has_required_permissions(ban_menbers=True)
+    @commands.bot_has_permissions(embed_links=True, ban_members=True)
+    async def unban(self, ctx, member: str, reason: str)
+        banlist = await self.bot.get_bans(ctx.message.server)
+        if not banlist:
+            await bot.say("Banlist is empty")
+        try:
+            banned = await bot.get_user_info(member)
+            bot.unban(ctx.message.server, banned)
+        except discord.errors.NotFound:
+            await bot.say("User not found")
+        except discord.errors.Forbidden:
+            await bot.say("Action forbidden")
+        except discord.errors.HTTPException:
+            await bot.say("Unban failed")
 
 
+        
 def setup(bot):
     bot.add_cog(ModCommands(bot))
