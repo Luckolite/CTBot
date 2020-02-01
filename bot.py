@@ -7,10 +7,8 @@ import discord
 from discord.ext import commands
 
 if not path.isfile('./data/coindb.json'):
-    print('You need to make the coin database')
-    exit()
-#with open('./data/coindb.json') as c:
-#    coindb = json.load(c) # type: array
+    with open('./data/coindb.json', 'w') as f:
+        json.dump({}, f, ensure_ascii=False)
 if not path.isfile('./data/config.json'):
     print('You need to set the config in /data/ first')
     exit()
