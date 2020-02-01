@@ -21,8 +21,8 @@ class Core(commands.Cog):
         )
 
         embed.set_footer(text='Information')
-        embed.add_field(name='Whos confirmed to contribute so far:', value='Luck#1574, elongated muskrat#0001, ProgrammerPlays#8264')
-        embed.add_field(name='Whos going to contribute:', value='Boris NL#3982, Tother#5201, Rogue#2754, Lefton#7913, Lach993#4250')
+        embed.add_field(name='Whos confirmed to contribute so far:', value='Luck#1574, elongated muskrat#0001, ProgrammerPlays#8264, Boris NL#3982')
+        embed.add_field(name='Whos going to contribute:', value='Tother#5201, Rogue#2754, Lefton#7913, Lach993#4250')
         await ctx.send(embed=embed)
         
     @commands.command(name='suggest', description='submit a suggestion')
