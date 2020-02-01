@@ -27,7 +27,7 @@ class ModCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="mute")
+    @commands.command(name="mute", description="Mute a user. You can unmute them with ct!unmte")
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.cooldown(5, 60, commands.BucketType.user)
     @commands.cooldown(10, 60, commands.BucketType.guild)
@@ -44,7 +44,7 @@ class ModCommands(commands.Cog):
         e.set_author(name=f"{member} was muted", icon_url=member.avatar_url)
         await ctx.send(embed=e)
     
-    @commands.command(name="unmute")
+    @commands.command(name="unmute", description="Unmute a user.")
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.cooldown(5, 60, commands.BucketType.user)
     @commands.cooldown(10, 60, commands.BucketType.guild)
@@ -61,7 +61,7 @@ class ModCommands(commands.Cog):
         e.set_author(name=f"{member} was unmuted", icon_url=member.avatar_url)
         await ctx.send(embed=e)
 
-    @commands.command(name="kick")
+    @commands.command(name="kick", description="Kick a user from the server/guild.")
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.cooldown(5, 60, commands.BucketType.user)
     @commands.cooldown(10, 60, commands.BucketType.guild)
@@ -86,7 +86,7 @@ class ModCommands(commands.Cog):
             e.set_author(name=f"{member} was kicked", icon_url=member.avatar_url)
             await ctx.send(embed=e)
    
-    @commands.command(name="ban")
+    @commands.command(name="ban", description="Ban a user from the server/guild.")
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.cooldown(5, 60, commands.BucketType.user)
     @commands.cooldown(10, 60, commands.BucketType.guild)
@@ -118,7 +118,7 @@ class ModCommands(commands.Cog):
         e.set_author(name=f"{member} was banned", icon_url=member.avatar_url)
         await ctx.send(embed=e)
 
-    @commands.command(name='unban')
+    @commands.command(name='unban', description="Unban a user from the server/guild.")
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.cooldown(2, 60, commands.BucketType.user)
     @commands.cooldown(10, 60, commands.BucketType.guild)
