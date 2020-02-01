@@ -1,15 +1,33 @@
 from time import time
 import traceback
 import sys
+import json
+
 import discord
 from discord.ext import commands
+
 from utils import colors
 
 
-class error_handler(commands.Cog):
+class ErrorHandler(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.cd = {}
+
+    @commands.Cog.listener()
+    async def on_error(self, event, *args, **kwargs):
+        full_traceback = str(sys.exc_info())
+        e = discord.Embed(color=discord.Color.red())
+        e.title = f"Error in {event}"
+        e.description = args
+        e.add_field(
+            name='Keyword Exception Arguments',
+            value=str(json.loads(kwargs, indent=2)),
+            inline=False
+        )
+        for text_group in [full_traceback[i:i + 1000] for i in range(0, len(full_traceback), 1000)]:
+            e.add_field(name='Traceback', value=text_group, inline=False)
+        print(full_traceback)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -54,4 +72,4 @@ class error_handler(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(error_handler(bot))
+    bot.add_cog(ErrorHandler(bot))
