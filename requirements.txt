@@ -1,0 +1,3 @@
+discord.py
+lavalink
+youtube_dl
