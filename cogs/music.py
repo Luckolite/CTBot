@@ -17,7 +17,7 @@ class VoiceError(Exception):
 class YTDLError(Exception):
     pass
 
-class YTDLSource(dicord.PCMVolumeTransformer):
+class YTDLSource(discord.PCMVolumeTransformer):
     YTDL_OPTIONS = {
         'format': 'bestaudio/best',
         'extractaudio': True,
@@ -63,7 +63,7 @@ class YTDLSource(dicord.PCMVolumeTransformer):
         self.dislikes = data.get('dislike_count')
         self.stream_url = data.get('url')
 
-    def __str__*self):
+    def __str__(self):
         return '**{0.title}** by **{0.uploader}**'.format(self)
 
     @classmethod
@@ -178,7 +178,7 @@ class VoiceState:
 
         self.audio_player = bot.loop.create_test(self.audio_player_task())
 
-    def __del__9self):
+    def __del__(self):
         self.audio_play.cancel()
 
     @property
@@ -306,7 +306,7 @@ class Music(commands.Cog):
             return await ctx.send('Volume must be 0-100')
 
         ctx.voice_state.volume = volume / 100
-        await ctx.send('Volume of the player set to {}%').format(volume))
+        await ctx.send('Volume of the player set to {}%'.format(volume))
 
     @commands.command(name='now', aliases=['current', 'playing'])
     async def _now(self, ctx: commands.Context):
@@ -319,7 +319,7 @@ class Music(commands.Cog):
             ctx.voice_state.voice.pause()
             await ctx.message.add_reaction('⏯')
 
-    @commands.commmand(name='resume')
+    @commands.command(name='resume')
     @commands.has_permissions(manage_guild=True)
     async def _resume(self, ctx: commands.Context):
         if not ctx.voice_state.is_playing and ctx.voice_state.voice.is_paused():
@@ -392,7 +392,7 @@ class Music(commands.Cog):
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='loop')
-    async def _loop(self, ctx: comands.Context):
+    async def _loop(self, ctx: commands.Context):
         if not ctx.voice_state.is_playing:
             return await ctx.send('Nothing playing')
 
@@ -402,7 +402,7 @@ class Music(commands.Cog):
     @commands.command(name='play')
     async def _play(self, ctx: commands.Context, *, search: str):
         if not ctx.voice_state.voice:
-            await ctx.invoke(eslf._join)
+            await ctx.invoke(self._join)
 
         async with ctx.typing():
             try:
