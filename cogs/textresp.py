@@ -17,13 +17,13 @@ class TextResp(commands.Cog):
     def on_message(self, message):
         if message.author.bot:
             return
-        messagestr = str(message.content)
+        messagestr = message.cotnent  # don't wanna use str() on it cuz it removes custom emotes
         if "furnace" in messagestr:
-            message.channel.send("crafting tables are obviously the superior block")
+            await message.channel.send("crafting tables are obviously the superior block")
         elif "fit" in messagestr:
-            message.channel.send("who dat")
+            await message.channel.send("who dat")
         elif "@everyone" in messagestr:
-            message.channel.send("no ping")
+            await message.channel.send("no ping")
         else:
             return
 
