@@ -8,7 +8,7 @@ Join the dev discord to be added as an instant-push contributor.
 ## Getting Started
 
 ### Compatibility
-Python 3.6 or higher due to fstrings
+Python 3.6 or higher due to fstrings.
 
 ### Installing
 > Clone the Project
@@ -28,7 +28,7 @@ python bot.py
 Note that reuse, and authorized use of code in this repository, except by 
 whoever wrote it, is strictly prohibited.  
 Check [LICENSE](https://github.com/FrequencyX4/CTBot/blob/master/LICENSE)
-for more details
+for more details.
 
 
 ## Dev Credits
