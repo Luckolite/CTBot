@@ -26,7 +26,7 @@ class Coin(commands.Cog):
         randomctint = randint(1, 250)
         if randomctint == 250:
             coindb[user_id] += 1
-            await message.channel.send(message.author + ", you just earned a crafting table!")
+            await message.channel.send(message.author.id + ", you just earned a crafting table!")
             with open('./data/coindb.json', 'w') as d:
                 json.dump(coindb, d, indent=2)
 

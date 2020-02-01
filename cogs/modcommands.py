@@ -35,7 +35,6 @@ class ModCommands(commands.Cog):
     @has_required_permissions(manage_roles=True)
     @commands.bot_has_guild_permissions(embed_links=True, manage_roles=True)
     async def mute(self, ctx, member: discord.Member):
-        """mutes a user based on a mention"""
         support = discord.utils.get(ctx.guild.roles, name="Support")
         if member.top_role.position >= ctx.author.top_role.position:
             return await ctx.send("That member has equal or higher permissions than you")
@@ -128,18 +127,19 @@ class ModCommands(commands.Cog):
     @commands.bot_has_permissions(embed_links=True, ban_members=True)
     async def unban(self, ctx, user: discord.User, reason: str):
         support = discord.utils.get(ctx.guild.roles, name="Support")
-        banlist = await self.bot.get_bans(ctx.message.server)  # await ctx.guild.bans()
+        banlist = await ctx.guild.bans()  # await ctx.guild.bans()
         if not banlist:
-            await bot.say("Banlist is empty")  # return await ctx.send
+            return await ctx.send("Banlist is empty")  # return await ctx.send
         try:
-            banned = await bot.get_user_info(member)  # await bot.fetch_user(user_id)
-            bot.unban(ctx.message.server, banned)  # await ctx.guild.unban(user)
+            banned = await bot.fetch_user(user_id)  # await bot.fetch_user(user_id)
+            ctx.guild.unban(user)  # await ctx.guild.unban(user)
+            await ctx.send(user + " unbanned for: " + reason)
         except discord.errors.NotFound:
-            await bot.say("User isn't banned")  # ctx.send
+            await ctx.send("User isn't banned")  # ctx.send
         except discord.errors.Forbidden:
-            await bot.say("Action forbidden")  # ctx.send
+            await ctx.send("Action forbidden")  # ctx.send
         except discord.errors.HTTPException:
-            await bot.say("Unban failed")  # ctx.send
+            await ctx.send("Unban failed")  # ctx.send
 
 
         
