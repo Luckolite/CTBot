@@ -125,22 +125,20 @@ class ModCommands(commands.Cog):
     @commands.guild_only()
     @has_required_permissions(ban_menbers=True)
     @commands.bot_has_permissions(embed_links=True, ban_members=True)
-    async def unban(self, ctx, user: discord.User, reason: str):
+    async def unban(self, ctx, user: discord.User, reason='unspecified'):
         support = discord.utils.get(ctx.guild.roles, name="Support")
         banlist = await ctx.guild.bans()  # await ctx.guild.bans()
         if not banlist:
             return await ctx.send("Banlist is empty")  # return await ctx.send
         try:
-            banned = await bot.fetch_user(user_id)  # await bot.fetch_user(user_id)
-            ctx.guild.unban(user)  # await ctx.guild.unban(user)
-            await ctx.send(user + " unbanned for: " + reason)
+            await ctx.guild.unban(user, reason=f"Unbanned by {ctx.author}: {reason}")
+            await ctx.send(f"{user} was unbanned")
         except discord.errors.NotFound:
-            await ctx.send("User isn't banned")  # ctx.send
+            await ctx.send("User isn't banned")
         except discord.errors.Forbidden:
-            await ctx.send("Action forbidden")  # ctx.send
+            await ctx.send("Action forbidden")
         except discord.errors.HTTPException:
-            await ctx.send("Unban failed")  # ctx.send
-
+            await ctx.send("Unban failed")
 
         
 def setup(bot):
