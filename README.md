@@ -19,12 +19,12 @@ git clone https://github.com/FrequencyX4/CTBot.git
 ```py
 pip install -r requirements.txt
 ```
-###  Running
+### Running
 ```py
 python bot.py
-```  
+```
 
-##License
+## License
 Note that reuse, and authorized use of code in this repository, except by 
 whoever wrote it, is strictly prohibited  
 Check [LICENSE](https://github.com/FrequencyX4/CTBot/blob/master/LICENSE)
