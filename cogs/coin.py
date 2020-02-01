@@ -12,7 +12,6 @@ from random import randint
 class Coin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.suggest_channel_id = 672135121469571092
 
     @commands.Cog.listener()
     async def on_message(self, message):
