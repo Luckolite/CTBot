@@ -21,8 +21,8 @@ class Appeals(commands.Cog):
         }
         if path.isfile(self.path):
             with open(self.path) as f:
-                self.blacklist = json.load(f)           # type: dict
-        self.ct_id = bot.config['server']               # server id
+                self.blacklist = json.load(f)  # type: dict
+        self.ct_id = bot.config['server']  # server id
         self.channel_id = bot.config['appeal_channel']  # dedicated appeals channel
 
     def save_data(self):

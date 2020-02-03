@@ -7,6 +7,8 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import ExtensionError
 
+from utils import checks
+
 
 class CTBot(commands.Bot):
     def __init__(self, **options):
@@ -71,5 +73,8 @@ if __name__ == '__main__':
         except ExtensionError:
             errors.append([cog, str(traceback.format_exc())])
             print(f'Failed to load {cog}')
+
+    checks.setup(bot)
+
     print('Logging in')
     bot.run()

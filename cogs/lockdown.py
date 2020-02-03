@@ -12,7 +12,7 @@ def has_required_permissions():
     async def predicate(ctx):
         # if ctx.guild.id != 1234:  # replace with crafting table id
         #     await ctx.send("This can only be used in the crafting table!")
-        if ctx.author.id not in checks.owner_ids:
+        if ctx.author.id not in checks.ids['owner']:
             await ctx.send("Only Elon can use this")
             return False
         return True
