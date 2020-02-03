@@ -11,8 +11,10 @@ dev_ids = {
     'Programmer': 607776237737345044
 }
 
+
 def owner(ctx):
     return ctx.author.id in owner_ids.values()
+
 
 def dev(ctx):
     return ctx.author.id in dev_ids.values()

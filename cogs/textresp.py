@@ -1,13 +1,5 @@
-import asyncio
-import json
-
-import discord
 from discord.ext import commands
 
-from utils import colors
-
-from random import random
-from random import randint
 
 class TextResp(commands.Cog):
     def __init__(self, bot):

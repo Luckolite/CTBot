@@ -1,13 +1,8 @@
-import asyncio
 import json
+from random import randint
 
-import discord
 from discord.ext import commands
 
-from utils import colors
-
-from random import random
-from random import randint
 
 class Coin(commands.Cog):
     def __init__(self, bot):
@@ -17,7 +12,7 @@ class Coin(commands.Cog):
     async def on_message(self, message):
         if message.author.bot:
             return
-        with open('./data/coindb.json', 'r') as c:
+        with open('./data/coindb.json') as c:
             coindb = json.load(c)
         user_id = str(message.author.id)
         if user_id not in coindb:

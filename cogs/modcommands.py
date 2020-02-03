@@ -1,5 +1,3 @@
-from typing import *
-
 import discord
 from discord.ext import commands
 from discord.ext.commands import Greedy
@@ -33,9 +31,9 @@ class ModCommands(commands.Cog):
     @commands.cooldown(10, 60, commands.BucketType.guild)
     @commands.guild_only()
     @has_required_permissions(manage_roles=True)
-    @commands.bot_has_guild_permissions(embed_links=True, manage_roles=True)
+    @commands.bot_has_permissions(embed_links=True, manage_roles=True)
     async def mute(self, ctx, member: discord.Member):
-        support = discord.utils.get(ctx.guild.roles, name="Support")
+        # support = discord.utils.get(ctx.guild.roles, name="Support")
         if member.top_role.position >= ctx.author.top_role.position:
             return await ctx.send("That member has equal or higher permissions than you")
         muted = discord.utils.get(member.guild.roles, name="Muted")
@@ -50,9 +48,9 @@ class ModCommands(commands.Cog):
     @commands.cooldown(10, 60, commands.BucketType.guild)
     @commands.guild_only()
     @has_required_permissions(manage_roles=True)
-    @commands.bot_has_guild_permissions(embed_links=True, manage_roles=True)
+    @commands.bot_has_permissions(embed_links=True, manage_roles=True)
     async def mute(self, ctx, member: discord.Member):
-        support = discord.utils.get(ctx.guild.roles, name="Support")
+        # support = discord.utils.get(ctx.guild.roles, name="Support")
         if member.top_role.position >= ctx.author.top_role.position:
             return await ctx.send("That member has a higher rank than you")
         muted = discord.utils.get(member.guild.roles, name="Muted")
@@ -70,7 +68,7 @@ class ModCommands(commands.Cog):
     @commands.bot_has_permissions(embed_links=True, kick_members=True)
     async def kick(self, ctx, members: Greedy[discord.Member], *, reason=None):
         """Kicks a user based on a mention"""
-        support = discord.utils.get(ctx.guild.roles, name="Support")
+        # support = discord.utils.get(ctx.guild.roles, name="Support")
         if not reason:
             reason = f"Kicked by {ctx.author}"
         for member in members:
@@ -94,7 +92,7 @@ class ModCommands(commands.Cog):
     @has_required_permissions(ban_members=True)  # i swapped out the ban one cuz this one has a perm check as well
     @commands.bot_has_permissions(embed_links=True, ban_members=True)
     async def ban(self, ctx, locator: str, *, reason: str = None):
-        support = discord.utils.get(ctx.guild.roles, name="Support")
+        # support = discord.utils.get(ctx.guild.roles, name="Support")
         member = await commands.MemberConverter().convert(ctx, locator)
         if not member:
             member = await commands.UserConverter().convert(ctx, locator)
@@ -126,7 +124,7 @@ class ModCommands(commands.Cog):
     @has_required_permissions(ban_menbers=True)
     @commands.bot_has_permissions(embed_links=True, ban_members=True)
     async def unban(self, ctx, user: discord.User, reason='unspecified'):
-        support = discord.utils.get(ctx.guild.roles, name="Support")
+        # support = discord.utils.get(ctx.guild.roles, name="Support")
         banlist = await ctx.guild.bans()  # await ctx.guild.bans()
         if not banlist:
             return await ctx.send("Banlist is empty")  # return await ctx.send

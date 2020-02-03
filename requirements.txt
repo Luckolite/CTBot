@@ -1,2 +1,3 @@
+discord
 youtube_dl
 ffmpeg

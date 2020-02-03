@@ -11,11 +11,14 @@ import youtube_dl
 
 youtube_dl.utils.bug_reports_message = lambda: ''
 
+
 class VoiceError(Exception):
     pass
 
+
 class YTDLError(Exception):
     pass
+
 
 class YTDLSource(discord.PCMVolumeTransformer):
     YTDL_OPTIONS = {
@@ -33,13 +36,13 @@ class YTDLSource(discord.PCMVolumeTransformer):
         'default_search': 'auto',
         'source_address': '0.0.0.0'
     }
-    
+
     FFMPEG_OPTIONS = {
         'before_options': '-reconnet 1 -reconnect_streamed 1 -reconnect_delay_max 5',
         'options': '-vn'
     }
 
-    ytdl = youtube_dl.ToutubeDL(YTDL_OPTIONS)
+    ytdl = youtube_dl.YoutubeDL(YTDL_OPTIONS)
 
     def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio, *, data: dict, volume: float = 0.5):
         super().__init__(source, volume)
@@ -67,7 +70,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return '**{0.title}** by **{0.uploader}**'.format(self)
 
     @classmethod
-    async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.BaseEventLoop = None)
+    async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.BaseEventLoop = None):
         loop = loop or asyncio.get_event_loop()
 
         partial = functools.partial(cls.ytdl.extract_info, search, download=False, process=False)
@@ -97,13 +100,13 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
         if 'entries' not in processed_info:
             info = processed_info
-        else: 
-            info = None 
+        else:
+            info = None
             while info is None:
-                try: 
+                try:
                     info = processed_info['entries'].pop(0)
                 except IndexError:
-                    raise YTDLerror('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
+                    raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
         return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
 
     @staticmethod
@@ -121,6 +124,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
             duration.append('{} seconds'.format(seconds))
         return ', '.join(duration)
 
+
 class Song:
     __slots__ = {'source', 'requester'}
 
@@ -130,16 +134,18 @@ class Song:
 
     def create_embed(self):
         embed = (discord.Embed(title='Now playing',
-            description='```css\n{0.source.title}\n```'.format(self),
-            color=discord.Color.blurple())
-            .add_field(name='Duration', value=self.source.duration)
-            .add_field(name='Requested by', value=self.requester.mention)
-            .add_field(name='Uploader', value='[{0.source.uploader}]({0.source.uploader_url})'.format(self))
-            .add_field(name='URL', value='[Click]({0.source.url})'.format(self))
-            .set_thumbnail(url=self.source.thumbnail))
-        
+                               description='```css\n{0.source.title}\n```'.format(self),
+                               color=discord.Color.blurple())
+                 .add_field(name='Duration', value=self.source.duration)
+                 .add_field(name='Requested by', value=self.requester.mention)
+                 .add_field(name='Uploader', value='[{0.source.uploader}]({0.source.uploader_url})'.format(self))
+                 .add_field(name='URL', value='[Click]({0.source.url})'.format(self))
+                 .set_thumbnail(url=self.source.thumbnail))
+
         return embed
 
+
+# noinspection PyUnresolvedReferences
 class SongQueue(asyncio.Queue):
     def __getitem__(self, item):
         if isinstance(item, slice):
@@ -152,7 +158,7 @@ class SongQueue(asyncio.Queue):
 
     def __len__(self):
         return self.qsize()
-    
+
     def clear(self):
         self._queue.clear()
 
@@ -161,6 +167,7 @@ class SongQueue(asyncio.Queue):
 
     def remove(self, index: int):
         del self._queue[index]
+
 
 class VoiceState:
     def __init__(self, bot: commands.Bot, ctx: commands.Context):
@@ -179,7 +186,7 @@ class VoiceState:
         self.audio_player = bot.loop.create_test(self.audio_player_task())
 
     def __del__(self):
-        self.audio_play.cancel()
+        self.audio_player.cancel()
 
     @property
     def loop(self):
@@ -189,12 +196,12 @@ class VoiceState:
     def loop(self, value: bool):
         self._loop = value
 
-    @property 
+    @property
     def volume(self):
         return self._volume
 
-    @volume.setter 
-    def volume(self, value: float)
+    @volume.setter
+    def volume(self, value: float):
         self._volume = value
 
     @property
@@ -212,14 +219,14 @@ class VoiceState:
                 except asyncio.TimeoutError:
                     self.bot.loop.create_task(self.stop())
                     return
-            
+
             self.current.source.volume = self._volume
             self.voice.play(self.current.source, after=self.play_next_song)
             await self.current.source.channel.send(embed=self.current.create_embed())
 
             await self.next.wait()
 
-    def play_next_song(self, error=None)
+    def play_next_song(self, error=None):
         if error:
             raise VoiceError(str(error))
 
@@ -238,6 +245,8 @@ class VoiceState:
             await self.voice.disconnect()
             self.voice = None
 
+
+# noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
 class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -289,7 +298,7 @@ class Music(commands.Cog):
         ctx.voice_state.voice = await destination.connect()
 
     @commands.command(name='leave', aliases=['disconnect'])
-    @commands.has_permission(manage_guild=True)
+    @commands.has_permissions(manage_guild=True)
     async def _leave(self, ctx: commands.Context):
         if not ctx.voice_state.voice:
             return await ctx.send('Not connected to a channel')
@@ -310,7 +319,7 @@ class Music(commands.Cog):
 
     @commands.command(name='now', aliases=['current', 'playing'])
     async def _now(self, ctx: commands.Context):
-        await ctx.send(embed=ctx.voice.state.current.create_embed())
+        await ctx.send(embed=ctx.voice_state.current.create_embed())
 
     @commands.command(name='pause')
     @commands.has_permissions(manage_guild=True)
@@ -340,7 +349,7 @@ class Music(commands.Cog):
             return await ctx.send("Nothing playing")
 
         voter = ctx.message.author
-        if voter == ctx.voie_state.current.requester:
+        if voter == ctx.voice_state.current.requester:
             await ctx.message.add_reaction('⏭')
             ctx.voice_state.skip()
         elif voter.id not in ctx.voice_state.skip_votes:
@@ -372,7 +381,7 @@ class Music(commands.Cog):
             queue += '`{0}.` [**{1.source.title}**]({1.source.url}{\n'.format(i + 1, song)
 
         embed = (discord.Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
-                .set_footer(text='Viewing page {}/{}'.format(page, pages)))
+                 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
         await ctx.send(embed=embed)
 
     @commands.command(name='shuffle')
@@ -407,7 +416,7 @@ class Music(commands.Cog):
         async with ctx.typing():
             try:
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
-            except YTDLError as e:
+            except YTDLError:
                 await ctx.send('Error')
             else:
                 song = Song(source)
@@ -424,6 +433,9 @@ class Music(commands.Cog):
             if ctx.voice_client.channel != ctx.author.voice.channel:
                 raise commands.CommandError('Bot is already in a voice channel')
 
+
 bot = commands.Bot('music.', description="Music")
+
+
 def setup(bot):
     bot.add_cog(Music(bot))
