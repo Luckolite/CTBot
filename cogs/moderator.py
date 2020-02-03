@@ -7,6 +7,7 @@ from utils import colors
 
 def has_required_permissions(**kwargs):
     """ Permission and/or role check """
+
     async def predicate(ctx):
         perms = ctx.author.guild_permissions
         if all((perm, value) in list(perms) for perm, value in kwargs.items()):
@@ -18,6 +19,7 @@ def has_required_permissions(**kwargs):
             'ban': []
         }
         return any(role.id in config[ctx.command.name] for role in ctx.author.roles)
+
     return commands.check(predicate)
 
 
@@ -25,7 +27,7 @@ class ModCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="mute", description="Mute a user. You can unmute them with ct!unmte")
+    @commands.command(name="mute", description="Mute a user. You can unmute them with ct!unmute")
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.cooldown(5, 60, commands.BucketType.user)
     @commands.cooldown(10, 60, commands.BucketType.guild)
@@ -41,7 +43,7 @@ class ModCommands(commands.Cog):
         e = discord.Embed()
         e.set_author(name=f"{member} was muted", icon_url=member.avatar_url)
         await ctx.send(embed=e)
-    
+
     @commands.command(name="unmute", description="Unmute a user.")
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.cooldown(5, 60, commands.BucketType.user)
@@ -83,7 +85,7 @@ class ModCommands(commands.Cog):
             e = discord.Embed()
             e.set_author(name=f"{member} was kicked", icon_url=member.avatar_url)
             await ctx.send(embed=e)
-   
+
     @commands.command(name="ban", description="Ban a user from the server/guild.")
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.cooldown(5, 60, commands.BucketType.user)
@@ -104,7 +106,7 @@ class ModCommands(commands.Cog):
         try:
             inv = f'https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=0&scope=bot'
             e = discord.Embed(color=colors.theme())
-            e.description = f"[incase you need my invite to dm me]({inv})."
+            e.description = f"[in case you need my invite to DM me]({inv})."
             await member.send("Seems you were banned in the crafting table..\n"
                               "You can either use `ct!appeal your_appeal` to request an unban, "
                               "or fill out a form at https://forms.gle/dCLv2QZq5LHdyTuL8. Do note "
@@ -138,6 +140,6 @@ class ModCommands(commands.Cog):
         except discord.errors.HTTPException:
             await ctx.send("Unban failed")
 
-        
+
 def setup(bot):
     bot.add_cog(ModCommands(bot))

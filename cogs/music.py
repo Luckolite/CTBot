@@ -5,9 +5,9 @@ import math
 import random
 
 import discord
-from discord.ext import commands
-from async_timeout import timeout
 import youtube_dl
+from async_timeout import timeout
+from discord.ext import commands
 
 youtube_dl.utils.bug_reports_message = lambda: ''
 
@@ -38,7 +38,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     }
 
     FFMPEG_OPTIONS = {
-        'before_options': '-reconnet 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
         'options': '-vn'
     }
 
@@ -246,11 +246,11 @@ class VoiceState:
             self.voice = None
 
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
 class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.voice_states = {}
+        self.voice_state = None
 
     def get_voice_state(self, ctx: commands.Context):
         state = self.voice_states.get(ctx.guild.id)
@@ -270,7 +270,7 @@ class Music(commands.Cog):
         return True
 
     async def cog_before_invoke(self, ctx: commands.Context):
-        ctx.voice_state = self.get_voice_state(ctx)
+        self.voice_state = self.get_voice_state(ctx)
 
     async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
         await ctx.send('Error: {}'.format(str(error)))
@@ -278,11 +278,11 @@ class Music(commands.Cog):
     @commands.command(name='join', invoke_without_subcommand=True)
     async def _join(self, ctx: commands.Context):
         destination = ctx.author.voice.channel
-        if ctx.voice_state.voice:
-            await ctx.voice_state.voice.move_to(destination)
+        if self.voice_state.voice:
+            await self.voice_state.voice.move_to(destination)
             return
 
-        ctx.voice_state.voice = await destination.connect()
+        self.voice_state.voice = await destination.connect()
 
     @commands.command(name='summon')
     @commands.has_permissions(manage_guild=True)
@@ -291,74 +291,74 @@ class Music(commands.Cog):
             raise VoiceError('You aren\'t in a voice channel and you didn\' specify one, come on man/woman/person!')
 
         destination = channel or ctx.author.voice.channel
-        if ctx.voice_state.voice:
-            await ctx.voice_state.voice.move_to(destination)
+        if self.voice_state.voice:
+            await self.voice_state.voice.move_to(destination)
             return
 
-        ctx.voice_state.voice = await destination.connect()
+        self.voice_state.voice = await destination.connect()
 
     @commands.command(name='leave', aliases=['disconnect'])
     @commands.has_permissions(manage_guild=True)
     async def _leave(self, ctx: commands.Context):
-        if not ctx.voice_state.voice:
+        if not self.voice_state.voice:
             return await ctx.send('Not connected to a channel')
 
-        await ctx.voice_state.stop()
+        await self.voice_state.stop()
         del self.voice_states[ctx.guild.id]
 
     @commands.command(name='volume')
     async def _volume(self, ctx: commands.Context, *, volume: int):
-        if not ctx.voice_state.is_playing:
+        if not self.voice_state.is_playing:
             return await ctx.send('Nothing playing')
 
         if 0 > volume > 100:
             return await ctx.send('Volume must be 0-100')
 
-        ctx.voice_state.volume = volume / 100
+        self.voice_state.volume = volume / 100
         await ctx.send('Volume of the player set to {}%'.format(volume))
 
     @commands.command(name='now', aliases=['current', 'playing'])
     async def _now(self, ctx: commands.Context):
-        await ctx.send(embed=ctx.voice_state.current.create_embed())
+        await ctx.send(embed=self.voice_state.current.create_embed())
 
     @commands.command(name='pause')
     @commands.has_permissions(manage_guild=True)
     async def _pause(self, ctx: commands.Context):
-        if not ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
-            ctx.voice_state.voice.pause()
+        if not self.voice_state.is_playing and self.voice_state.voice.is_playing():
+            self.voice_state.voice.pause()
             await ctx.message.add_reaction('⏯')
 
     @commands.command(name='resume')
     @commands.has_permissions(manage_guild=True)
     async def _resume(self, ctx: commands.Context):
-        if not ctx.voice_state.is_playing and ctx.voice_state.voice.is_paused():
-            ctx.voice_state.voice.resume()
+        if not self.voice_state.is_playing and self.voice_state.voice.is_paused():
+            self.voice_state.voice.resume()
             await ctx.message.add_reaction('⏯')
 
     @commands.command(name='stop')
     @commands.has_permissions(manage_guild=True)
     async def _stop(self, ctx: commands.Context):
-        ctx.voice_state.songs.clear()
-        if not ctx.voice_state.is_playing:
-            ctx.voice_state.voice.stop()
+        self.voice_state.songs.clear()
+        if not self.voice_state.is_playing:
+            self.voice_state.voice.stop()
             await ctx.message.add_reaction('⏹')
 
     @commands.command(name='skip')
     async def _skip(self, ctx: commands.Context):
-        if not ctx.voice_state.is_playing:
+        if not self.voice_state.is_playing:
             return await ctx.send("Nothing playing")
 
         voter = ctx.message.author
-        if voter == ctx.voice_state.current.requester:
+        if voter == self.voice_state.current.requester:
             await ctx.message.add_reaction('⏭')
-            ctx.voice_state.skip()
-        elif voter.id not in ctx.voice_state.skip_votes:
-            ctx.voice_state.skip_votes.add(voter.id)
-            total_votes = len(ctx.voice_state.skip_votes)
+            self.voice_state.skip()
+        elif voter.id not in self.voice_state.skip_votes:
+            self.voice_state.skip_votes.add(voter.id)
+            total_votes = len(self.voice_state.skip_votes)
 
             if total_votes >= 3:
                 await ctx.message.add_reaction('⏭')
-                ctx.voice_state.skip()
+                self.voice_state.skip()
             else:
                 await ctx.send('Skip vote added, currently at **{}/3**'.format(total_votes))
 
@@ -367,50 +367,50 @@ class Music(commands.Cog):
 
     @commands.command(name='queue')
     async def _queue(self, ctx: commands.Context, *, page: int = 1):
-        if len(ctx.voice_state.songs) == 0:
+        if len(self.voice_state.songs) == 0:
             return await ctx.send('No songs in queue')
 
         items_per_page = 10
-        pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
+        pages = math.ceil(len(self.voice_state.songs) / items_per_page)
 
         start = (page - 1) * items_per_page
         end = start + items_per_page
 
         queue = ''
-        for i, song in enumerate(ctx.voice_state.songs[start:end], start=start):
+        for i, song in enumerate(self.voice_state.songs[start:end], start=start):
             queue += '`{0}.` [**{1.source.title}**]({1.source.url}{\n'.format(i + 1, song)
 
-        embed = (discord.Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
+        embed = (discord.Embed(description='**{} tracks:**\n\n{}'.format(len(self.voice_state.songs), queue))
                  .set_footer(text='Viewing page {}/{}'.format(page, pages)))
         await ctx.send(embed=embed)
 
     @commands.command(name='shuffle')
     async def _shuffle(self, ctx: commands.Context):
-        if len(ctx.voice_state.songs) == 0:
+        if len(self.voice_state.songs) == 0:
             return await ctx.send("No songs in queue")
 
-        ctx.voice_state.songs.shuffle()
+        self.voice_state.songs.shuffle()
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='remove')
     async def _remove(self, ctx: commands.Context, index: int):
-        if len(ctx.voice_state.songs) == 0:
+        if len(self.voice_state.songs) == 0:
             return await ctx.send("No songs in queue")
 
-        ctx.voice_state.songs.remove(index - 1)
+        self.voice_state.songs.remove(index - 1)
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='loop')
     async def _loop(self, ctx: commands.Context):
-        if not ctx.voice_state.is_playing:
+        if not self.voice_state.is_playing:
             return await ctx.send('Nothing playing')
 
-        ctx.voice_state.loop = not ctx.voice_state.loop
+        self.voice_state.loop = not self.voice_state.loop
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='play')
     async def _play(self, ctx: commands.Context, *, search: str):
-        if not ctx.voice_state.voice:
+        if not self.voice_state.voice:
             await ctx.invoke(self._join)
 
         async with ctx.typing():
@@ -420,7 +420,7 @@ class Music(commands.Cog):
                 await ctx.send('Error')
             else:
                 song = Song(source)
-                await ctx.voice_state.songs.put(song)
+                await self.voice_state.songs.put(song)
                 await ctx.send('Added {}'.format(str(source)))
 
     @_join.before_invoke
@@ -432,9 +432,6 @@ class Music(commands.Cog):
         if ctx.voice_client:
             if ctx.voice_client.channel != ctx.author.voice.channel:
                 raise commands.CommandError('Bot is already in a voice channel')
-
-
-bot = commands.Bot('music.', description="Music")
 
 
 def setup(bot):

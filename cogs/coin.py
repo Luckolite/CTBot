@@ -17,8 +17,8 @@ class Coin(commands.Cog):
         user_id = str(message.author.id)
         if user_id not in coindb:
             coindb[user_id] = 0
-        randomctint = randint(1, 250)
-        if randomctint == 250:
+        random_ct_int = randint(1, 250)
+        if random_ct_int == 250:
             coindb[user_id] += 1
             await message.channel.send(message.author.id + ", you just earned a crafting table!")
             with open('./data/coindb.json', 'w') as d:

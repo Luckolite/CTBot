@@ -9,12 +9,12 @@ class TextResp(commands.Cog):
     def on_message(self, message):
         if message.author.bot:
             return
-        messagestr = message.cotnent  # don't wanna use str() on it cuz it removes custom emotes
-        if "furnace" in messagestr:
+        message_str = message.cotnent  # don't wanna use str() on it cuz it removes custom emotes
+        if "furnace" in message_str:
             await message.channel.send("crafting tables are obviously the superior block")
-        elif "fit" in messagestr:
+        elif "fit" in message_str:
             await message.channel.send("who dat")
-        elif "@everyone" in messagestr:
+        elif "@everyone" in message_str:
             await message.channel.send("no ping")
         else:
             return

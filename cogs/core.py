@@ -15,16 +15,17 @@ class Core(commands.Cog):
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def info(self, ctx):
         embed = discord.Embed(
-            title = 'Information',
-            description = 'Information about the server',
-            color = discord.Color.blue()
+            title='Information',
+            description='Information about the server',
+            color=discord.Color.blue()
         )
 
         embed.set_footer(text='Information')
-        embed.add_field(name='Whos confirmed to contribute so far:', value='Luck#1574, elongated muskrat#0001, ProgrammerPlays#8264, Boris NL#3982, Lach993#4250')
-        embed.add_field(name='Whos going to contribute:', value='Tother#5201, Rogue#2754, Lefton#7913')
+        embed.add_field(name='Confirmed to contribute so far:',
+                        value='Luck#1574, elongated muskrat#0001, ProgrammerPlays#8264, Boris NL#3982, Lach993#4250, korochun#3452')
+        embed.add_field(name='Going to contribute:', value='Tother#5201, Rogue#2754, Lefton#7913')
         await ctx.send(embed=embed)
-        
+
     @commands.command(name='suggest', description='submit a suggestion')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def suggest(self, ctx, *, suggestion):
@@ -60,10 +61,11 @@ class Core(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def help(self, ctx, command=None):
         """ help menu sorted by cog/class name """
-        async def add_reactions(msg):
+
+        async def add_reactions(message):
             """ add reactions in the background to speed things up """
-            for emoji in emojis:
-                await msg.add_reaction(emoji)
+            for emoji_ in emojis:
+                await message.add_reaction(emoji_)
 
         index = {}
         for cmd in [cmd for cmd in self.bot.commands if not cmd.hidden]:
@@ -83,17 +85,17 @@ class Core(commands.Cog):
         default.set_author(name='Help Menu', icon_url=self.bot.user.avatar_url)
         default.set_thumbnail(url=ctx.guild.icon_url)
         value = '\n'.join([
-            f'• {category} - {len(commands)} commands' for category, commands in index.items()
+            f'• {category} - {len(commands_)} commands' for category, commands_ in index.items()
         ])
         default.add_field(name='◈ Categories', value=value)
 
         embeds = [default]
-        for category, commands in index.items():
+        for category, commands_ in index.items():
             e = discord.Embed(color=colors.theme())
             e.set_author(name=category, icon_url=self.bot.user.avatar_url)
             e.set_thumbnail(url=ctx.guild.icon_url)
             e.description = '\n'.join([
-                f"\n• {cmd} - `{desc}`" for cmd, desc in commands.items()
+                f"\n• {cmd} - `{desc}`" for cmd, desc in commands_.items()
             ])
             embeds.append(e)
 
@@ -104,8 +106,9 @@ class Core(commands.Cog):
         emojis = ['⏪', '⏩', '🔁']
         self.bot.loop.create_task(add_reactions(msg))
         while True:
-            def pred(reaction, user):
-                return user == ctx.author and str(reaction.emoji) in emojis
+            def pred(react, usr):
+                return usr == ctx.author and str(react.emoji) in emojis
+
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=pred)
             except asyncio.TimeoutError:

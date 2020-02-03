@@ -1,7 +1,7 @@
-from time import time
-import traceback
-import sys
 import json
+import sys
+import traceback
+from time import time
 
 import discord
 from discord.ext import commands

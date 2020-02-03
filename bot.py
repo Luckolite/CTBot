@@ -19,7 +19,7 @@ with open('./data/config.json') as f:
 bot = commands.Bot(command_prefix=config['prefix'], case_insensitive=True)
 bot.remove_command('help')
 initial_extensions = [
-    'core', 'error_handler', 'lockdown', 'appeals', 'dev', 'coin', 'modcommands'
+    'core', 'error_handler', 'lockdown', 'appeals', 'dev', 'coin', 'moderator'
 ]
 errors = []
 
