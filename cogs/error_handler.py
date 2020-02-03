@@ -52,7 +52,7 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send(error)
         elif isinstance(error, commands.CheckFailure):
-            await ctx.send(error)
+            await ctx.send('You can\'t run this command!')
             return await ctx.message.add_reaction('⚠')
         elif isinstance(error, discord.errors.Forbidden):
             bot = ctx.guild.me

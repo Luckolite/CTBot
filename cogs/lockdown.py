@@ -7,7 +7,7 @@ from utils import checks
 
 
 def has_required_permissions():
-    """ Only allow Elon and/or the server owner """
+    """Only allow Elon and/or the server owner."""
 
     async def predicate(ctx):
         # if ctx.guild.id != 1234:  # replace with crafting table id
@@ -22,8 +22,8 @@ def has_required_permissions():
 
 def usage():
     e = discord.Embed()
-    e.description = 'ct!lockdown\n`mass updates channel overwrites to deny everything perms to send`' \
-                    '\nct!unlock\n`undoes the actions of ct.lockdown`'
+    e.description = '`ct!lockdown`\nMass updates channel overrides to deny everyone perms to send.\n' \
+                    '`ct!unlock`\nUndoes the actions of ct!lockdown.'
     return e
 
 
@@ -51,7 +51,7 @@ class Lockdown(commands.Cog):
             await channel.edit(overwrites=new_overwrites)
         await ctx.send("Finished locking the server\nUse the unlock cmd to undo")
 
-    @commands.command(name='unlock', usage=usage(), description='unlocks the server')
+    @commands.command(name='unlock', usage=usage(), description='Unlocks the server')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @has_required_permissions()
     @commands.bot_has_permissions(administrator=True)

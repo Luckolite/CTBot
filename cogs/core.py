@@ -9,9 +9,9 @@ from utils import colors
 class Core(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.suggest_channel_id = 672135121469571092
+        self.suggest_channel_id = bot.config['suggestion_channel']
 
-    @commands.command(name='info', description='Information about the server')
+    @commands.command(name='info', description='Displays information about the server')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def info(self, ctx):
         embed = discord.Embed(
@@ -29,7 +29,7 @@ class Core(commands.Cog):
     @commands.command(name='suggest', description='submit a suggestion')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def suggest(self, ctx, *, suggestion):
-        """ submit a suggestion to a dedicated channel """
+        """Submits a suggestion to a dedicated channel."""
         channel = self.bot.get_channel(self.suggest_channel_id)
         e = discord.Embed(color=colors.theme())
         e.set_author(name=str(ctx.author), icon_url=ctx.author.avatar_url)
@@ -44,7 +44,7 @@ class Core(commands.Cog):
     @commands.command(name='edit', description='edit a suggestion')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def edit(self, ctx, msg_id: int, *, new_suggestion):
-        """ edit an existing suggestion """
+        """Edits an existing suggestion."""
         channel = self.bot.get_channel(self.suggest_channel_id)
         try:
             msg = await channel.fetch_message(msg_id)
@@ -60,10 +60,10 @@ class Core(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     async def help(self, ctx, command=None):
-        """ help menu sorted by cog/class name """
+        """Displays the help menu sorted by cog/class name."""
 
         async def add_reactions(message):
-            """ add reactions in the background to speed things up """
+            """Add reactions in the background to speed things up."""
             for emoji_ in emojis:
                 await message.add_reaction(emoji_)
 

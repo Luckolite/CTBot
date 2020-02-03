@@ -14,44 +14,65 @@ class Appeals(commands.Cog):
         self.bot = bot
         self.path = './data/appeal_blacklist.json'
         self.blacklist = {
-            '1234': {  # example
-                'cooldown': None,  # future time object
-                'banned': False  # no longer able to submit appeals
-            }
+            # '1234': {
+            #     'cooldown': -1,       # a timestamp, when able to submit appeals again
+            #     'banned': False       # True if banned from submitting appeals
+            # }
         }
         if path.isfile(self.path):
             with open(self.path) as f:
-                self.blacklist = json.load(f)  # type: dict
-        self.ct_id = 614889263183560840  # server id
-        self.channel_id = 672498231103455233  # dedicated appeals channel
+                self.blacklist = json.load(f)           # type: dict
+        self.ct_id = bot.config['server']               # server id
+        self.channel_id = bot.config['appeal_channel']  # dedicated appeals channel
 
     def save_data(self):
         with open(self.path, 'w+') as f:
             json.dump(self.blacklist, f)
 
-    @commands.command(name='appeal', description='request a ban appeal')
+    @commands.command(name='appeal', description='Requests a ban appeal.')
     @commands.cooldown(2, 30, commands.BucketType.user)
     @commands.cooldown(1, 1)
     async def appeal(self, ctx, *, appeal):
-        """ request a ban appeal in the crafting table """
+        """Appeal a ban from the Followers of the Crafting Table."""
         user_id = str(ctx.author.id)
         if user_id in self.blacklist:
             if self.blacklist[user_id]['banned']:
-                return await ctx.send(f"You are banned from submitting appeals")
-            if self.blacklist[user_id]['cooldown']:
-                if time() < self.blacklist[user_id]['cooldown']:
-                    return await ctx.send("You're on a 2 day cooldown due to your appeal being denied")
+                return await ctx.send("You are banned from submitting appeals!")
+            cooldown = self.blacklist[user_id]['cooldown']
+            if cooldown:
+                cd = cooldown - time()
+                if cd > 0:
+                    msg = "You're on a 2-day cooldown due to your appeal being denied. "
+                    if cooldown >= 86000:
+                        msg += f"{cooldown // 86000} day, "
+                    if cooldown >= 3600:
+                        h = cooldown // 3600
+                        msg += f"{h} hour"
+                        if h % 10 != 1:
+                            msg += 's'
+                        msg += ", "
+                    if cooldown >= 60:
+                        m = cooldown // 60
+                        msg += f"{m} minute"
+                        if m % 10 != 1:
+                            msg += 's'
+                        msg += ", "
+                    s = cooldown // 60
+                    msg += f"{s} second"
+                    if s % 10 != 1:
+                        msg += 's'
+                    return await ctx.send(msg + " until you can appeal again.")
 
         channel = self.bot.get_channel(self.channel_id)
         try:
             ban_entry = await channel.guild.fetch_ban(ctx.author)
         except discord.errors.NotFound:
-            return await ctx.send("You're not banned :/")
+            return await ctx.send("You're not banned :D")
 
         e = discord.Embed(color=colors.theme())
-        e.description = "Appeals need to contain the reason for your ban, and your reason " \
+        e.description = "Appeals need to contain why you are banned, and a reason " \
                         "for being unbanned. Lack of either, or abuse of this command results " \
-                        "in being blocked from using it permanently"
+                        "in not being able to use the command anymore!"
         for text_group in [appeal[i:i + 1000] for i in range(0, len(appeal), 1000)]:
             e.add_field(name='◈ Your Appeal', value=text_group, inline=False)
         e.set_footer(text='React to accept/deny')

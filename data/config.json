@@ -1,4 +1,12 @@
 {
     "token": "",
-    "prefix": "ct!"
+    "prefix": "ct!",
+    "activities": [
+        "The Valley of Crafting Tables",
+        "with 4 planks of wood",
+        "2B2T"
+    ],
+    "server": 614889263183560840,
+    "appeal_channel": 672498231103455233,
+    "suggestion_channel": 672135121469571092
 }

@@ -7,17 +7,35 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import ExtensionError
 
-if not path.isfile('./data/coindb.json'):
-    with open('./data/coindb.json', 'w') as f:
-        json.dump({}, f, ensure_ascii=False)
-if not path.isfile('./data/config.json'):
-    print('You need to set the config in /data/ first')
-    exit()
-with open('./data/config.json') as f:
-    config = json.load(f)  # type: dict
 
-bot = commands.Bot(command_prefix=config['prefix'], case_insensitive=True)
-bot.remove_command('help')
+class CTBot(commands.Bot):
+    def __init__(self, **options):
+        if path.isfile('./data/coindb.json'):
+            with open('./data/coindb.json') as f:
+                self.coindb = json.load(f)
+        else:
+            with open('./data/coindb.json', 'w') as f:
+                json.dump({}, f, ensure_ascii=False)
+
+        if not path.isfile('./data/config.json'):
+            print('./data/config missing! Please, create it.')
+            exit()
+        with open('./data/config.json') as f:
+            self.config = json.load(f)
+
+        super().__init__(self.config['prefix'], **options)
+
+        bot.remove_command('help')
+
+    def save_coindb(self):
+        with open('./data/coindb.json', 'w') as f:
+            json.dump(self.coindb, f, ensure_ascii=False)
+
+    def run(self):
+        super().run(self.config['token'])
+
+
+bot = CTBot(case_insensitive=True)
 initial_extensions = [
     'core', 'error_handler', 'lockdown', 'appeals', 'dev', 'coin', 'moderator'
 ]
@@ -27,7 +45,7 @@ errors = []
 async def status_task():
     await bot.change_presence(status=discord.Status.dnd, activity=discord.Game(name='Back Online'))
     while True:
-        activities = ['The Valley of Crafting Tables', 'with 4 planks of wood', '2B2T']
+        activities = bot.config['activities']
         for activity in activities:
             await asyncio.sleep(15)
             if activities.index(activity) == 1:
@@ -53,5 +71,5 @@ if __name__ == '__main__':
         except ExtensionError:
             errors.append([cog, str(traceback.format_exc())])
             print(f'Failed to load {cog}')
-print('Logging in')
-bot.run(config['token'])
+    print('Logging in')
+    bot.run()

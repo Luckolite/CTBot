@@ -10,19 +10,16 @@ class Coin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author.bot:
-            return
-        with open('./data/coindb.json') as c:
-            coindb = json.load(c)
-        user_id = str(message.author.id)
-        if user_id not in coindb:
-            coindb[user_id] = 0
         random_ct_int = randint(1, 250)
-        if random_ct_int == 250:
-            coindb[user_id] += 1
+        if not message.author.bot and random_ct_int == 250:
+            user_id = str(message.author.id)
+
+            if user_id not in self.bot.coindb:
+                self.bot.coindb[user_id] = 0
+            self.bot.coindb[user_id] += 1
+
             await message.channel.send(message.author.id + ", you just earned a crafting table!")
-            with open('./data/coindb.json', 'w') as d:
-                json.dump(coindb, d, indent=2)
+            self.bot.save_coindb()
 
 
 def setup(bot):
