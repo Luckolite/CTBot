@@ -37,6 +37,7 @@ for more details.
 - ProgrammerPlays#8264
 - Lach993#4250
 - korochun#3452
+- galfar#9119
 
 
 ## What are the Followers of the Crafting Table?
