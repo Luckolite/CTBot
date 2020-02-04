@@ -24,6 +24,7 @@ class Dev(commands.Cog):
     @commands.command(description="Reloads cogs.")
     async def reload(self, ctx):
         await self.bot.reload()
+        await ctx.send('Reloaded bot')
 
 
 def setup(bot):
