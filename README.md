@@ -25,8 +25,7 @@ python bot.py
 ```
 
 ## License
-Note that reuse, and authorized use of code in this repository, except by 
-whoever wrote it, is strictly prohibited.  
+This project is licensed under the GNU Lesser General Public License  
 Check [LICENSE](https://github.com/FrequencyX4/CTBot/blob/master/LICENSE)
 for more details.
 
