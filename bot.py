@@ -45,16 +45,13 @@ errors = []
 
 
 async def status_task():
-    await bot.change_presence(status=discord.Status.dnd, activity=discord.Game(name='Back Online'))
+    await bot.change_presence(activity=discord.Game(name='Back Online'))
+    activities = bot.config['activities']
     while True:
-        activities = bot.config['activities']
         for activity in activities:
             await asyncio.sleep(15)
-            if activities.index(activity) == 1:
-                status = discord.ActivityType.watching
-            else:
-                status = discord.Status.online
-            await bot.change_presence(status=status, activity=discord.Game(name=activity))
+            await bot.change_presence(activity=discord.Activity(name=activity['name'],
+                                                                type=discord.ActivityType[activity['status']]))
 
 
 @bot.event

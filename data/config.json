@@ -1,15 +1,24 @@
 {
-    "token": "Njc0MDM2MTQ2NjM2MDYyNzIx.XjkmmA.RUOmXDKjDgx1VjxcjeS-uqocPOU",
+    "token": "",
     "prefix": "ct!",
     "activities": [
-        "The Valley of Crafting Tables",
-        "with 4 planks of wood",
-        "2B2T"
+        {
+            "status": "watching",
+            "name": "the Valley of Crafting Tables"
+        },
+        {
+            "status": "playing",
+            "name": "with 4 planks of wood"
+        },
+        {
+            "status": "playing",
+            "name": "on 2B2T"
+        }
     ],
     "server": 614889263183560840,
     "appeal_channel": 672498231103455233,
     "suggestion_channel": 672135121469571092,
-    "server_inv": "https://discord.gg/pKCFpkV",
+    "server_inv": "https://discord.gg/2b2t",
     "dev_server_inv": "https://discord.gg/vJGBSnW",
     "owners": {
         "Elon": 544911653058248734,
