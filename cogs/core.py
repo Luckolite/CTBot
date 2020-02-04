@@ -2,8 +2,8 @@ import asyncio
 import os
 
 import discord
-from discord.ext import commands
 import psutil
+from discord.ext import commands
 
 from utils import colors, utils
 
@@ -19,7 +19,7 @@ class Core(commands.Cog):
         e = discord.Embed(color=colors.theme())
         c = utils.bytes2human
         p = psutil.Process(os.getpid())
-        perms = discord.Permissions(0)
+        perms = discord.Permissions()
         perms.update(
             embed_links=True, kick_members=True, ban_members=True, manage_roles=True
         )
@@ -28,7 +28,7 @@ class Core(commands.Cog):
 
         e.set_author(name='CTBot Information', icon_url=self.bot.user.avatar_url)
         e.set_thumbnail(url=self.bot.server.icon_url)
-        e.description = f"A handy bot thats dedicated its code to the crafting table religion"
+        e.description = f"A handy bot that's dedicated its code to the crafting table religion"
         e.add_field(
             name='◈ Github',
             value="> If you wish to report bugs, suggest changes, or even contribute to my development "
@@ -151,34 +151,39 @@ class Core(commands.Cog):
         pos = 0
         if command:
             pos = [c.lower() for c in index.keys()].index(command.lower()) + 1
+        await ctx.message.delete()
         msg = await ctx.send(embed=embeds[pos])
-        emojis = ['⏪', '⏩', '🔁']
+        emojis = ['⏮', '◀️', '⏹', '▶️', '⏭']
         self.bot.loop.create_task(add_reactions(msg))
         while True:
             def pred(react, usr):
-                return usr == ctx.author and str(react.emoji) in emojis
+                return react.message.id == msg.id and usr == ctx.author and str(react.emoji) in emojis
 
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=pred)
             except asyncio.TimeoutError:
                 return await msg.clear_reactions()
-            else:
-                emoji = str(reaction.emoji)
-                if emoji == emojis[0]:
+
+            emoji = str(reaction.emoji)
+            await msg.remove_reaction(reaction, ctx.author)
+            i = emojis.index(emoji)
+            if pos > 0 and i < 2:
+                if i == 0:
+                    pos = 0
+                else:
                     pos -= 1
-                elif emoji == emojis[1]:
+            elif pos < len(embeds) - 1 and i > 2:
+                if i == 3:
                     pos += 1
-                elif emoji == emojis[2]:
-                    pos = 0
-
-                if pos > len(embeds) - 1:
+                else:
                     pos = len(embeds) - 1
-                if pos < 0:
-                    pos = 0
+            elif i == 2:
+                return await msg.delete()
+            else:
+                continue
 
-                embeds[pos].set_footer(text=f'Page {pos + 1}/{len(embeds)}')
-                await msg.edit(embed=embeds[pos])
-                await msg.remove_reaction(reaction, ctx.author)
+            embeds[pos].set_footer(text=f'Page {pos + 1}/{len(embeds)}')
+            await msg.edit(embed=embeds[pos])
 
 
 def setup(bot):
