@@ -1,5 +1,5 @@
 {
-    "token": "",
+    "token": "NjcyMTYzNzE3OTkwODQyNDAz.XjiDcA.Pfj556Lq_so6lqwTry56Pn1vY7M",
     "prefix": "ct!",
     "activities": [
         "The Valley of Crafting Tables",
@@ -18,9 +18,10 @@
     "devs": {
         "Luck": 264838866480005122,
         "Tother": 355026215137968129,
-        "Rogue": 295388694167289856,
         "Programmer": 607776237737345044,
-        "korochun": 308628182213459989
+        "korochun": 308628182213459989,
+        "Lach": 292134677936865280,
+        "Galfar": 523474477917536258
     },
     "moderator": {
         "mute": [],
