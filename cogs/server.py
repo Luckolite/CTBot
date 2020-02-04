@@ -12,7 +12,7 @@ class Server(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='uptime', description='Get various server statistics.', aliases='server, ping')
+    @commands.command(description='Get various server statistics.', aliases=['server', 'ping'])
     async def uptime(self, ctx):
         current_time = time.time()
         bot_uptime_difference = int(round(current_time - start_time))

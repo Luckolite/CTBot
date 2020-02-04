@@ -5,7 +5,7 @@ import discord
 import psutil
 from discord.ext import commands
 
-from utils import utils
+from utils import checks, utils
 
 
 class Core(commands.Cog):
@@ -13,7 +13,7 @@ class Core(commands.Cog):
         self.bot = bot
         self.suggest_channel_id = bot.config['suggestion_channel']
 
-    @commands.command(name='info', description='Displays information about the server')
+    @commands.command(description='Displays information about the bot.')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def info(self, ctx):
         e = discord.Embed(color=utils.theme_color(ctx))
@@ -75,7 +75,7 @@ class Core(commands.Cog):
         # embed.add_field(name='Going to contribute:', value='Tother#5201, Rogue#2754, Lefton#7913')
         # await ctx.send(embed=embed)
 
-    @commands.command(name='suggest', description='submit a suggestion')
+    @commands.command(description='Submits a suggestion.')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def suggest(self, ctx, *, suggestion):
         """Submits a suggestion to a dedicated channel."""
@@ -89,7 +89,7 @@ class Core(commands.Cog):
         await ctx.send(f"Sent your suggestion to the dev server. "
                        f"Use `ct!edit {msg.id} Edited suggestion` to update it")
 
-    @commands.command(name='edit', description='edit a suggestion')
+    @commands.command(description='Edits a suggestion.')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def edit(self, ctx, msg_id: int, *, new_suggestion):
         """Edits an existing suggestion."""
@@ -99,11 +99,14 @@ class Core(commands.Cog):
         except discord.errors.NotFound:
             return await ctx.send("There's no suggestion under that id")
         e = msg.embeds[0]
-        e.set_field_at(0, name='Suggestion', value=f"{new_suggestion} *(edited)*")
-        await msg.edit(embed=e)
-        await ctx.send("Updated your suggestion")
+        if str(ctx.author) == e.author or checks.dev(ctx):
+            e.set_field_at(0, name='Suggestion', value=f"{new_suggestion} *(edited)*")
+            await msg.edit(embed=e)
+            await ctx.send("Updated your suggestion")
+        else:
+            await ctx.send("You can't edit this suggestion")
 
-    @commands.command(name='help', hidden=True)
+    @commands.command(hidden=True)
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)

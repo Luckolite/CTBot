@@ -25,7 +25,7 @@ class CTBot(commands.Bot):
         with open('./data/config.json') as f:
             self.config = json.load(f)
 
-        super().__init__(self.config['prefix'], **options)
+        super().__init__(self.config['prefix'], activity=discord.Game(name='Back Online'), **options)
 
         self.remove_command('help')
 
@@ -36,6 +36,13 @@ class CTBot(commands.Bot):
     def run(self):
         super().run(self.config['token'])
 
+    async def reload(self):
+        await self.change_presence(status=discord.Status.dnd, activity=discord.Game(name='Reloading'))
+        for ext in self.extensions:
+            print(f"Reloading {ext}...")
+            self.reload_extension(ext)
+        await self.change_presence(status=discord.Status.online, activity=discord.Game(name='Back Online'))
+
 
 bot = CTBot(case_insensitive=True)
 initial_extensions = [
@@ -45,7 +52,6 @@ errors = []
 
 
 async def status_task():
-    await bot.change_presence(activity=discord.Game(name='Back Online'))
     activities = bot.config['activities']
     while True:
         for activity in activities:

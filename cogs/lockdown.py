@@ -6,20 +6,6 @@ from discord.ext import commands
 from utils import checks
 
 
-def has_required_permissions():
-    """Only allow Elon and/or the server owner."""
-
-    async def predicate(ctx):
-        # if ctx.guild.id != 1234:  # replace with crafting table id
-        #     await ctx.send("This can only be used in the crafting table!")
-        if ctx.author.id not in checks.ids['owner']:
-            await ctx.send("Only Elon can use this")
-            return False
-        return True
-
-    return commands.check(predicate)
-
-
 def usage():
     e = discord.Embed()
     e.description = '`ct!lockdown`\nMass updates channel overrides to deny everyone perms to send.\n' \
@@ -32,9 +18,16 @@ class Lockdown(commands.Cog):
         self.bot = bot
         self.overwrites = {}
 
-    @commands.command(name='lockdown', usage=usage(), description='locks the server')
+    def cog_check(self, ctx):
+        # if ctx.guild.id != 1234:  # replace with crafting table id
+        #     await ctx.send("This can only be used in the crafting table!")
+        if ctx.author.id not in checks.ids['owner']:
+            await ctx.send("Only Elon can use this")
+            return False
+        return True
+
+    @commands.command(description="Mass updates channel overrides to deny everyone perms to send.")
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @has_required_permissions()
     @commands.bot_has_permissions(administrator=True)
     async def lockdown(self, ctx):
         await ctx.send(f"Locking down the server..\nEstimated time: {len(ctx.guild.text_channels)}s")
@@ -51,9 +44,8 @@ class Lockdown(commands.Cog):
             await channel.edit(overwrites=new_overwrites)
         await ctx.send("Finished locking the server\nUse the unlock cmd to undo")
 
-    @commands.command(name='unlock', usage=usage(), description='Unlocks the server')
+    @commands.command(description="Undoes the actions of ct!lockdown.")
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @has_required_permissions()
     @commands.bot_has_permissions(administrator=True)
     async def unlock(self, ctx):
         await ctx.send(f"Unlocking the server..\nEstimated time: {len(ctx.guild.text_channels)}s")
