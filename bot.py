@@ -65,7 +65,7 @@ async def on_ready():
     bot.server = bot.get_guild(bot.config['server'])
     bot.loop.create_task(status_task())
     print('Logged in as', bot.user, "with user id", bot.user.id)
-    for error in errors:
+    for cog, error in errors:
         print(error)
 
 

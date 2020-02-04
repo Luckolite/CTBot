@@ -18,7 +18,7 @@ class Lockdown(commands.Cog):
         self.bot = bot
         self.overwrites = {}
 
-    def cog_check(self, ctx):
+    async def cog_check(self, ctx):
         # if ctx.guild.id != 1234:  # replace with crafting table id
         #     await ctx.send("This can only be used in the crafting table!")
         if ctx.author.id not in checks.ids['owner']:
