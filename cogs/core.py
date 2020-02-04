@@ -31,8 +31,8 @@ class Core(commands.Cog):
         e.description = f"A handy bot that's dedicated its code to the crafting table religion"
         e.add_field(
             name='◈ Github',
-            value="> If you wish to report bugs, suggest changes, or even contribute to my development "
-                  "[visit my repo](https://github.com/FrequencyX4/CTBot)",
+            value="> If you wish to report bugs, suggest changes or contribute to the development "
+                  "[visit the repo](https://github.com/FrequencyX4/CTBot)",
             inline=False
         )
         e.add_field(
@@ -80,15 +80,14 @@ class Core(commands.Cog):
     async def suggest(self, ctx, *, suggestion):
         """Submits a suggestion to a dedicated channel."""
         channel = self.bot.get_channel(self.suggest_channel_id)
-        e = discord.Embed(color=utils.theme_color(ctx))
-        e.set_author(name=str(ctx.author), icon_url=ctx.author.avatar_url)
-        e.description = str(ctx.author.id)
-        e.add_field(name='Suggestion', value=suggestion)
-        msg = await channel.send(embed=e)
-        e.set_footer(text=str(msg.id))
-        await msg.edit(embed=e)
+        embed = discord.Embed(color=utils.theme_color(ctx))
+        embed.set_author(name=str(ctx.author), icon_url=ctx.author.avatar_url)
+        embed.add_field(name='Suggestion', value=suggestion)
+        msg = await channel.send(embed=embed)
+        embed.set_footer(text=f"id: {msg.id}")
+        await msg.edit(embed=embed)
         await ctx.send(f"Sent your suggestion to the dev server. "
-                       f"Use `ct!edit {msg.id} your_modified_suggestion` to update it")
+                       f"Use `ct!edit {msg.id} Edited suggestion` to update it")
 
     @commands.command(name='edit', description='edit a suggestion')
     @commands.cooldown(2, 5, commands.BucketType.user)
@@ -100,7 +99,7 @@ class Core(commands.Cog):
         except discord.errors.NotFound:
             return await ctx.send("There's no suggestion under that id")
         e = msg.embeds[0]
-        e.fields[0].value = new_suggestion
+        e.set_field_at(0, name='Suggestion', value=f"{new_suggestion} *(edited)*")
         await msg.edit(embed=e)
         await ctx.send("Updated your suggestion")
 
