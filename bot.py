@@ -27,7 +27,7 @@ class CTBot(commands.Bot):
 
         super().__init__(self.config['prefix'], **options)
 
-        bot.remove_command('help')
+        # bot.remove_command('help')
 
     def save_coindb(self):
         with open('./data/coindb.json', 'w') as f:
@@ -38,6 +38,7 @@ class CTBot(commands.Bot):
 
 
 bot = CTBot(case_insensitive=True)
+bot.remove_command('help')
 initial_extensions = [
     'core', 'error_handler', 'lockdown', 'appeals', 'dev', 'coin', 'moderator'
 ]
