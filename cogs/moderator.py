@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Greedy
 
-from utils import colors
+from utils import utils
 
 
 def has_required_permissions(**kwargs):
@@ -102,7 +102,7 @@ class ModCommands(commands.Cog):
                 return await ctx.send("That member has a higher rank than you.")
         try:
             inv = f'https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=0&scope=bot'
-            e = discord.Embed(color=colors.theme())
+            e = discord.Embed(color=utils.theme_color(ctx))
             e.description = f"[in case you need my invite to DM me]({inv})."
             await member.send("Seems you were banned in the crafting table..\n"
                               "You can either use `ct!appeal your_appeal` to request an unban, "

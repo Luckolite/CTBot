@@ -1,3 +1,6 @@
+from discord import Color
+
+
 def bytes2human(n):
     symbols = ('kb', 'mb', 'gb', 'tb', 'pb', 'E', 'Z', 'Y')
     prefix = {}
@@ -8,3 +11,7 @@ def bytes2human(n):
             value = float(n) / prefix[s]
             return '%.1f%s' % (value, s)
     return "%sB" % n
+
+
+def theme_color(ctx):
+    return Color(int(ctx.bot.config['theme'][1:], 16))

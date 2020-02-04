@@ -6,7 +6,7 @@ from time import time
 import discord
 from discord.ext import commands
 
-from utils import colors
+from utils import utils
 
 
 class Appeals(commands.Cog):
@@ -69,7 +69,7 @@ class Appeals(commands.Cog):
         except discord.errors.NotFound:
             return await ctx.send("You're not banned :D")
 
-        e = discord.Embed(color=colors.theme())
+        e = discord.Embed(color=utils.theme_color(ctx))
         e.description = "Appeals need to contain why you are banned, and a reason " \
                         "for being unbanned. Lack of either, or abuse of this command results " \
                         "in not being able to use the command anymore!"
