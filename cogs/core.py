@@ -37,7 +37,7 @@ class Core(commands.Cog):
         )
         e.add_field(
             name='◈ Credits',
-            value="\n".join([f"• {self.bot.get_user(user_id)}" for user_id in self.bot.config['devs'].values()])
+            value="\n".join([f"• [{self.bot.get_user(user_id)}](https://discordapp.com/channels/@me/{user_id})" for user_id in self.bot.config['devs'].values()])
         )
         e.add_field(
             name='◈ Links',
