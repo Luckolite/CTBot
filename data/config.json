@@ -1,5 +1,5 @@
 {
-    "token": "",
+    "token": "Njc0MDM2MTQ2NjM2MDYyNzIx.XjivKA.76xnSn1A45TcKtGTlHZ-If3kNeo",
     "prefix": "ct!",
     "activities": [
         "The Valley of Crafting Tables",
@@ -21,5 +21,10 @@
         "Daichi": 239381528893718539,
         "Programmer": 607776237737345044,
         "korochun": 308628182213459989
+    },
+    "moderator": {
+        "mute": [],
+        "kick": [],
+        "ban": []
     }
 }
