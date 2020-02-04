@@ -1,9 +1,11 @@
 import asyncio
+import os
 
 import discord
 from discord.ext import commands
+import psutil
 
-from utils import colors
+from utils import colors, utils
 
 
 class Core(commands.Cog):
@@ -14,17 +16,64 @@ class Core(commands.Cog):
     @commands.command(name='info', description='Displays information about the server')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def info(self, ctx):
-        embed = discord.Embed(
-            title='Information',
-            description='Information about the server',
-            color=discord.Color.blue()
+        e = discord.Embed(color=colors.theme())
+        c = utils.bytes2human
+        p = psutil.Process(os.getpid())
+        perms = discord.Permissions(0)
+        perms.update(
+            embed_links=True, kick_members=True, ban_members=True, manage_roles=True
         )
+        perms = perms.value
+        inv = f'https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions={perms}&scope=bot'
 
-        embed.set_footer(text='Information')
-        embed.add_field(name='Confirmed to contribute so far:',
-                        value='Luck#1574, elongated muskrat#0001, ProgrammerPlays#8264, Boris NL#3982, Lach993#4250, korochun#3452')
-        embed.add_field(name='Going to contribute:', value='Tother#5201, Rogue#2754, Lefton#7913')
-        await ctx.send(embed=embed)
+        e.set_author(name='CTBot Information', icon_url=self.bot.user.avatar_url)
+        e.set_thumbnail(url=self.bot.server.icon_url)
+        e.description = f"A handy bot thats dedicated its code to the crafting table religion"
+        e.add_field(
+            name='◈ Github',
+            value="> If you wish to report bugs, suggest changes, or even contribute to my development "
+                  "[visit my repo](https://github.com/FrequencyX4/CTBot)",
+            inline=False
+        )
+        e.add_field(
+            name='◈ Credits',
+            value="\n".join([f"• {self.bot.get_user(user_id)}" for user_id in self.bot.config['devs'].values()])
+        )
+        e.add_field(
+            name='◈ Links',
+            value=f"• [Crafting Table]({self.bot.config['server_inv']})"
+                  f"\n• [Github](https://github.com/FrequencyX4/CTBot)"
+                  f"\n• [Dev Discord]({self.bot.config['dev_server_inv']})"
+                  f"\n• [Invite Me]({inv})"
+        )
+        e.set_footer(
+            text=f"CPU: {psutil.cpu_percent()}% | Ram: {c(p.memory_full_info().rss)} ({round(p.memory_percent())}%)",
+            icon_url="https://media.discordapp.net/attachments/514213558549217330/514345278669848597/8yx98C.gif"
+        )
+        await ctx.send(embed=e)
+
+        # e.add_field(
+        #     name='◈ Bot Memory',
+        #     value=f"**CPU:** {p.cpu_percent}% **Ram:** {c(p.memory_full_info().rss)} ({round(p.memory_percent())}%)",
+        # )
+        # e.add_field(
+        #     name='◈ Global Memory',
+        #     value=f"**CPU:** "
+        # )
+
+        # embed = discord.Embed(
+        #     title='Information',
+        #     description='Information about the server',
+        #     color=discord.Color.blue()
+        # )
+
+        # embed.set_footer(text='Information')
+        # embed.add_field(
+        #   name='Confirmed to contribute so far:',
+        #   value='Luck#1574, elongated muskrat#0001, ProgrammerPlays#8264, Boris NL#3982, Lach993#4250, korochun#3452'
+        # )
+        # embed.add_field(name='Going to contribute:', value='Tother#5201, Rogue#2754, Lefton#7913')
+        # await ctx.send(embed=embed)
 
     @commands.command(name='suggest', description='submit a suggestion')
     @commands.cooldown(2, 5, commands.BucketType.user)
