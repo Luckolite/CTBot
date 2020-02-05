@@ -50,17 +50,19 @@ class RequestPacket:
         """Writes a String (n) into the packet."""
         b = bytes(value[:n], 'utf8')
         self.write_VarInt(len(b))
-        self.payload += b
+        self.payload.write(b)
 
     @staticmethod
     def write_Var(stream, value):
         """Writes a Var-type into the stream."""
-        while value:
+        while True:
             b = value & 0x7F
             value >>= 7
             if value:
                 b |= 0x80
             stream.write(struct.pack('B', b))
+            if not value:
+                break
 
     def write_VarInt(self, value):
         """Writes a VarInt into the packet."""
@@ -81,27 +83,32 @@ class RequestPacket:
                 v += 0x100
             self.payload.write(struct.pack('B', v))
 
-    def send(self, stream):
+    def send(self, socket):
         """Sends the packet."""
-        b = self.payload.getbuffer()
-        RequestPacket.write_Var(stream, len(b))
-        stream.write(b)
+        b = self.payload.getvalue()
+        length = BytesIO()
+        RequestPacket.write_Var(length, len(b))
+        socket.send(length.getvalue() + b)
+
+    def send_compressed(self, socket):
+        pass
 
 
 class ResponsePacket:
     """A Python representation of a clientbound Minecraft Protocol packet."""
 
-    def __init__(self, stream):
-        self.payload = stream
+    def __init__(self, payload):
+        self.payload = payload
 
     @staticmethod
-    async def recv(stream):
+    def recv(socket):
         """Receives a Packet from stream, identifies it and returns a Packet of the appropriate type."""
-        ResponsePacket.read_Var(stream)
-        packet_id = ResponsePacket.read_Var(stream)
+        length = ResponsePacket.read_Var(socket.recv)
+        pos = socket.tell()
+        packet_id = ResponsePacket.read_Var(socket.recv)
         if packet_id not in packet_types:
-            return ResponsePacket(stream), packet_id
-        return packet_types[state[0]][packet_id](stream)
+            return ResponsePacket(socket), packet_id
+        return packet_types[state[0]][packet_id](BytesIO(socket.recv(length - socket.tell() + pos)))
 
     def read_boolean(self):
         """Reads a boolean from the packet."""
@@ -144,29 +151,31 @@ class ResponsePacket:
     def read_String(self):
         """Reads a String from the packet."""
         length = self.read_VarInt()
-        value = self.payload.read(length).decode('utf8')
+        value = ''
+        while len(value) < length:
+            value += self.payload.read(length).decode('utf8')
         return value
 
     @staticmethod
-    def read_Var(stream):
+    def read_Var(read):
         """Reads a Var-type from the stream."""
         value = 0
         while True:
-            b = struct.unpack('B', stream.read(1))[0]
+            b = struct.unpack('B', read(1))[0]
             value = value << 7 | (b & 0x7F)
             if not b & 0x80:
                 return value
 
     def read_VarInt(self):
         """Reads a VarInt from the packet."""
-        value = ResponsePacket.read_Var(self.payload)
+        value = ResponsePacket.read_Var(self.payload.read)
         if value & 0x80000000:
             value -= 0x100000000
         return value
 
     def read_VarLong(self):
         """Reads a VarLong from the packet."""
-        value = ResponsePacket.read_Var(self.payload)
+        value = ResponsePacket.read_Var(self.payload.read)
         if value & 0x8000000000000000:
             value -= 0x10000000000000000
         return value
@@ -189,7 +198,7 @@ class HandshakePacket(RequestPacket):
         self.write_VarInt(340)
         self.write_String(255, address)  # Server Address
         self.write_unsigned_short(port)  # Server Port
-        self.write_VarInt(next_state)  # Next State
+        self.write_VarInt(next_state)    # Next State
 
 
 class StatusRequestPacket(RequestPacket):
@@ -200,8 +209,8 @@ class StatusRequestPacket(RequestPacket):
 
 
 class StatusResponsePacket(ResponsePacket):
-    def __init__(self, stream):
-        super().__init__(stream)
+    def __init__(self, payload):
+        super().__init__(payload)
         self.response = json.loads(self.read_String())
 
     def get_response(self):
@@ -215,8 +224,8 @@ class PingPacket(RequestPacket):
 
 
 class PongPacket(ResponsePacket):
-    def __init__(self, stream):
-        super().__init__(stream)
+    def __init__(self, payload):
+        super().__init__(payload)
         self.payload = self.read_long()
 
     def get_payload(self):
@@ -230,9 +239,58 @@ class LoginStartPacket(RequestPacket):
 
 
 class LoginDisconnect(ResponsePacket):
-    def __init__(self, stream):
-        super().__init__(stream)
-        self.reason = self.read_String()
+    def __init__(self, payload):
+        super().__init__(payload)
+        self.reason = json.loads(self.read_String())
+
+    def get_reason(self):
+        return self.reason
+
+
+class EncryptionRequestPacket(ResponsePacket):
+    def __init__(self, payload):
+        super().__init__(payload)
+        self.server_id = self.read_String()
+        self.pub_key = self.read_byte_array(self.read_VarInt())
+        self.verify_token = self.read_byte_array(self.read_VarInt())
+
+    def get_pub_key(self):
+        return self.pub_key
+
+    def get_verify_token(self):
+        return self.verify_token
+
+
+class EncryptionResponsePacket(RequestPacket):
+    def __init__(self, shared_sec, verify_token):
+        super().__init__(1)
+        self.write_VarInt(len(shared_sec))
+        self.write_byte_array(shared_sec)
+        self.write_VarInt(len(verify_token))
+        self.write_byte_array(verify_token)
+
+
+class LoginSuccessPacket(ResponsePacket):
+    def __init__(self, payload):
+        super().__init__(payload)
+        self.uuid = self.read_String()
+        self.username = self.read_String()
+        state[0] = 3
+
+    def get_uuid(self):
+        return self.uuid
+
+    def get_username(self):
+        return self.username
+
+
+class SetCompressionPacket(ResponsePacket):
+    def __init__(self, payload):
+        super().__init__(payload)
+        self.threshold = self.read_VarInt()
+
+    def get_threshold(self):
+        return self.threshold
 
 
 state = [0]  # 0 for handshake, 1 for status, 2 for login and 3 for play
@@ -244,7 +302,8 @@ packet_types = {
         1: PongPacket
     },
     2: {
-        0: LoginStartPacket,
-        # 1: EncryptionPacket
+        0: LoginDisconnect,
+        1: EncryptionRequestPacket,
+        2: LoginStartPacket
     }
 }
