@@ -18,6 +18,8 @@
     "server": 614889263183560840,
     "appeal_channel": 672498231103455233,
     "suggestion_channel": 672135121469571092,
+    "error_channel": 672872728251990085,
+    "login_error_channel": 674680687483420692,
     "server_inv": "https://discord.gg/2b2t",
     "dev_server_inv": "https://discord.gg/vJGBSnW",
     "theme": "#00e1ff",
@@ -32,7 +34,7 @@
         "korochun": 308628182213459989,
         "Lach": 292134677936865280,
         "Galfar": 523474477917536258,
-        "EPFFORCE", 611108193275478018
+        "EPFFORCE": 611108193275478018
     },
     "moderator": {
         "mute": [],

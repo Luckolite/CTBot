@@ -24,6 +24,8 @@ pip install -r requirements.txt
 python bot.py
 ```
 
+Make sure you are using the appropriate python version! Many OSes have the `python` command run Python 2 so make sure that you are running in python3 and installing with pip3.
+
 ## License
 This project is licensed under the GNU Lesser General Public License  
 Check [LICENSE](https://github.com/FrequencyX4/CTBot/blob/master/LICENSE)

@@ -3,8 +3,6 @@ from os import path
 
 import discord
 
-from utils.colors import theme
-
 
 def get_vars_a():
     if not path.isfile('./data/logging.json'):
@@ -20,7 +18,7 @@ def get_vars_a():
 
 
 async def banned_words(self, msg: discord.Message):
-    embed = discord.Embed(colour=theme())
+    embed = discord.Embed(colour=discord.Color(self.bot.config['theme']))
     logCFG, censorCFG, botCFG = get_vars_a()
     if logCFG["enabled"] == "False":
         return
