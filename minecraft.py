@@ -1,7 +1,7 @@
 import json
 import struct
 from io import BytesIO
-
+# oh god no . . . wow, just use some mineflayer, I will happily provide help with it, this might take you a while
 
 class RequestPacket:
     """A Python representation of a serverbound Minecraft Protocol packet."""
