@@ -46,7 +46,7 @@ class CTBot(commands.Bot):
 
 bot = CTBot(case_insensitive=True)
 initial_extensions = [
-    'core', 'error_handler', 'lockdown', 'appeals', 'dev', 'coin', 'moderator', 'censor'
+    'core', 'error_handler', 'lockdown', 'appeals', 'dev', 'coin', 'moderation', 'censor'
 ]
 errors = []
 
@@ -65,8 +65,10 @@ async def on_ready():
     bot.server = bot.get_guild(bot.config['server'])
     bot.loop.create_task(status_task())
     print('Logged in as', bot.user, "with user id", bot.user.id)
+    channel = bot.get_channel(bot.config['login_error_channel'])
     for cog, error in errors:
         print(error)
+        await channel.send(f"**Error loading {cog}:**```{error}```")
 
 
 if __name__ == '__main__':
