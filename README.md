@@ -8,7 +8,7 @@ Join the dev discord to be added as an instant-push contributor.
 ## Getting Started
 
 ### Compatibility
-Python 3.6 or higher due to f-strings.
+Python 3.6 or higher due to f-strings & discord.py requirements.
 
 ### Installation
 > Clone the Project
@@ -37,6 +37,7 @@ for more details.
 - Lach993#4250
 - korochun#3452
 - galfar#9119
+- EPFFORCE#1337
 
 
 ## What are the Followers of the Crafting Table?
