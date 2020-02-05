@@ -1,0 +1,12 @@
+{
+  "enabled": "False",
+  "log-channel": 0,
+  "multi-log": [
+    [
+      "Banned-Words",
+      0
+    ]
+  ],
+  "banned-word-log": "False",
+  "notes": "if the plugin is enabled and some kind of logging part is enabled then you must put in separate log channels if the 'log channel' part is not filled then you must fill in the separate channels arrays."
+}
