@@ -14,5 +14,5 @@
     "domain_whitelist": [],
     "profanity_filter": true,
     "profanity_filter_ml": false,
-    "notes": "THIS IS ONLY FOR NOTES, 'message_char_limit' if set to 0 then is not limited || wordfilter-resp-msg-del-time is in seconds || domain shit does not work right now."
+    "notes": "THIS IS ONLY FOR NOTES, 'message_char_limit' if set to 0 then is not limited || domain shit does not work right now."
 }

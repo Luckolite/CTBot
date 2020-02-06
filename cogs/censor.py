@@ -64,7 +64,8 @@ class Censor(commands.Cog):
     @commands.Cog.listener('on_message_edit')
     async def word_filter(self, *args):
         message = args[-1]
-        if self.config["enabled"] and self.config["word_filter_enabled"] and message.channel.id not in self.config["word_filter_channel_exceptions_array_ids"]:
+        if self.config["enabled"] and self.config["word_filter_enabled"]\
+                and message.channel.id not in self.config["word_filter_channel_exceptions_array_ids"]:
             for word in message.content.split():
                 if word.lower() in self.blocked_words:
                     if self.bot.config["debug"]:
@@ -102,7 +103,8 @@ class Censor(commands.Cog):
                     if self.config["warn_on_censor"]:
                         self.warn(after)
                     if self.config['debug']:
-                        print(f'nick: {after.nick} has been blocked because it contains {i} {after.nick.lower().count(word.lower())} times')
+                        print(
+                            f'nick: {after.nick} has been blocked because it contains {word} {after.nick.lower().count(word.lower())} times')
 
 
 def setup(bot):
