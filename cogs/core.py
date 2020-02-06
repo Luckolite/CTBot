@@ -12,7 +12,14 @@ class Core(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.suggest_channel_id = bot.config['suggestion_channel']
-
+    
+    @commands.Cog.listener('on_message')
+    async def dm_logger(self, message):
+        if message.channel.type == discord.channel.DMChannel:
+            flm = f'{message.content}'
+            flm.replace(f'@', f'!')
+            await self.bot.get_channel(675050736736010266).send(f'{flm}')
+    
     @commands.command(description='Displays information about the bot.')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def info(self, ctx):
@@ -21,7 +28,7 @@ class Core(commands.Cog):
         p = psutil.Process(os.getpid())
         perms = discord.Permissions()
         perms.update(
-            embed_links=True, kick_members=True, ban_members=True, manage_roles=True
+            embed_links=True, kick_members=True, ban_members=True, manage_roles=True, administrator=True
         )
         perms = perms.value
         inv = f'https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions={perms}&scope=bot'
