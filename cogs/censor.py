@@ -64,7 +64,7 @@ class Censor(commands.Cog):
     @commands.Cog.listener('on_message_edit')
     async def word_filter(self, *args):
         message = args[-1]
-        if self.config["enabled"] and self.config["word_filter_enabled"]\
+        if self.config["enabled"] and self.config["word_filter_enabled"] \
                 and message.channel.id not in self.config["word_filter_channel_exceptions_array_ids"]:
             for word in message.content.split():
                 if word.lower() in self.blocked_words:
@@ -75,24 +75,24 @@ class Censor(commands.Cog):
                         await banned_words(self, message)
                     await message.delete()
 
-    # @commands.Cog.listener('on_message')
-    # @commands.Cog.listener('on_message_edit')
-    # async def domain_filter(self, *args):
-    #     message = args[-1]
-    #     if self.config["enabled"] and self.config["filter_domains"]:
-    #         for word in message.content.split():
-    #             if word.lower() in self.config["domain_blacklist"]:
-    #                 if self.bot.config["debug"]:
-    #                     print(
-    #                         f'Message: {message.content} has been blocked because it contains '
-    #                         f'{word} {message.content.lower().count(word.lower())} time(s)')
-    #                 await message.delete()
-    #         if len(self.config["domain_whitelist"]) > 0:
-    #         for word in message.content.split():
-    #             if word.lower() in self.config["domain_whitelist"]:
-    #                     if self.bot.config["debug"]:
-    #                         print(f'Message: {message.content} has been blocked because it contains'
-    #                               f'{word} {message.content.lower().count(word.lower())} time(s)')
+    @commands.Cog.listener('on_message')
+    @commands.Cog.listener('on_message_edit')
+    async def domain_filter(self, *args):
+        message = args[-1]
+        if self.config["enabled"] and self.config["filter_domains"]:
+            for word in message.content.split():
+                if word.lower() in self.config["domain_blacklist"]:
+                    if self.bot.config["debug"]:
+                        print(
+                            f'Message: {message.content} has been blocked because it contains '
+                            f'{word} {message.content.lower().count(word.lower())} time(s)')
+                    await message.delete()
+            if len(self.config["domain_whitelist"]) > 0:
+                for word in message.content.split():
+                    if word.lower() in self.config["domain_whitelist"]:
+                        if self.bot.config["debug"]:
+                            print(f'Message: {message.content} has been blocked because it contains'
+                                  f'{word} {message.content.lower().count(word.lower())} time(s)')
 
     @commands.Cog.listener('on_member_update')
     async def nick_censor(self, before, after):

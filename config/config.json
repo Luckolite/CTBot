@@ -1,5 +1,5 @@
 {
-    "token": "",
+    "token": "Njc0MDM2MTQ2NjM2MDYyNzIx.XjxU-A.GjJx_2sDMzp9-zROuq3jruCkkPI",
     "prefix": "ct!",
     "activities": [
         {
@@ -40,5 +40,6 @@
         "mute": [],
         "kick": [],
         "ban": []
-    }
+    },
+    "debug": false
 }

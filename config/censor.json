@@ -9,10 +9,10 @@
     "message_char_limit": 0,
     "caps_limit_enabled": false,
     "caps_limit": 10,
-    "filter_domains": false,
-    "domain_blacklist": [],
+    "filter_domains": true,
+    "domain_blacklist": ["http://baddomain.com"],
     "domain_whitelist": [],
-    "profanity_filter": true,
+    "profanity_filter": false,
     "profanity_filter_ml": false,
     "notes": "THIS IS ONLY FOR NOTES, 'message_char_limit' if set to 0 then is not limited || domain shit does not work right now."
 }
