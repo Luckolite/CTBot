@@ -1,5 +1,8 @@
 import asyncio
 import os
+from typing import *
+from os import path
+import json
 
 import discord
 import psutil
@@ -188,6 +191,59 @@ class Core(commands.Cog):
 
             embeds[pos].set_footer(text=f'Page {pos + 1}/{len(embeds)}')
             await msg.edit(embed=embeds[pos])
+
+    @commands.command(name='enable', enabled=False)
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    @commands.has_permissions(administrator=True)
+    @commands.bot_has_permissions(embed_links=True)
+    async def enable(self, ctx, command, location: Union[discord.TextChannel, discord.CategoryChannel] = None):
+        """Enable or commands in a channel, or category"""
+        fp = './data/disabled_commands.json'
+        if not path.isfile(fp):
+            with open(fp, 'w') as f:
+                json.dump({}, f, ensure_ascii=False)
+        with open(fp, 'r') as f:
+            config = json.load(f)  # type: dict
+        guild_id = str(ctx.guild.id)
+        if guild_id not in config:
+            config[guild_id] = {
+                    "global": [],
+                    "channels": {},
+                    "categories": {}
+                }
+        conf = config[guild_id]
+        channel_id = str(ctx.channel.id)
+        if not location:
+            if command in conf['global']:
+                conf['global'].remove(command)
+                await ctx.send(f"Globally enabled {command}")
+            if channel_id in conf['channels']:
+                if command in conf['channels'][channel_id]:
+                    conf['channels'][channel_id].remove(command)
+                    await ctx.send(f"Enabled {command} in {ctx.channel.mention}")
+            if ctx.channel.category:
+                category_id = str(ctx.channel.category.id)
+                if category_id in conf['categories']:
+                    if command in conf['categories'][category_id]:
+                        conf['categories'][category_id].remove(category_id)
+                        await ctx.send(f"Enabled {command} in {ctx.channel.category}")
+        elif isinstance(location, discord.TextChannel):
+            channel_id = str(location.id)
+            if channel_id not in conf['channels']:
+                return await ctx.send("That channel has no disabled commands")
+            if command not in conf['channels'][channel_id]:
+                return await ctx.send(f"{command} isn't disabled in that channel")
+            conf['channels'][channel_id].remove(command)
+        elif isinstance(location, discord.CategoryChannel):
+            channel_id = str(location.id)
+            if channel_id not in conf['categories']:
+                return await ctx.send("That category has no disabled commands")
+            if command not in conf['categories'][channel_id]:
+                return await ctx.send(f"{command} isn't disabled in that category")
+            conf['categories'][channel_id].remove(command)
+        config[guild_id] = conf
+        with open(fp, 'w') as f:
+            json.dump(config, f, ensure_ascii=False)
 
 
 def setup(bot):
