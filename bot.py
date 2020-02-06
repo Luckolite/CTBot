@@ -12,17 +12,14 @@ from utils import checks
 
 class CTBot(commands.Bot):
     def __init__(self, **options):
-        if path.isfile('./data/coindb.json'):
-            with open('./data/coindb.json') as f:
+        if path.isfile('data/coindb.json'):
+            with open('data/coindb.json') as f:
                 self.coindb = json.load(f)
         else:
-            with open('./data/coindb.json', 'w') as f:
+            with open('data/coindb.json', 'w') as f:
                 json.dump({}, f, ensure_ascii=False)
 
-        if not path.isfile('./data/config.json'):
-            print('./data/config missing! Please, create it.')
-            exit()
-        with open('./data/config.json') as f:
+        with open('config/config.json') as f:
             self.config = json.load(f)
 
         super().__init__(self.config['prefix'], activity=discord.Game(name='Back Online'), **options)
@@ -30,7 +27,7 @@ class CTBot(commands.Bot):
         self.remove_command('help')
 
     def save_coindb(self):
-        with open('./data/coindb.json', 'w') as f:
+        with open('data/coindb.json', 'w') as f:
             json.dump(self.coindb, f, ensure_ascii=False)
 
     def run(self):

@@ -16,7 +16,7 @@ class Core(commands.Cog):
     @commands.command(description='Displays information about the bot.')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def info(self, ctx):
-        e = discord.Embed(color=utils.theme_color(ctx))
+        e = discord.Embed(color=utils.theme_color(ctx.bot))
         c = utils.bytes2human
         p = psutil.Process(os.getpid())
         perms = discord.Permissions()
@@ -37,7 +37,9 @@ class Core(commands.Cog):
         )
         e.add_field(
             name='◈ Credits',
-            value="\n".join([f"• [{self.bot.get_user(user_id)}](https://discordapp.com/channels/@me/{user_id})" for user_id in self.bot.config['devs'].values()])
+            value="\n".join(
+                [f"• [{self.bot.get_user(user_id)}](https://discordapp.com/channels/@me/{user_id})" for user_id in
+                 self.bot.config['devs'].values()])
         )
         e.add_field(
             name='◈ Links',
@@ -80,7 +82,7 @@ class Core(commands.Cog):
     async def suggest(self, ctx, *, suggestion):
         """Submits a suggestion to a dedicated channel."""
         channel = self.bot.get_channel(self.suggest_channel_id)
-        embed = discord.Embed(color=utils.theme_color(ctx))
+        embed = discord.Embed(color=utils.theme_color(ctx.bot))
         embed.set_author(name=str(ctx.author), icon_url=ctx.author.avatar_url)
         embed.add_field(name='Suggestion', value=suggestion)
         msg = await channel.send(embed=embed)
@@ -132,7 +134,7 @@ class Core(commands.Cog):
                     return await ctx.send(embed=cmd.usage)
             return await ctx.send("There's no help for that command")
 
-        default = discord.Embed(color=utils.theme_color(ctx))
+        default = discord.Embed(color=utils.theme_color(ctx.bot))
         default.set_author(name='Help Menu', icon_url=self.bot.user.avatar_url)
         default.set_thumbnail(url=ctx.guild.icon_url)
         value = '\n'.join([
@@ -142,7 +144,7 @@ class Core(commands.Cog):
 
         embeds = [default]
         for category, commands_ in index.items():
-            e = discord.Embed(color=utils.theme_color(ctx))
+            e = discord.Embed(color=utils.theme_color(ctx.bot))
             e.set_author(name=category, icon_url=self.bot.user.avatar_url)
             e.set_thumbnail(url=ctx.guild.icon_url)
             e.description = '\n'.join([

@@ -25,12 +25,12 @@ class Dev(commands.Cog):
     async def reload(self, ctx):
         await self.bot.reload()
         await ctx.send('Reloaded bot')
+
     @commands.check(checks.owner)
     @commands.command(description="Critical errors will not be good :(", hidden=True, name="stop-bot")
     async def _stop(self, ctx: commands.Context):
         await ctx.send("stopping the bot :(")
         os.system("pm2 stop ctbot")
-    
 
 
 def setup(bot):

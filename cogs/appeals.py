@@ -12,7 +12,7 @@ from utils import utils
 class Appeals(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.path = './data/appeal_blacklist.json'
+        self.path = './config/appeal_blacklist.json'
         self.blacklist = {
             # '1234': {
             #     'cooldown': -1,       # a timestamp, when able to submit appeals again
@@ -69,7 +69,7 @@ class Appeals(commands.Cog):
         except discord.errors.NotFound:
             return await ctx.send("You're not banned :D")
 
-        e = discord.Embed(color=utils.theme_color(ctx))
+        e = discord.Embed(color=utils.theme_color(ctx.bot))
         e.description = "Appeals need to contain why you are banned, and a reason " \
                         "for being unbanned. Lack of either, or abuse of this command results " \
                         "in not being able to use the command anymore!"

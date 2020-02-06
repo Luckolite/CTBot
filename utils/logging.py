@@ -1,35 +1,23 @@
 import json
-from os import path
 
 import discord
 
+from utils import utils
 
-def get_vars_a():
-    if not path.isfile('./data/logging.json'):
-        print('You need to set the censor config in ./data/ first')
-        exit()
-    with open('./data/config.json', 'r') as f:
-        botCFG = json.load(f)  # type: dict
-    with open('./data/censor.json', 'r') as f:
-        censorCFG = json.load(f)  # type: dict
-    with open('./data/logging.json', 'r') as f:
-        logCFG = json.load(f)  # type: dict
-    return logCFG, censorCFG, botCFG
+with open('config/logging.json') as f:
+    log_config = json.load(f)
 
 
-async def banned_words(self, msg: discord.Message):
-    embed = discord.Embed(colour=discord.Color(self.bot.config['theme']))
-    logCFG, censorCFG, botCFG = get_vars_a()
-    if logCFG["enabled"] == "False":
-        return
-    if logCFG["banned-word-log"] == "False":
-        return
-    if logCFG["log-channel"] == 0:
-        embed.title = "<a:siren:672086274194276372> Banned Word <a:siren:672086274194276372> - the sirens need to be in https://discord.gg/Qa2jnXP, just ping me there asking me to invite the bot.\n"
-        embed.description = f'> **Author**: {msg.author.mention} | id: {msg.author.id}\n' \
-                            f'> **Channel**: {msg.channel.mention} | id: {msg.channel.id}\n' \
-                            f'> **MSG ID**: {msg.id}\n' \
-                            f'\n' \
-                            f'> 🎴 Content 🎴\n' \
-                            f'> {msg.content}\n'
-        await self.bot.get_channel(logCFG["multi-log"][0][1]).send(embed=embed)
+async def banned_words(bot, msg: discord.Message):
+    if log_config["enabled"] and log_config["banned_word_log"] and log_config["log_channel"]:
+        await bot.get_channel(log_config["multi_log"][0][1]).send(embed=discord.Embed(
+            colour=discord.Color(utils.theme_color(bot)),
+            title="<a:siren:672086274194276372> Banned Word <a:siren:672086274194276372> - the sirens need to be in "
+                  "https://discord.gg/Qa2jnXP, just ping me there asking me to invite the bot.",
+            description=f'> **Author**: {msg.author.mention} | id: {msg.author.id}\n'
+                        f'> **Channel**: {msg.channel.mention} | id: {msg.channel.id}\n'
+                        f'> **MSG ID**: {msg.id}\n'
+                        f'\n'
+                        f'> 🎴 Content 🎴\n'
+                        f'> {msg.content}\n'
+        ))

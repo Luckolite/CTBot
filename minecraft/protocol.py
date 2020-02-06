@@ -1,6 +1,9 @@
 import json
 import struct
+import time
 from io import BytesIO
+
+
 # oh god no . . . wow, just use some mineflayer, I will happily provide help with it, this might take you a while
 
 class RequestPacket:
@@ -103,12 +106,23 @@ class ResponsePacket:
     @staticmethod
     def recv(socket):
         """Receives a Packet from stream, identifies it and returns a Packet of the appropriate type."""
+        print('Receiving packet')
         length = ResponsePacket.read_Var(socket.recv)
-        pos = socket.tell()
+        print(f'  Packet length: {length}')
         packet_id = ResponsePacket.read_Var(socket.recv)
+        print(f'  Packet ID: {packet_id}')
+        # length -= math.ceil(packet_id.bit_length() / 7)
+        time.sleep(5)
+        payload = b''
+        while len(payload) < length:
+            # payload += socket.recv(length - len(payload))
+            payload += socket.recv(1000000)
+        print(f'  Payload: {payload}')
+        if packet_id > length:
+            packet_id, payload = ResponsePacket.uncompress(length, packet_id, payload)
         if packet_id not in packet_types:
-            return ResponsePacket(socket), packet_id
-        return packet_types[state[0]][packet_id](BytesIO(socket.recv(length - socket.tell() + pos)))
+            return ResponsePacket(BytesIO(payload)), packet_id
+        return packet_types[state[0]][packet_id](BytesIO(payload))
 
     def read_boolean(self):
         """Reads a boolean from the packet."""
@@ -150,10 +164,12 @@ class ResponsePacket:
 
     def read_String(self):
         """Reads a String from the packet."""
+        print('  Reading String')
         length = self.read_VarInt()
-        value = ''
-        while len(value) < length:
-            value += self.payload.read(length).decode('utf8')
+        # print(f'    String length: {length}')
+        # value = self.payload.read(length).decode('utf8')
+        value = self.payload.read().decode('utf8')
+        print(f'    String value: {value}')
         return value
 
     @staticmethod
@@ -162,7 +178,7 @@ class ResponsePacket:
         value = 0
         while True:
             b = struct.unpack('B', read(1))[0]
-            value = value << 7 | (b & 0x7F)
+            value = (value << 7) | (b & 0x7F)
             if not b & 0x80:
                 return value
 
@@ -198,7 +214,7 @@ class HandshakePacket(RequestPacket):
         self.write_VarInt(340)
         self.write_String(255, address)  # Server Address
         self.write_unsigned_short(port)  # Server Port
-        self.write_VarInt(next_state)    # Next State
+        self.write_VarInt(next_state)  # Next State
 
 
 class StatusRequestPacket(RequestPacket):
