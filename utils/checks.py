@@ -1,5 +1,5 @@
 ids = {
-    'owner': {},  # EPFFORCE should be in the `dev` section.
+    'owner': {},
     'dev': {}
 }
 

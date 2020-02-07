@@ -1,4 +1,6 @@
+discord
 discord.py
 youtube_dl
 ffmpeg
 psutil
+profanity-check
