@@ -3,6 +3,8 @@
     "blocked_words": [],
     "word_filter_enabled": false,
     "word_filter_channel_exceptions_array_ids": [],
+    "wordfilter_exception_role_ids": [],
+    "wordfilter_exception_user_ids": [],
     "nickname_filter_enabled": false,
     "censored_nickname": "CENSORED",
     "warn_on_censor": false,
