@@ -19,7 +19,7 @@ class Core(commands.Cog):
     @commands.command(description='Displays information about the bot.')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def info(self, ctx):
-        e = discord.Embed(color=utils.theme_color(ctx.bot))
+        e = discord.Embed(color=utils.theme_color(ctx))
         c = utils.bytes2human
         p = psutil.Process(os.getpid())
         perms = discord.Permissions()
@@ -137,7 +137,7 @@ class Core(commands.Cog):
                     return await ctx.send(embed=cmd.usage)
             return await ctx.send("There's no help for that command")
 
-        default = discord.Embed(color=utils.theme_color(ctx.bot))
+        default = discord.Embed(color=utils.theme_color(ctx))
         default.set_author(name='Help Menu', icon_url=self.bot.user.avatar_url)
         default.set_thumbnail(url=ctx.guild.icon_url)
         value = '\n'.join([

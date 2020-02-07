@@ -65,7 +65,7 @@ class ErrorHandler(commands.Cog):
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-            e = discord.Embed(color=utils.theme_color(ctx.bot))
+            e = discord.Embed(color=utils.theme_color(ctx))
             e.title = 'Uh oh...There was an error!'
             e.description = f'{error}'
             await ctx.send(embed=e)
