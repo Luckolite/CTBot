@@ -22,7 +22,7 @@ class ErrorHandler(commands.Cog):
         e.description = args
         e.add_field(
             name='Keyword Exception Arguments',
-            value=str(json.loads(kwargs, indent=2)),
+            value=str(json.dumps(kwargs, indent=2)),
             inline=False
         )
         for text_group in [full_traceback[i:i + 1000] for i in range(0, len(full_traceback), 1000)]:

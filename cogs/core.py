@@ -1,8 +1,8 @@
 import asyncio
-import os
-from typing import *
-from os import path
 import json
+import os
+from os import path
+from typing import *
 
 import discord
 import psutil
@@ -202,15 +202,15 @@ class Core(commands.Cog):
         if not path.isfile(fp):
             with open(fp, 'w') as f:
                 json.dump({}, f, ensure_ascii=False)
-        with open(fp, 'r') as f:
+        with open(fp) as f:
             config = json.load(f)  # type: dict
         guild_id = str(ctx.guild.id)
         if guild_id not in config:
             config[guild_id] = {
-                    "global": [],
-                    "channels": {},
-                    "categories": {}
-                }
+                "global": [],
+                "channels": {},
+                "categories": {}
+            }
         conf = config[guild_id]
         channel_id = str(ctx.channel.id)
         if not location:
