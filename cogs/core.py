@@ -147,7 +147,7 @@ class Core(commands.Cog):
 
         embeds = [default]
         for category, commands_ in index.items():
-            e = discord.Embed(color=utils.theme_color(ctx.bot))
+            e = discord.Embed(color=utils.theme_color(ctx))
             e.set_author(name=category, icon_url=self.bot.user.avatar_url)
             e.set_thumbnail(url=ctx.guild.icon_url)
             e.description = '\n'.join([
