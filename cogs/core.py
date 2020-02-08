@@ -194,11 +194,11 @@ class Core(commands.Cog):
             if command in conf['global']:
                 conf['global'].remove(command)
                 await ctx.send(f"Globally enabled {command}")
-            if channel_id in conf['channels']:
+            elif channel_id in conf['channels']:
                 if command in conf['channels'][channel_id]:
                     conf['channels'][channel_id].remove(command)
                     await ctx.send(f"Enabled {command} in {ctx.channel.mention}")
-            if ctx.channel.category:
+            elif ctx.channel.category:
                 category_id = str(ctx.channel.category.id)
                 if category_id in conf['categories']:
                     if command in conf['categories'][category_id]:
@@ -221,6 +221,83 @@ class Core(commands.Cog):
         config[guild_id] = conf
         with open(fp, 'w') as f:
             json.dump(config, f, ensure_ascii=False)
+
+    @commands.command(name='disable', enabled=False)
+    @commands.cooldown(2, 5, commands.BucketType.user)
+    @commands.has_permissions(administrator=True)
+    @commands.bot_has_permissions(embed_links=True)
+    async def disable(self, ctx, command, location: Union[discord.TextChannel, discord.CategoryChannel] = None):
+        """Enable or commands in a channel, or category"""
+        fp = './data/disabled_commands.json'
+        if not path.isfile(fp):
+            with open(fp, 'w') as f:
+                json.dump({}, f, ensure_ascii=False)
+        with open(fp) as f:
+            config = json.load(f)  # type: dict
+        guild_id = str(ctx.guild.id)
+        if guild_id not in config:
+            config[guild_id] = {
+                "global": [],
+                "channels": {},
+                "categories": {}
+            }
+        conf = config[guild_id]
+        channel_id = str(ctx.channel.id)
+        if not location:
+            if channel_id not in conf['channels']:
+                conf['channels'][channel_id] = []
+            if command not in conf['global']:
+                conf['global'].append(command)
+                await ctx.send(f"Globally disabled {command}")
+            elif command not in conf['channels'][channel_id]:
+                 conf['channels'][channel_id].append(command)
+                 await ctx.send(f"Disabled {command} in {ctx.channel.mention}")
+            elif ctx.channel.category:
+                category_id = str(ctx.channel.category.id)
+                if category_id not in conf['categories']:
+                    conf['categories'][category_id] = []
+                if command not in conf['categories'][category_id]:
+                    conf['categories'][category_id].append(category_id)
+                    await ctx.send(f"Disabled {command} in {ctx.channel.category}")
+        elif isinstance(location, discord.TextChannel):
+            channel_id = str(location.id)
+            if channel_id not in conf['channels']:
+                conf['channels'][channel_id] = []
+            if command in conf['channels'][channel_id]:
+                return await ctx.send(f"{command} is already disabled in that channel")
+            conf['channels'][channel_id].append(command)
+        elif isinstance(location, discord.CategoryChannel):
+            channel_id = str(location.id)
+            if channel_id not in conf['categories']:
+                conf['categories'][channel_id] = []
+            if command in conf['categories'][channel_id]:
+                return await ctx.send(f"{command} is already disabled in that category")
+            conf['categories'][channel_id].append(command)
+        config[guild_id] = conf
+        with open(fp, 'w') as f:
+            json.dump(config, f, ensure_ascii=False)
+
+    # def enabled_check(): # example check for commands
+    #     async def predicate(ctx):
+    #         with open('./data/disabled_commands.json', 'r') as f:
+    #             config = json.load(f)  # type: dict
+    #         guild_id = str(ctx.guild.id)
+    #         if guild_id not in config:
+    #             return True
+    #         conf = config[guild_id]
+    #         cmd = ctx.command.name
+    #         if cmd in conf['global']:
+    #             return False
+    #         channel_id = str(ctx.channel.id)
+    #         if channel_id in conf['channels']:
+    #             if cmd in conf['channels'][channel_id]:
+    #                 return False
+    #         if ctx.channel.category:
+    #             channel_id = str(ctx.channel.category.id)
+    #             if channel_id in conf['categories']:
+    #                 if cmd in conf['categories'][channel_id]:
+    #                     return False
+    #         return True
 
 
 def setup(bot):
