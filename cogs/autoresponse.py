@@ -6,7 +6,7 @@ class AutoResponse(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    def on_message(self, message):
+    async def on_message(self, message):
         if not message.author.bot:
             words = message.content.split()
             if "furnace" in words:
