@@ -3,3 +3,4 @@ youtube_dl
 ffmpeg
 psutil
 profanity-check
+varint
