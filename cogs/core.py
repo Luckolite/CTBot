@@ -277,28 +277,6 @@ class Core(commands.Cog):
         with open(fp, 'w') as f:
             json.dump(config, f, ensure_ascii=False)
 
-    # def enabled_check(): # example check for commands
-    #     async def predicate(ctx):
-    #         with open('./data/disabled_commands.json', 'r') as f:
-    #             config = json.load(f)  # type: dict
-    #         guild_id = str(ctx.guild.id)
-    #         if guild_id not in config:
-    #             return True
-    #         conf = config[guild_id]
-    #         cmd = ctx.command.name
-    #         if cmd in conf['global']:
-    #             return False
-    #         channel_id = str(ctx.channel.id)
-    #         if channel_id in conf['channels']:
-    #             if cmd in conf['channels'][channel_id]:
-    #                 return False
-    #         if ctx.channel.category:
-    #             channel_id = str(ctx.channel.category.id)
-    #             if channel_id in conf['categories']:
-    #                 if cmd in conf['categories'][channel_id]:
-    #                     return False
-    #         return True
-
 
 def setup(bot):
     bot.add_cog(Core(bot))
