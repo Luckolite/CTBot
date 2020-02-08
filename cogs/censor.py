@@ -173,7 +173,7 @@ class Censor(commands.Cog):
             return
 
         if self.config["enabled"] and self.config["nickname_filter_enabled"]:
-            for word in after.nick.lower().split():
+            for word in str(after.nick).lower().split():
                 if word.lower() in self.blocked_words:
                     await after.edit(nick=self.config["censored_nickname"], reason="CENSORED BY CT BOT")
                     if self.config["warn_on_censor"]:
