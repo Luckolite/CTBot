@@ -9,6 +9,7 @@ class Coin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        """Randomly gives money to active members."""
         random_ct_int = randint(1, 250)
         if not message.author.bot and random_ct_int == 250:
             user_id = str(message.author.id)

@@ -16,6 +16,7 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_error(self, event, *args, **kwargs):
+        """Unexpected error handler."""
         full_traceback = str(sys.exc_info())
         e = discord.Embed(color=discord.Color.red())
         e.title = f"Error in {event}"
@@ -31,6 +32,7 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        """Command error handler."""
         if hasattr(ctx.command, 'on_error'):
             return
         ignored = (commands.CommandNotFound, commands.NoPrivateMessage, discord.errors.NotFound)

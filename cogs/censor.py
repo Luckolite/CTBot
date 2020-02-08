@@ -22,8 +22,8 @@ class Censor(commands.Cog):
         if self.config["enabled"] and author.id not in self.config["word_filter_exception_user_ids"] \
                 and author.id not in self.config["all_exempt_user_ids"]:
             for role in author.roles:
-                if role.id in self.config["word_filter_exception_role_ids"] or role.id in self.config[
-                    "all_exempt_roles"]:
+                if role.id in self.config["word_filter_exception_role_ids"]\
+                        or role.id in self.config["all_exempt_roles"]:
                     return False
             return True
         return False
@@ -103,7 +103,8 @@ class Censor(commands.Cog):
                         self.warn(after)
                     if self.config['debug']:
                         print(
-                            f'nick: {after.nick} has been blocked because it contains {word} {after.nick.lower().count(word.lower())} times')
+                            f'nick: {after.nick} has been blocked because it contains {word} '
+                            f'{after.nick.lower().count(word.lower())} times')
 
 
 def setup(bot):

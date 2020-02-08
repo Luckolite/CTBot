@@ -32,6 +32,7 @@ class ModCommands(commands.Cog):
     @has_required_permissions(manage_roles=True)
     @commands.bot_has_permissions(embed_links=True, manage_roles=True)
     async def mute(self, ctx, member: discord.Member):
+        """Mutes the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
         if member.top_role.position >= ctx.author.top_role.position:
             return await ctx.send("That member has a higher rank than you.")
@@ -49,6 +50,7 @@ class ModCommands(commands.Cog):
     @has_required_permissions(manage_roles=True)
     @commands.bot_has_permissions(embed_links=True, manage_roles=True)
     async def unmute(self, ctx, member: discord.Member):
+        """Unmutes the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
         if member.top_role.position >= ctx.author.top_role.position:
             return await ctx.send("That member has a higher rank than you.")
@@ -66,7 +68,7 @@ class ModCommands(commands.Cog):
     @has_required_permissions(kick_members=True)
     @commands.bot_has_permissions(embed_links=True, kick_members=True)
     async def kick(self, ctx, members: Greedy[discord.Member], *, reason=None):
-        """Kicks a user based on a mention"""
+        """Kicks the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
         if not reason:
             reason = f"Kicked by {ctx.author}"
@@ -91,6 +93,7 @@ class ModCommands(commands.Cog):
     @has_required_permissions(ban_members=True)  # i swapped out the ban one cuz this one has a perm check as well
     @commands.bot_has_permissions(embed_links=True, ban_members=True)
     async def ban(self, ctx, locator: str, *, reason: str = None):
+        """Bans the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
         member = await commands.MemberConverter().convert(ctx, locator)
         if not member:
@@ -123,6 +126,7 @@ class ModCommands(commands.Cog):
     @has_required_permissions(ban_members=True)
     @commands.bot_has_permissions(embed_links=True, ban_members=True)
     async def unban(self, ctx, user: str, reason='unspecified'):
+        """Unbans the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
         banlist = await ctx.guild.bans()
         if not banlist:

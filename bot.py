@@ -1,13 +1,12 @@
 import asyncio
 import json
-import traceback
 from os import path
+from random import choice
+import traceback
 
 import discord
 from discord.ext import commands
 from discord.ext.commands import ExtensionError
-
-from utils import checks
 
 
 class CTBot(commands.Bot):
@@ -27,6 +26,7 @@ class CTBot(commands.Bot):
         self.remove_command('help')
 
     def save_coindb(self):
+        """Saves the coin database."""
         with open('data/coindb.json', 'w') as f:
             json.dump(self.coindb, f, ensure_ascii=False)
 
@@ -34,6 +34,7 @@ class CTBot(commands.Bot):
         super().run(self.config['token'])
 
     async def reload(self):
+        """Reloads all extensions."""
         await self.change_presence(status=discord.Status.dnd, activity=discord.Game(name='Reloading'))
         for ext in self.extensions:
             print(f"Reloading {ext}...")
@@ -43,18 +44,19 @@ class CTBot(commands.Bot):
 
 bot = CTBot(case_insensitive=True)
 initial_extensions = [
-    'autoresponse', 'core', 'error_handler', 'lockdown', 'appeals', 'dev', 'coin', 'moderation'
+    'cogs.appeals', 'cogs.autoresponse', 'cogs.coin', 'cogs.core', 'cogs.dev', 'cogs.error_handler', 'cogs.lockdown',
+    'cogs.moderation', 'utils.checks'
 ]
 errors = []
 
 
 async def status_task():
-    activities = bot.config['activities']
+    """Randomly changes status every 15 seconds."""
     while True:
-        for activity in activities:
-            await asyncio.sleep(15)
-            await bot.change_presence(activity=discord.Activity(name=activity['name'],
-                                                                type=discord.ActivityType[activity['status']]))
+        await asyncio.sleep(15)
+        activity = choice(bot.config['activities'])
+        await bot.change_presence(activity=discord.Activity(name=activity['name'],
+                                                            type=discord.ActivityType[activity['status']]))
 
 
 @bot.event
@@ -71,13 +73,11 @@ async def on_ready():
 if __name__ == '__main__':
     for cog in initial_extensions:
         try:
-            bot.load_extension(f'cogs.{cog}')
+            bot.load_extension(cog)
             print(f'Loaded {cog}')
         except ExtensionError:
             errors.append([cog, str(traceback.format_exc())])
             print(f'Failed to load {cog}')
-
-    checks.setup(bot)
 
     print('Logging in')
     bot.run()

@@ -19,15 +19,16 @@ class Core(commands.Cog):
     @commands.command(description='Displays information about the bot.')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def info(self, ctx):
+        """Displays information about the bot."""
         e = discord.Embed(color=utils.theme_color(ctx))
         c = utils.bytes2human
         p = psutil.Process(os.getpid())
         perms = discord.Permissions()
-        perms.update(
-            embed_links=True, kick_members=True, ban_members=True, manage_roles=True
-        )
-        perms = perms.value
-        inv = f'https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions={perms}&scope=bot'
+        perms.update(embed_links=True, kick_members=True, ban_members=True, manage_roles=True)
+        inv = f'https://discordapp.com/oauth2/authorize' \
+              f'?client_id={self.bot.user.id}' \
+              f'&permissions={perms.value}' \
+              f'&scope=bot'
 
         e.set_author(name='CTBot Information', icon_url=self.bot.user.avatar_url)
         e.set_thumbnail(url=self.bot.server.icon_url)
@@ -40,16 +41,15 @@ class Core(commands.Cog):
         )
         e.add_field(
             name='◈ Credits',
-            value="\n".join(
-                [f"• [{self.bot.get_user(user_id)}](https://discordapp.com/channels/@me/{user_id})" for user_id in
-                 self.bot.config['devs'].values()])
+            value="\n".join([f"• [{self.bot.get_user(user_id)}](https://discordapp.com/channels/@me/{user_id})"
+                             for user_id in self.bot.config['devs'].values()])
         )
         e.add_field(
             name='◈ Links',
-            value=f"• [Crafting Table]({self.bot.config['server_inv']})"
-                  f"\n• [Github](https://github.com/FrequencyX4/CTBot)"
-                  f"\n• [Dev Discord]({self.bot.config['dev_server_inv']})"
-                  f"\n• [Invite Me]({inv})"
+            value=f"• [Crafting Table]({self.bot.config['server_inv']})\n"
+                  f"• [Github](https://github.com/FrequencyX4/CTBot)\n"
+                  f"• [Dev Discord]({self.bot.config['dev_server_inv']})\n"
+                  f"• [Invite Me]({inv})"
         )
         e.set_footer(
             text=f"CPU: {psutil.cpu_percent()}% | Ram: {c(p.memory_full_info().rss)} ({round(p.memory_percent())}%)",
@@ -57,33 +57,10 @@ class Core(commands.Cog):
         )
         await ctx.send(embed=e)
 
-        # e.add_field(
-        #     name='◈ Bot Memory',
-        #     value=f"**CPU:** {p.cpu_percent}% **Ram:** {c(p.memory_full_info().rss)} ({round(p.memory_percent())}%)",
-        # )
-        # e.add_field(
-        #     name='◈ Global Memory',
-        #     value=f"**CPU:** "
-        # )
-
-        # embed = discord.Embed(
-        #     title='Information',
-        #     description='Information about the server',
-        #     color=discord.Color.blue()
-        # )
-
-        # embed.set_footer(text='Information')
-        # embed.add_field(
-        #   name='Confirmed to contribute so far:',
-        #   value='Luck#1574, elongated muskrat#0001, ProgrammerPlays#8264, Boris NL#3982, Lach993#4250, korochun#3452'
-        # )
-        # embed.add_field(name='Going to contribute:', value='Tother#5201, Rogue#2754, Lefton#7913')
-        # await ctx.send(embed=embed)
-
     @commands.command(description='Submits a suggestion.')
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def suggest(self, ctx, *, suggestion):
-        """Submits a suggestion to a dedicated channel."""
+        """Submits a suggestion to the dedicated channel."""
         channel = self.bot.get_channel(self.suggest_channel_id)
         embed = discord.Embed(color=utils.theme_color(ctx.bot))
         embed.set_author(name=str(ctx.author), icon_url=ctx.author.avatar_url)

@@ -2,7 +2,8 @@ from discord import Color
 
 
 def bytes2human(n):
-    symbols = ('kb', 'mb', 'gb', 'tb', 'pb', 'E', 'Z', 'Y')
+    """Converts the number of bytes into a more convenient format."""
+    symbols = ('KB', 'MB', 'GB', 'TB', 'PT', 'EB', 'ZB', 'YB')
     prefix = {}
     for i, s in enumerate(symbols):
         prefix[s] = 1 << (i + 1) * 10
@@ -14,4 +15,5 @@ def bytes2human(n):
 
 
 def theme_color(ctx):
+    """Returns the theme color."""
     return Color(int(ctx.bot.config['theme'][1:], 16))
