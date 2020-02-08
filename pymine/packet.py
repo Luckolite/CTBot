@@ -1,3 +1,6 @@
+from types import VarInt
+
+
 class Packet:
     id = None
     contents = None
@@ -31,6 +34,7 @@ class Packet:
         for key, value in self.data.items():
             if value is None:
                 raise ValueError(f'{key} field is blank')
-            buf.append(value.pack())
+            if hasattr(value, 'pack'):
+                buf.append(value.pack())
         socket.send(VarInt(len(buf)).pack())
         socket.send(buf)
