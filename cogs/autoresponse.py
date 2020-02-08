@@ -14,11 +14,11 @@ class AutoResponse(commands.Cog):
                 "fit": "who dat",
                 "@everyone": "<:ping:623235635897171999>"
             }
-            
+
             for item in statements:
                 if item in words:
                     await message.channel.send(statements[item])
-            
+
 
 def setup(bot):
     bot.add_cog(AutoResponse(bot))

@@ -43,7 +43,7 @@ class CTBot(commands.Bot):
 
 bot = CTBot(case_insensitive=True)
 initial_extensions = [
-    'autoresponse', 'core', 'error_handler', 'lockdown', 'appeals', 'dev', 'coin', 'moderation', 'censor'
+    'autoresponse', 'core', 'error_handler', 'lockdown', 'appeals', 'dev', 'coin', 'moderation'
 ]
 errors = []
 
