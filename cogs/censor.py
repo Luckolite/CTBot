@@ -5,6 +5,11 @@ from discord.ext import commands
 from profanity_check import predict
 
 
+async def remove_message(message: discord.Message, reason: str):
+    await message.delete()
+    await message.channel.send(f'Your message was deleted, because it contains {reason}')
+
+
 class Censor(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -14,17 +19,14 @@ class Censor(commands.Cog):
             self.blocked_words = f.read().split()
 
     def should_run(self, author: discord.Member):
-        if self.config["enabled"] and author.id not in self.config["word_filter_exception_user_ids"]\
+        if self.config["enabled"] and author.id not in self.config["word_filter_exception_user_ids"] \
                 and author.id not in self.config["all_exempt_user_ids"]:
             for role in author.roles:
-                if role.id in self.config["word_filter_exception_role_ids"] or role.id in self.config["all_exempt_roles"]:
+                if role.id in self.config["word_filter_exception_role_ids"] or role.id in self.config[
+                    "all_exempt_roles"]:
                     return False
             return True
         return False
-
-    async def remove_message(self, message: discord.Message, reason: str):
-        await message.delete()
-        await message.channel.send(f'Your message was deleted, because it contains {reason}')
 
     def warn(self, member):
         raise NotImplementedError('Warns have not been implemented yet')
@@ -34,7 +36,7 @@ class Censor(commands.Cog):
     async def profanity_filter_ml(self, *args):
         message = args[-1]
         if self.should_run(message.author) and self.config["profanity_filter_ml"] and predict([message.content]) == [1]:
-            await self.remove_message(message, 'a banned word')
+            await remove_message(message, 'a banned word')
             if self.config["warn_on_censor"]:
                 self.warn(message.author)
 
@@ -45,7 +47,7 @@ class Censor(commands.Cog):
         if self.should_run(message.author) and self.config["profanity_filter"]:
             for word in message.content.split():
                 if word.lower() in self.blocked_words:
-                    await self.remove_message(message, 'a banned word')
+                    await remove_message(message, 'a banned word')
                     if self.config["warn_on_censor"]:
                         self.warn(message.author)
 
@@ -54,7 +56,7 @@ class Censor(commands.Cog):
     async def message_char_limit(self, *args):
         message = args[-1]
         if self.should_run(message.author) and 0 < self.config["message_char_limit"] <= len(message.content):
-            await self.remove_message(message, 'too many symbols')
+            await remove_message(message, 'too many symbols')
             if self.config["warn_on_censor"]:
                 self.warn(message.author)
 
@@ -68,7 +70,7 @@ class Censor(commands.Cog):
                 if i.isupper():
                     cap_count += 1
             if cap_count >= self.config["caps_limit"]:
-                await self.remove_message(message, 'TOO MANY CAPS')
+                await remove_message(message, 'TOO MANY CAPS')
                 if self.config["warn_on_censor"]:
                     self.warn(message.author)
 
@@ -83,7 +85,7 @@ class Censor(commands.Cog):
                         print(
                             f'Message: {message.content} has been blocked because it contains '
                             f'{word} {message.content.lower().count(word.lower())} time(s)')
-                    await self.remove_message(message, 'a banned URL')
+                    await remove_message(message, 'a banned URL')
             if len(self.config["domain_whitelist"]) > 0:
                 for word in message.content.split():
                     if word.lower() in self.config["domain_whitelist"]:
