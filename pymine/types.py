@@ -186,9 +186,11 @@ class VarInt(Type):
     @staticmethod
     def unpack(read):
         value = 0
+        i = 0
         while True:
             b = struct.unpack("B", read(1))[0]
-            value = value << 7 | b & 0x7F
+            value |= (b & 0x7F) << (i * 7)
+            i += 1
             if not b & 0x80:
                 if value & 0x80000000:
                     value -= 0x100000000

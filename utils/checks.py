@@ -16,7 +16,7 @@ def dev(ctx):
 
 def command_is_enabled():
     async def predicate(ctx):
-        with open("./data/disabled_commands.json", "r") as f:
+        with open("./data/disabled_commands.json") as f:
             config = json.load(f)  # type: dict
         guild_id = str(ctx.guild.id)
         if guild_id not in config:
