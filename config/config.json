@@ -1,5 +1,5 @@
 {
-    "token": "Njc0MDM2MTQ2NjM2MDYyNzIx.Xj5WTQ.GpuegQeYaQ2pyfiBIzY--JEGY4Q",
+    "token": "Njc2MDc0MDA5Mjg0MzEzMDkx.XkAZMQ.ymJGpdbIh_MOPsq_L7RyYKpPc6w",
     "prefix": "ct!",
     "activities": [
         {
@@ -13,6 +13,10 @@
         {
             "status": "playing",
             "name": "on 2B2T"
+        },
+        {
+            "status": "watching",
+            "name": "stuff explode"
         }
     ],
     "server": 614889263183560840,

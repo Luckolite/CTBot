@@ -1,4 +1,9 @@
 # CTBOT
+[![Discord](https://img.shields.io/discord/672129232146661377)](https://discord.gg/vJGBSnW)
+
+![language](https://img.shields.io/badge/language-python-blue)
+![python](https://img.shields.io/badge/python-3.7%20|%203.8%20|%203.9-blue)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Welcome to CTBot, the official bot of the Followers of the Crafting Table.
 

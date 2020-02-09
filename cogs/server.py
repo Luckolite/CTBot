@@ -12,12 +12,14 @@ class Server(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(description='Get various server statistics.', aliases=['server', 'ping'])
+    @commands.command(
+        description="Get various server statistics.", aliases=["server", "ping"]
+    )
     async def uptime(self, ctx):
         current_time = time.time()
         bot_uptime_difference = int(round(current_time - start_time))
         bot_text = str(datetime.timedelta(seconds=bot_uptime_difference))
-        with open('proc/uptime') as f:
+        with open("proc/uptime") as f:
             uptime_seconds = int(float(f.readline().split()[0]))
             uptime_string = str(timedelta(seconds=uptime_seconds))
         ping = ctx.bot.latency
