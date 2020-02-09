@@ -6,14 +6,16 @@ import time
 from pymine import packet, handshake, status
 
 
-def ping(address, port):
+def ping(address, port=25565):
     with socket.socket() as sock:
         sock.connect((address, port))
 
-        # Handshake to initialize connection
+        # Handshake to initiate connection
         handshake.HandshakePacket(
             protocol_version=340, server_address=address, server_port=port, next_state=1
         ).send(sock)
+
+        packet.state = 1
 
         # Request status
         status.StatusRequestPacket().send(sock)

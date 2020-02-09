@@ -11,9 +11,5 @@ class HandshakePacket(packet.Packet):
         "next_state": VarInt,
     }
 
-    def send(self, socket):
-        super().send(socket)
-        packet.state = int(self.next_state)
-
 
 __packets__ = {}
