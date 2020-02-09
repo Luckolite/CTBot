@@ -5,8 +5,8 @@ from os import path
 from typing import *
 
 import discord
-import psutil
 from discord.ext import commands
+import psutil
 
 from utils import checks, utils
 
@@ -241,7 +241,6 @@ class Core(commands.Cog):
             if command not in conf["categories"][channel_id]:
                 return await ctx.send(f"{command} isn't disabled in that category")
             conf["categories"][channel_id].remove(command)
-        config[guild_id] = conf
         with open(fp, "w") as f:
             json.dump(config, f, ensure_ascii=False)
 

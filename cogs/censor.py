@@ -110,7 +110,7 @@ class Censor(commands.Cog):
                             )
 
     @commands.Cog.listener("on_member_update")
-    async def nick_censor(self, before: discord.Member, after: discord.Member):
+    async def nick_censor(self, _: discord.Member, after: discord.Member):
         if self.should_run(after) and self.config["nickname_filter_enabled"]:
             for word in after.nick.lower().split():
                 if word.lower() in self.blocked_words:

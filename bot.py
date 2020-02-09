@@ -49,17 +49,6 @@ class CTBot(commands.Bot):
 
 
 bot = CTBot(case_insensitive=True)
-initial_extensions = [
-    "cogs.appeals",
-    "cogs.autoresponse",
-    "cogs.coin",
-    "cogs.core",
-    "cogs.dev",
-    "cogs.error_handler",
-    "cogs.lockdown",
-    "cogs.moderation",
-    "utils.checks",
-]
 errors = []
 
 
@@ -86,7 +75,18 @@ async def on_ready():
         await channel.send(f"**Error loading {cog}:**```{error}```")
 
 
-if __name__ == "__main__":
+def main():
+    initial_extensions = [
+        "cogs.appeals",
+        "cogs.autoresponse",
+        "cogs.coin",
+        "cogs.core",
+        "cogs.dev",
+        "cogs.error_handler",
+        "cogs.lockdown",
+        "cogs.moderation",
+        "utils.checks",
+    ]
     for cog in initial_extensions:
         try:
             bot.load_extension(cog)
@@ -97,3 +97,7 @@ if __name__ == "__main__":
 
     print("Logging in")
     bot.run()
+
+
+if __name__ == "__main__":
+    main()
