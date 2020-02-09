@@ -1,5 +1,5 @@
 # dev only stuff
-
+import json
 import os
 
 import discord
@@ -11,12 +11,14 @@ from utils import checks
 class Dev(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        with open("config/config.json") as f:
+            self.config = json.load(f)
 
     def cog_check(self, ctx):
         """Checks if the author can use a command from this cog."""
         return checks.dev(ctx)
 
-    @commands.command(description="Restarts the bot.", hidden=True)
+    @commands.command(description="Restarts the bot.", hidden=False)
     async def restart(self, ctx):
         """Restarts the bot."""
         await self.bot.change_presence(
@@ -25,18 +27,30 @@ class Dev(commands.Cog):
         os.system("pm2 restart ctbot")
         await ctx.send("Restarting.. check my status for updates")
 
-    @commands.command(description="Reloads cogs.", hidden=True)
+    @commands.command(description="Reloads cogs.", hidden=False)
     async def reload(self, ctx):
         """Reloads cogs."""
         await self.bot.reload()
         await ctx.send("Reloaded bot")
 
-    @commands.check(checks.owner)
-    @commands.command(description="Stops the bot.", hidden=True)
+    @commands.command(description="Stops the bot.", hidden=False)
     async def _stop(self, ctx: commands.Context):
         """Stops the bot."""
         await ctx.send("I'll be back 👍")
         os.system("pm2 stop ctbot")
+
+    @commands.command(name='pull', description="pulls commits!", hidden=False)
+    async def _pull(self, ctx: commands.Context):
+        """
+        :param ctx:
+        :return:
+        """
+        """Pulls from git"""
+        if self.config["dev-manage"]:
+            os.system("git pull")
+            os.system(f"pm2 restart {self.config['pm2-name']}")
+        else:
+            return await ctx.send("The bot is not under developer management. You may not run this command.")
 
 
 def setup(bot):
