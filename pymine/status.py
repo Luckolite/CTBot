@@ -9,26 +9,17 @@ class StatusRequestPacket(packet.Packet):
 
 class StatusResponsePacket(packet.Packet):
     id = 0
-    contents = {
-        'response': String
-    }
+    contents = {"response": String}
 
 
 class PingPacket(packet.Packet):
     id = 1
-    contents = {
-        'payload': Long
-    }
+    contents = {"payload": Long}
 
 
 class PongPacket(packet.Packet):
     id = 1
-    contents = {
-        'payload': Long
-    }
+    contents = {"payload": Long}
 
 
-__packets__ = {
-    0: StatusResponsePacket,
-    1: PongPacket
-}
+__packets__ = {0: StatusResponsePacket, 1: PongPacket}

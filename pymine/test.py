@@ -12,12 +12,12 @@ class Wrapper:
         self.sock = sock
 
     def send(self, data):
-        print(f'Sent data:     {data}')
+        print(f"Sent data:     {data}")
         self.sock.send(data)
 
     def recv(self, count):
         data = self.sock.recv(count)
-        print(f'Received data: {data}')
+        print(f"Received data: {data}")
         return data
 
 
@@ -26,7 +26,9 @@ with socket.socket() as s:
     # sock = Wrapper(s)
     sock = s
 
-    HandshakePacket(protocol_version=340, server_address="2b2t.org", server_port=25565, next_state=1).send(sock)
+    HandshakePacket(
+        protocol_version=340, server_address="2b2t.org", server_port=25565, next_state=1
+    ).send(sock)
     StatusRequestPacket().send(sock)
     status = Packet.recv(sock)
     pprint(json.loads(status.response))
