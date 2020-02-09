@@ -154,6 +154,15 @@ class ModCommands(commands.Cog):
                     await ctx.send("Unban failed")
         await ctx.send("User isn't banned")
 
+    @commands.command(description="Moves a member to the specified channel")
+    @commands.bot_has_permissions(embed_links=True, move_members=True)
+    @commands.has_permissions(move_members=True)
+    async def move(
+        self, ctx, member: discord.Member, channel: discord.VoiceChannel, reason=None
+    ):
+        await member.move_to(channel=channel, reason=reason)
+        await ctx.send(f"Moved {member} to {channel}")
+
 
 def setup(bot):
     bot.add_cog(ModCommands(bot))
