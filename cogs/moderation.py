@@ -9,13 +9,18 @@ def has_required_permissions(**kwargs):
     """Permission and role check."""
 
     async def predicate(ctx):
-        if all((perm, value) in list(ctx.author.guild_permissions) for perm, value in kwargs.items()):
+        if all(
+            (perm, value) in list(ctx.author.guild_permissions)
+            for perm, value in kwargs.items()
+        ):
             if kwargs:  # Make sure it's not empty because all() returns True if empty
                 return True
         name = ctx.command.name
-        if name.startswith('un'):
+        if name.startswith("un"):
             name = name[2:]
-        return any(role.id in ctx.bot.config['moderator'][name] for role in ctx.author.roles)
+        return any(
+            role.id in ctx.bot.config["moderator"][name] for role in ctx.author.roles
+        )
 
     return commands.check(predicate)
 
@@ -90,7 +95,9 @@ class ModCommands(commands.Cog):
     @commands.cooldown(5, 60, commands.BucketType.user)
     @commands.cooldown(10, 60, commands.BucketType.guild)
     @commands.guild_only()
-    @has_required_permissions(ban_members=True)  # i swapped out the ban one cuz this one has a perm check as well
+    @has_required_permissions(
+        ban_members=True
+    )  # i swapped out the ban one cuz this one has a perm check as well
     @commands.bot_has_permissions(embed_links=True, ban_members=True)
     async def ban(self, ctx, locator: str, *, reason: str = None):
         """Bans the specified member."""
@@ -104,13 +111,16 @@ class ModCommands(commands.Cog):
             if member.top_role.position >= ctx.author.top_role.position:
                 return await ctx.send("That member has a higher rank than you.")
         try:
-            inv = f'https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=0&scope=bot'
+            inv = f"https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=0&scope=bot"
             e = discord.Embed(color=utils.theme_color(ctx.bot))
             e.description = f"[in case you need my invite to DM me]({inv})."
-            await member.send("Seems you were banned in the crafting table..\n"
-                              "You can either use `ct!appeal your_appeal` to request an unban, "
-                              "or fill out a form at https://forms.gle/dCLv2QZq5LHdyTuL8. Do note "
-                              "that the command is more likely to get a response", embed=e)
+            await member.send(
+                "Seems you were banned in the crafting table..\n"
+                "You can either use `ct!appeal your_appeal` to request an unban, "
+                "or fill out a form at https://forms.gle/dCLv2QZq5LHdyTuL8. Do note "
+                "that the command is more likely to get a response",
+                embed=e,
+            )
         except discord.errors.Forbidden:
             pass
         await ctx.guild.ban(member, reason=reason)
@@ -125,16 +135,18 @@ class ModCommands(commands.Cog):
     @commands.guild_only()
     @has_required_permissions(ban_members=True)
     @commands.bot_has_permissions(embed_links=True, ban_members=True)
-    async def unban(self, ctx, user: str, reason='unspecified'):
+    async def unban(self, ctx, user: str, reason="unspecified"):
         """Unbans the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
         banlist = await ctx.guild.bans()
         if not banlist:
             return await ctx.send("Banlist is empty")
         for ban in banlist:
-            if str(ban[1]) == user.lstrip('@'):
+            if str(ban[1]) == user.lstrip("@"):
                 try:
-                    await ctx.guild.unban(ban[1], reason=f"Unbanned by {ctx.author}: {reason}")
+                    await ctx.guild.unban(
+                        ban[1], reason=f"Unbanned by {ctx.author}: {reason}"
+                    )
                     return await ctx.send(f"{user} was unbanned")
                 except discord.errors.Forbidden:
                     await ctx.send("Action forbidden")

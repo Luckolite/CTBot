@@ -8,8 +8,10 @@ from utils import checks
 
 def usage():
     e = discord.Embed()
-    e.description = '`ct!lockdown`\nMass updates channel overrides to deny everyone perms to send.\n' \
-                    '`ct!unlock`\nUndoes the actions of ct!lockdown.'
+    e.description = (
+        "`ct!lockdown`\nMass updates channel overrides to deny everyone perms to send.\n"
+        "`ct!unlock`\nUndoes the actions of ct!lockdown."
+    )
     return e
 
 
@@ -22,17 +24,21 @@ class Lockdown(commands.Cog):
         """Checks if the author can use commands from this cog in the server, where the command was sent."""
         # if ctx.guild.id != 1234:  # replace with crafting table id
         #     await ctx.send("This can only be used in the crafting table!")
-        if ctx.author.id not in checks.ids['owner']:
+        if ctx.author.id not in checks.ids["owner"]:
             await ctx.send("Only Elon can use this")
             return False
         return True
 
-    @commands.command(description="Mass updates channel overrides to deny everyone permissions to send messages.")
+    @commands.command(
+        description="Mass updates channel overrides to deny everyone permissions to send messages."
+    )
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.bot_has_permissions(administrator=True)
     async def lockdown(self, ctx):
         """Mass updates channel overrides to deny everyone permissions to send messages."""
-        await ctx.send(f"Locking down the server..\nEstimated time: {len(ctx.guild.text_channels)}s")
+        await ctx.send(
+            f"Locking down the server..\nEstimated time: {len(ctx.guild.text_channels)}s"
+        )
         for channel in ctx.guild.text_channels:
             self.overwrites[channel] = channel.overwrites
             new_overwrites = {}
@@ -51,7 +57,9 @@ class Lockdown(commands.Cog):
     @commands.bot_has_permissions(administrator=True)
     async def unlock(self, ctx):
         """Un-does the actions of ct!lockdown."""
-        await ctx.send(f"Unlocking the server..\nEstimated time: {len(ctx.guild.text_channels)}s")
+        await ctx.send(
+            f"Unlocking the server..\nEstimated time: {len(ctx.guild.text_channels)}s"
+        )
         for channel, overwrites in self.overwrites.items():
             await channel.edit(overwrites=overwrites)
         await ctx.send("Finished unlocking the server")

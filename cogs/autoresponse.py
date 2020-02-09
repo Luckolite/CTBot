@@ -13,7 +13,7 @@ class AutoResponse(commands.Cog):
             statements = {
                 "furnace": "crafting table is obviously the superior block",
                 "fit": "who dat",
-                "@everyone": "<:ping:623235635897171999>"
+                "@everyone": "<:ping:623235635897171999>",
             }
 
             for item in statements:

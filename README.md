@@ -1,4 +1,5 @@
 # CTBOT
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Welcome to CTBot, the official bot of the Followers of the Crafting Table.
 

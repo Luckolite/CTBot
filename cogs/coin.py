@@ -18,7 +18,9 @@ class Coin(commands.Cog):
                 self.bot.coindb[user_id] = 0
             self.bot.coindb[user_id] += 1
 
-            await message.channel.send(message.author.id + ", you just earned a crafting table!")
+            await message.channel.send(
+                message.author.id + ", you just earned a crafting table!"
+            )
             self.bot.save_coindb()
 
 
