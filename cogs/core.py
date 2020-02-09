@@ -8,7 +8,8 @@ import discord
 from discord.ext import commands
 import psutil
 
-from utils import checks, utils
+from utils import utils
+from utils.checks import checks
 
 
 class Core(commands.Cog):

@@ -26,7 +26,7 @@
     "login_error_channel": 674680687483420692,
     "server_inv": "https://discord.gg/2b2t",
     "dev_server_inv": "https://discord.gg/vJGBSnW",
-    "dev-manage": true,
+    "dev-manage": false,
     "pm2-name": "ctbot",
     "theme": "#00e1ff",
     "owners": {
