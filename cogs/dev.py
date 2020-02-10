@@ -39,14 +39,16 @@ class Dev(commands.Cog):
         await ctx.send("I'll be back 👍")
         os.system("pm2 stop ctbot")
 
-    @commands.command(name='pull', description="pulls commits!", hidden=False)
+    @commands.command(name="pull", description="pulls commits!", hidden=False)
     async def _pull(self, ctx: commands.Context):
         """Performs `git pull` and reloads."""
         if self.config["dev-manage"]:
             os.system("git pull")
             await self.bot.reload()
         else:
-            return await ctx.send("The bot is not under developer management. You may not run this command.")
+            return await ctx.send(
+                "The bot is not under developer management. You may not run this command."
+            )
 
 
 def setup(bot):

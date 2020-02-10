@@ -19,7 +19,9 @@ class Boolean(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, bool):
-            raise TypeError(f"Byte.pack() argument must be a bool, not '{type(value).__name__}'")
+            raise TypeError(
+                f"Byte.pack() argument must be a bool, not '{type(value).__name__}'"
+            )
         return struct.pack("b", value)
 
     @staticmethod
@@ -31,7 +33,9 @@ class Byte(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, int):
-            raise TypeError(f"Byte.pack() argument must be an int, not '{type(value).__name__}'")
+            raise TypeError(
+                f"Byte.pack() argument must be an int, not '{type(value).__name__}'"
+            )
         if not -0x80 <= value <= 0x7F:
             raise ValueError(f"Byte.pack() requires -128 <= number <= 127")
         return struct.pack("b", value)
@@ -45,7 +49,9 @@ class UnsignedByte(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, int):
-            raise TypeError(f"UnsignedByte.pack() argument must be an int, not '{type(value).__name__}'")
+            raise TypeError(
+                f"UnsignedByte.pack() argument must be an int, not '{type(value).__name__}'"
+            )
         if not 0 <= value <= 0xFF:
             raise ValueError(f"UnsignedByte.pack() requires 0 <= number <= 255")
         return struct.pack("B", value)
@@ -59,7 +65,9 @@ class Short(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, int):
-            raise TypeError(f"Short.pack() argument must be an int, not '{type(value).__name__}'")
+            raise TypeError(
+                f"Short.pack() argument must be an int, not '{type(value).__name__}'"
+            )
         if not -0x8000 <= value <= 0x7FFF:
             raise ValueError(f"Short.pack() requires -32768 <= number <= 32767")
         return struct.pack("h", value)
@@ -73,7 +81,9 @@ class UnsignedShort(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, int):
-            raise TypeError(f"UnsignedShort.pack() argument must be an int, not '{type(value).__name__}'")
+            raise TypeError(
+                f"UnsignedShort.pack() argument must be an int, not '{type(value).__name__}'"
+            )
         if not 0 <= value <= 0xFFFF:
             raise ValueError(f"UnsignedShort.pack() requires 0 <= number <= 65535")
         return struct.pack("H", value)
@@ -87,11 +97,11 @@ class Int(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, int):
-            raise TypeError(f"Int.pack() argument must be an int, not '{type(value).__name__}'")
-        if not -0x80000000 <= value <= 0x7FFFFFFF:
-            raise ValueError(
-                f"Int.pack() requires -2147483648 <= number <= 2147483647"
+            raise TypeError(
+                f"Int.pack() argument must be an int, not '{type(value).__name__}'"
             )
+        if not -0x80000000 <= value <= 0x7FFFFFFF:
+            raise ValueError(f"Int.pack() requires -2147483648 <= number <= 2147483647")
         return struct.pack("i", value)
 
     @staticmethod
@@ -103,7 +113,9 @@ class Long(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, int):
-            raise TypeError(f"Long.pack() argument must be an int, not '{type(value).__name__}'")
+            raise TypeError(
+                f"Long.pack() argument must be an int, not '{type(value).__name__}'"
+            )
         if not -0x8000000000000000 <= value <= 0x7FFFFFFFFFFFFFFF:
             raise ValueError(
                 f"Long.pack() requires -9223372036854775808 <= number <= 9223372036854775807"
@@ -119,7 +131,9 @@ class Float(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, float):
-            raise TypeError(f"Float.pack() argument must be a float, not '{type(value).__name__}'")
+            raise TypeError(
+                f"Float.pack() argument must be a float, not '{type(value).__name__}'"
+            )
         return struct.pack("f", value)
 
     @staticmethod
@@ -131,7 +145,9 @@ class Double(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, float):
-            raise TypeError(f"Double.pack() argument must be a float, not '{type(value).__name__}'")
+            raise TypeError(
+                f"Double.pack() argument must be a float, not '{type(value).__name__}'"
+            )
         return struct.pack("d", value)
 
     @staticmethod
@@ -143,7 +159,9 @@ class String(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, str):
-            raise TypeError(f"String.pack() argument must be a str, not '{type(value).__name__}'")
+            raise TypeError(
+                f"String.pack() argument must be a str, not '{type(value).__name__}'"
+            )
         data = bytes(value, "utf8")
         return VarInt.pack(len(data)) + data
 
@@ -161,7 +179,9 @@ class VarInt(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, int):
-            raise TypeError(f"VarInt.pack() argument must be an int, not '{type(value).__name__}'")
+            raise TypeError(
+                f"VarInt.pack() argument must be an int, not '{type(value).__name__}'"
+            )
         if not -0x80000000 <= value <= 0x7FFFFFFF:
             raise ValueError(
                 f"VarInt.pack() requires -2147483648 <= number <= 2147483647"
@@ -197,7 +217,9 @@ class VarLong(Type):
     @staticmethod
     def pack(value):
         if not isinstance(value, int):
-            raise TypeError(f"VarLong.pack() argument must be an int, not '{type(value).__name__}'")
+            raise TypeError(
+                f"VarLong.pack() argument must be an int, not '{type(value).__name__}'"
+            )
         if not -0x8000000000000000 <= value <= 0x7FFFFFFFFFFFFFFF:
             raise ValueError(
                 f"VarLong.pack() requires -9223372036854775808 <= number <= 9223372036854775807"
@@ -230,11 +252,11 @@ class VarLong(Type):
 class ByteArray(Type):
     @staticmethod
     def pack(values):
-        if not hasattr(values, '__iter__'):
+        if not hasattr(values, "__iter__"):
             raise TypeError(f"'{type(values).__name__}' object is not iterable")
-        return struct.pack(f'{len(values)}B', *values)
+        return struct.pack(f"{len(values)}B", *values)
 
     @staticmethod
     def unpack(read):
         size = VarInt.unpack(read)
-        return struct.unpack(f'{size}B', read(size))
+        return struct.unpack(f"{size}B", read(size))

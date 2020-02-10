@@ -27,7 +27,7 @@ class ErrorHandler(commands.Cog):
             inline=False,
         )
         for text_group in [
-            full_traceback[i: i + 1000] for i in range(0, len(full_traceback), 1000)
+            full_traceback[i : i + 1000] for i in range(0, len(full_traceback), 1000)
         ]:
             e.add_field(name="Traceback", value=text_group, inline=False)
         print(full_traceback)
