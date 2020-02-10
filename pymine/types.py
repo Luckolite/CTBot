@@ -234,7 +234,7 @@ class ByteArray(Type):
             raise TypeError(f"'{type(values).__name__}' object is not iterable")
         return struct.pack(f'{len(values)}B', *values)
 
-    # noinspection PyMethodOverriding
     @staticmethod
-    def unpack(size, read):
+    def unpack(read):
+        size = VarInt.unpack(read)
         return struct.unpack(f'{size}B', read(size))

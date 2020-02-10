@@ -3,7 +3,7 @@ import random
 import socket
 import time
 
-from pymine import packet, handshake, status
+from pymine.packets import packet, status, handshake
 
 
 def ping(address, port=25565):
