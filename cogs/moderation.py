@@ -112,7 +112,7 @@ class ModCommands(commands.Cog):
                 return await ctx.send("That member has a higher rank than you.")
         try:
             inv = f"https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&permissions=0&scope=bot"
-            e = discord.Embed(color=utils.theme_color(ctx.bot))
+            e = discord.Embed(color=utils.get_color(ctx.bot))
             e.description = f"[in case you need my invite to DM me]({inv})."
             await member.send(
                 "Seems you were banned in the crafting table..\n"

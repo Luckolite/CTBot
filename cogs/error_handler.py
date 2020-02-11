@@ -1,4 +1,3 @@
-import json
 import sys
 import traceback
 from time import time
@@ -15,22 +14,9 @@ class ErrorHandler(commands.Cog):
         self.cd = {}
 
     @commands.Cog.listener()
-    async def on_error(self, event, *args, **kwargs):
+    async def on_error(self, event):
         """Unexpected error handler."""
-        full_traceback = str(sys.exc_info())
-        e = discord.Embed(color=discord.Color.red())
-        e.title = f"Error in {event}"
-        e.description = args
-        e.add_field(
-            name="Keyword Exception Arguments",
-            value=str(json.dumps(kwargs, indent=2)),
-            inline=False,
-        )
-        for text_group in [
-            full_traceback[i: i + 1000] for i in range(0, len(full_traceback), 1000)
-        ]:
-            e.add_field(name="Traceback", value=text_group, inline=False)
-        print(full_traceback)
+        self.bot.log(str(event), str(sys.exc_info()), "error")
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -77,10 +63,11 @@ class ErrorHandler(commands.Cog):
             traceback.print_exception(
                 type(error), error, error.__traceback__, file=sys.stderr
             )
-            e = discord.Embed(color=utils.theme_color(ctx))
-            e.title = "Uh oh...There was an error!"
-            e.description = f"{error}"
-            await ctx.send(embed=e)
+            await ctx.send(embed=discord.Embed(
+                color=utils.get_color(ctx.bot, "error"),
+                title="Uh oh...There was an error!",
+                description=str(error)
+            ))
 
 
 def setup(bot):

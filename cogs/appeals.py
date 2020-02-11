@@ -16,8 +16,8 @@ class Appeals(commands.Cog):
         if path.isfile(self.path):
             with open(self.path) as f:
                 self.blacklist = json.load(f)
-        self.ct_id = bot.config["server"]
-        self.channel_id = bot.config["appeal_channel"]
+        self.ct_id = bot.config["ids"]["server"]
+        self.channel_id = bot.config["ids"]["appeal_channel"]
 
     def save_data(self):
         """Saves appeal blacklist to file"""
@@ -67,7 +67,7 @@ class Appeals(commands.Cog):
                 return await ctx.send("You're not banned :D")
 
             e = discord.Embed(
-                color=utils.theme_color(ctx.bot),
+                color=utils.get_color(ctx.bot),
                 description="Appeals need to contain why you are "
                             "banned, and a reason for being unbanned. "
                             "Lack of either, or abuse of this command "

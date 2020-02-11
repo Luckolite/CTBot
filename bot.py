@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 import json
 import traceback
 from os import path
@@ -7,6 +8,8 @@ from random import choice
 import discord
 from discord.ext import commands
 from discord.ext.commands import ExtensionError
+
+from utils import utils
 
 
 class CTBot(commands.Bot):
@@ -23,7 +26,6 @@ class CTBot(commands.Bot):
         self.remove_command("help")
 
     def load_config(self):
-        print("Loading configs")
         if path.isfile("data/coindb.json"):
             with open("data/coindb.json") as f:
                 self.coindb = json.load(f)
@@ -49,12 +51,34 @@ class CTBot(commands.Bot):
         )
         self.load_config()
         self.command_prefix = self.config["prefix"]
+        await self.log("Reload", "Reloaded config")
+        errors = []
         for ext in self.extensions:
-            print(f"Reloading {ext}...")
-            self.reload_extension(ext)
+            try:
+                self.reload_extension(ext)
+                print(f"Reloaded {ext}...")
+            except ExtensionError:
+                errors.append((ext, str(traceback.format_exc())))
+                print(f"Failed to reload {ext}")
+        for cog, error in errors:
+            await bot.log(f"Error reloading {cog}", f"```{error}```", "error")
+
         await self.change_presence(
             status=discord.Status.online, activity=discord.Game(name="Back Online")
         )
+
+    async def log(self, title, description, status="info"):
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{status.upper()}]: {description}")
+        e = discord.Embed(
+            color=utils.get_color(self, status),
+            title=title,
+            description=description[:1000]
+        )
+        for text_group in [
+            description[i: i + 1000] for i in range(1000, len(description), 1000)
+        ]:
+            e.add_field(name=".", value=text_group)
+        await self.get_channel(self.config["ids"]["log_channel"]).send(embed=e)
 
 
 bot = CTBot(case_insensitive=True)
@@ -75,13 +99,11 @@ async def status_task():
 
 @bot.event
 async def on_ready():
-    bot.server = bot.get_guild(bot.config["server"])
+    bot.server = bot.get_guild(bot.config["ids"]["server"])
     bot.loop.create_task(status_task())
-    print("Logged in as", bot.user, "with user id", bot.user.id)
-    channel = bot.get_channel(bot.config["login_error_channel"])
+    await bot.log(f"Login", f"Logged in as {bot.user} with user id {bot.user.id}")
     for cog, error in errors:
-        print(error)
-        await channel.send(f"**Error loading {cog}:**```{error}```")
+        await bot.log(f"Error loading {cog}", f"```{error}```", "error")
 
 
 def main():
@@ -96,13 +118,13 @@ def main():
         "cogs.moderation",
         "utils.checks",
     ]
-    for cog in initial_extensions:
+    for ext in initial_extensions:
         try:
-            bot.load_extension(cog)
-            print(f"Loaded {cog}")
+            bot.load_extension(ext)
+            print(f"Loaded {ext}")
         except ExtensionError:
-            errors.append([cog, str(traceback.format_exc())])
-            print(f"Failed to load {cog}")
+            errors.append((ext, str(traceback.format_exc())))
+            print(f"Failed to load {ext}")
 
     print("Logging in")
     bot.run()

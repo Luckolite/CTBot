@@ -18,7 +18,7 @@ class Dev(commands.Cog):
         """Checks if the author can use a command from this cog."""
         return checks.dev(ctx)
 
-    @commands.command(description="Restarts the bot.", hidden=False)
+    @commands.command(description="Restarts the bot.")
     async def restart(self, ctx):
         """Restarts the bot."""
         await self.bot.change_presence(
@@ -27,20 +27,20 @@ class Dev(commands.Cog):
         os.system("pm2 restart ctbot")
         await ctx.send("Restarting.. check my status for updates")
 
-    @commands.command(description="Reloads cogs.", hidden=False)
+    @commands.command(description="Reloads cogs.")
     async def reload(self, ctx):
         """Reloads cogs."""
         await self.bot.reload()
         await ctx.send("Reloaded bot")
 
-    @commands.command(description="Stops the bot.", hidden=False)
-    async def _stop(self, ctx: commands.Context):
+    @commands.command(description="Stops the bot.")
+    async def stop(self, ctx: commands.Context):
         """Stops the bot."""
         await ctx.send("I'll be back 👍")
         os.system("pm2 stop ctbot")
 
-    @commands.command(name="pull", description="pulls commits!", hidden=False)
-    async def _pull(self, ctx: commands.Context):
+    @commands.command(description="Performs git pull.")
+    async def pull(self, ctx: commands.Context):
         """Performs `git pull` and reloads."""
         if self.config["dev-manage"]:
             os.system("git pull")
