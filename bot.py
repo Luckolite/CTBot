@@ -16,6 +16,8 @@ class CTBot(commands.Bot):
     def __init__(self, **options):
         self.config = None
         self.coindb = None
+        self.ldb = None
+        self.xpdb = None
 
         self.load_config()
 
@@ -36,9 +38,31 @@ class CTBot(commands.Bot):
         with open("config/config.json") as f:
             self.config = json.load(f)
 
+        if path.isfile("data/ldb.json"):
+            with open("data/ldb.json") as f:
+                self.ldb = json.load(f)
+        else:
+            with open("data/ldb.json", "w") as f:
+                json.dump({}, f, ensure_ascii=False)
+
+        if path.isfile("data/xpdb.json"):
+            with open("data/xpdb.json") as f:
+                self.xpdb = json.load(f)
+        else:
+            with open("data/xpdb.json", "w") as f:
+                json.dump({}, f, ensure_ascii=False)
+
     def save_coindb(self):
         """Saves the coin database."""
         with open("data/coindb.json", "w") as f:
+            json.dump(self.coindb, f, ensure_ascii=False)
+
+    def save_ldb(self):
+        with open("data/ldb.json", "w") as f:
+            json.dump(self.coindb, f, ensure_ascii=False)
+
+    def save_xpdb(self):
+        with open("data/ldb.json", "w") as f:
             json.dump(self.coindb, f, ensure_ascii=False)
 
     def run(self):
@@ -117,6 +141,7 @@ def main():
         "cogs.lockdown",
         "cogs.moderation",
         "utils.checks",
+        "cogs.levels",
     ]
     for ext in initial_extensions:
         try:
