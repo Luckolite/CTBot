@@ -1,8 +1,8 @@
 import asyncio
 import json
+import traceback
 from os import path
 from random import choice
-import traceback
 
 import discord
 from discord.ext import commands
@@ -11,6 +11,19 @@ from discord.ext.commands import ExtensionError
 
 class CTBot(commands.Bot):
     def __init__(self, **options):
+        self.config = None
+        self.coindb = None
+
+        self.load_config()
+
+        super().__init__(
+            self.config["prefix"], activity=discord.Game(name="Back Online"), **options
+        )
+
+        self.remove_command("help")
+
+    def load_config(self):
+        print("Loading configs")
         if path.isfile("data/coindb.json"):
             with open("data/coindb.json") as f:
                 self.coindb = json.load(f)
@@ -20,12 +33,6 @@ class CTBot(commands.Bot):
 
         with open("config/config.json") as f:
             self.config = json.load(f)
-
-        super().__init__(
-            self.config["prefix"], activity=discord.Game(name="Back Online"), **options
-        )
-
-        self.remove_command("help")
 
     def save_coindb(self):
         """Saves the coin database."""
@@ -40,6 +47,8 @@ class CTBot(commands.Bot):
         await self.change_presence(
             status=discord.Status.dnd, activity=discord.Game(name="Reloading")
         )
+        self.load_config()
+        self.command_prefix = self.config["prefix"]
         for ext in self.extensions:
             print(f"Reloading {ext}...")
             self.reload_extension(ext)

@@ -3,7 +3,7 @@
 import discord
 from discord.ext import commands
 
-from utils.checks import checks
+from utils import checks
 
 
 def usage():
@@ -24,7 +24,7 @@ class Lockdown(commands.Cog):
         """Checks if the author can use commands from this cog in the server, where the command was sent."""
         # if ctx.guild.id != 1234:  # replace with crafting table id
         #     await ctx.send("This can only be used in the crafting table!")
-        if ctx.author.id not in checks.ids["owner"]:
+        if not checks.owner(ctx):
             await ctx.send("Only Elon can use this")
             return False
         return True

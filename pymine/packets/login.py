@@ -1,5 +1,5 @@
-from pymine.packets import packet
 from pymine import types
+from pymine.packets import packet
 
 
 class LoginStartPacket(packet.Packet):

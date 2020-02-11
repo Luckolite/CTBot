@@ -5,11 +5,10 @@ from os import path
 from typing import *
 
 import discord
-from discord.ext import commands
 import psutil
+from discord.ext import commands
 
-from utils import utils
-from utils.checks import checks
+from utils import checks, utils
 
 
 class Core(commands.Cog):
@@ -43,7 +42,7 @@ class Core(commands.Cog):
         e.add_field(
             name="◈ Github",
             value="> If you wish to report bugs, suggest changes or contribute to the development "
-            "[visit the repo](https://github.com/FrequencyX4/CTBot)",
+                  "[visit the repo](https://github.com/FrequencyX4/CTBot)",
             inline=False,
         )
         e.add_field(
@@ -58,9 +57,9 @@ class Core(commands.Cog):
         e.add_field(
             name="◈ Links",
             value=f"• [Crafting Table]({self.bot.config['server_inv']})\n"
-            f"• [Github](https://github.com/FrequencyX4/CTBot)\n"
-            f"• [Dev Discord]({self.bot.config['dev_server_inv']})\n"
-            f"• [Invite Me]({inv})",
+                  f"• [Github](https://github.com/FrequencyX4/CTBot)\n"
+                  f"• [Dev Discord]({self.bot.config['dev_server_inv']})\n"
+                  f"• [Invite Me]({inv})",
         )
         e.set_footer(
             text=f"CPU: {psutil.cpu_percent()}% | Ram: {c(p.memory_full_info().rss)} ({round(p.memory_percent())}%)",
@@ -159,9 +158,9 @@ class Core(commands.Cog):
 
             def pred(react, usr):
                 return (
-                    react.message.id == msg.id
-                    and usr == ctx.author
-                    and str(react.emoji) in emojis
+                        react.message.id == msg.id
+                        and usr == ctx.author
+                        and str(react.emoji) in emojis
                 )
 
             try:
@@ -197,10 +196,10 @@ class Core(commands.Cog):
     @commands.has_permissions(administrator=True)
     @commands.bot_has_permissions(embed_links=True)
     async def enable(
-        self,
-        ctx,
-        command,
-        location: Union[discord.TextChannel, discord.CategoryChannel] = None,
+            self,
+            ctx,
+            command,
+            location: Union[discord.TextChannel, discord.CategoryChannel] = None,
     ):
         """Enable or commands in a channel, or category"""
         fp = "./data/disabled_commands.json"
@@ -250,10 +249,10 @@ class Core(commands.Cog):
     @commands.has_permissions(administrator=True)
     @commands.bot_has_permissions(embed_links=True)
     async def disable(
-        self,
-        ctx,
-        command,
-        location: Union[discord.TextChannel, discord.CategoryChannel] = None,
+            self,
+            ctx,
+            command,
+            location: Union[discord.TextChannel, discord.CategoryChannel] = None,
     ):
         """Enable or commands in a channel, or category"""
         fp = "./data/disabled_commands.json"
