@@ -7,20 +7,18 @@
 
 Welcome to CTBot, the official bot of the Followers of the Crafting Table.
 
-Feel free to open a pull request and add anything you like! 
-Join the dev discord to be added as an instant-push contributor.
+Feel free to open a pull request and add anything you like! Join the dev discord to be added as an instant-push contributor.
 
 ## Getting Started
 
-### Compatibility
-Python 3.7 or higher due to f-strings & discord.py requirements.
+You'll need Python 3.6 or higher to run the bot due to f-strings & discord.py requirements.
 
 ### Installation
-> Clone the Project
+1. Clone this repository.
 ```
-git clone https://github.com/FrequencyX4/CTBot.git
+git clone https://github.com/FrequencyX4/CTBot
 ```
-> Prerequisites
+2. Install the dependencies.
 ```py
 pip install -r requirements.txt
 ```
@@ -29,39 +27,38 @@ pip install -r requirements.txt
 python bot.py
 ```
 
-Make sure you are using the appropriate python version! Many OSes have the `python` command run Python 2 so make sure that you are running in python3 and installing with pip3.
+> Make sure you are using the appropriate version of Python! If the `python` command runs Python 2 on your OS, you should use `python3` and `pip3` instead.
+>
+> If you're experiencing a `CERTIFICATE_VERIFY_FAILED` error on macOS, you will have to [install certificates](https://stackoverflow.com/questions/40684543/how-to-make-python-use-ca-certificates-from-mac-os-truststore).
 
 ## License
-This project is licensed under the GNU Lesser General Public License  
-Check [LICENSE](https://github.com/FrequencyX4/CTBot/blob/master/LICENSE)
-for more details.
+This project is licensed under the GNU Lesser General Public License (except for pyMine, TODO move to another repo). Check [LICENSE](https://github.com/FrequencyX4/CTBot/blob/master/LICENSE) for more details.
 
 
-## Dev Credits
-- Luck#1574
-- Boris NL#3982
-- ProgrammerPlays#8264
-- Lach993#4250
-- korochun#3452
-- galfar#9119
-- EPFFORCE#1337
+## Contributors
+- @FrequencyX4 (Luck#1574)
+- @borisnliscool (Boris NL#3982)
+- @ProgrammerPlays (ProgrammerPlays#8264)
+- @Lach993 (Lach993#4250)
+- @korochun (korochun#3452)
+- @legendary-galfar (galfar#9119)
+- @mouncg (EPFFORCE#1337)
+- @MinerChAI (Mr_ChAI#1824)
 
 
 ## What are the Followers of the Crafting Table?
-The Followers of the Crafting Table are a semi-religious group created on 2b2t 
-in January 2020. We make builds with/of crafting tables like the Crafting Table 
-Valley or the super-sized crafting tables that are now common close to spawn. 
+The Followers of the Crafting Table are a semi-religious group created on 2b2t in January 2020. We make builds with/of crafting tables like the Crafting Table Valley or the super-sized crafting tables that are now common close to spawn. 
 
 ## How can I set up a development mirror?
 Setting up a development mirror greatly helps us in case our main VPS goes down, and also allows us to test new features.
-> Join the Discord
+1. Join the Discord.
 
-At the top of this README file there is a link to join the dev Discord. You must join it to have your mirror recognized.
+At the top of this file there is a link to join the dev Discord (the "chat" shield). You must join it to have your mirror recognized.
 
-> Install onto a 24/7 server
+2. Install and run 24/7.
 
-Following the installation instructions, run the bot on a server going 24/7. You can just leave a computer, RPi, or Arduino on long-term to do this.
+Following the installation instructions, run the bot and keep it up 24/7. You can just leave a computer, RPi, or Arduino on long-term to do this.
 
-> Ask the devs to recognize the mirror
+3. Ask the devs to recognize the mirror.
 
 On approval of your mirror, the devs will add it to the development Discord for testing.
