@@ -1,7 +1,5 @@
 import asyncio
-import json
 import os
-from os import path
 from typing import *
 
 import discord
@@ -14,7 +12,6 @@ from utils import checks, utils
 class Core(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.suggest_channel_id = bot.config["ids"]["suggestion_channel"]
 
     @commands.command(description="Displays information about the bot.")
     @commands.cooldown(2, 5, commands.BucketType.user)
@@ -35,14 +32,14 @@ class Core(commands.Cog):
         )
 
         e.set_author(name="CTBot Information", icon_url=self.bot.user.avatar_url)
-        e.set_thumbnail(url=self.bot.server.icon_url)
+        e.set_thumbnail(url=self.bot.config["thumbnail_url"])
         e.description = (
             f"A handy bot that's dedicated its code to the crafting table religion"
         )
         e.add_field(
             name="◈ Github",
             value="> If you wish to report bugs, suggest changes or contribute to the development "
-            "[visit the repo](https://github.com/FrequencyX4/CTBot)",
+                  "[visit the repo](https://github.com/FrequencyX4/CTBot)",
             inline=False,
         )
         e.add_field(
@@ -57,9 +54,9 @@ class Core(commands.Cog):
         e.add_field(
             name="◈ Links",
             value=f"• [Crafting Table]({self.bot.config['server_inv']})\n"
-            f"• [Github](https://github.com/FrequencyX4/CTBot)\n"
-            f"• [Dev Discord]({self.bot.config['dev_server_inv']})\n"
-            f"• [Invite Me]({inv})",
+                  f"• [Github](https://github.com/FrequencyX4/CTBot)\n"
+                  f"• [Dev Discord]({self.bot.config['dev_server_inv']})\n"
+                  f"• [Invite Me]({inv})",
         )
         e.set_footer(
             text=f"CPU: {psutil.cpu_percent()}% | Ram: {c(p.memory_full_info().rss)} ({round(p.memory_percent())}%)",
@@ -71,7 +68,7 @@ class Core(commands.Cog):
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def suggest(self, ctx, *, suggestion):
         """Submits a suggestion to the dedicated channel."""
-        channel = self.bot.get_channel(self.suggest_channel_id)
+        channel = self.bot.get_channel(self.bot.config["ids"]["suggestion_channel"])
         embed = discord.Embed(color=utils.get_color(ctx.bot))
         embed.set_author(name=str(ctx.author), icon_url=ctx.author.avatar_url)
         embed.add_field(name="Suggestion", value=suggestion)
@@ -87,7 +84,7 @@ class Core(commands.Cog):
     @commands.cooldown(2, 5, commands.BucketType.user)
     async def edit(self, ctx, msg_id: int, *, new_suggestion):
         """Edits an existing suggestion."""
-        channel = self.bot.get_channel(self.suggest_channel_id)
+        channel = self.bot.get_channel(self.bot.config["ids"]["suggestion_channel"])
         try:
             msg = await channel.fetch_message(msg_id)
         except discord.errors.NotFound:
@@ -128,10 +125,10 @@ class Core(commands.Cog):
 
         default = discord.Embed(color=utils.get_color(ctx.bot))
         default.set_author(name="Help Menu", icon_url=self.bot.user.avatar_url)
-        default.set_thumbnail(url=ctx.guild.icon_url)
+        default.set_thumbnail(url=self.bot.config["thumbnail_url"])
         value = "\n".join(
             [
-                f"• {category} - {len(commands_)} commands"
+                f"• `{category}` - {len(commands_)} commands"
                 for category, commands_ in index.items()
             ]
         )
@@ -143,7 +140,7 @@ class Core(commands.Cog):
             e.set_author(name=category, icon_url=self.bot.user.avatar_url)
             e.set_thumbnail(url=ctx.guild.icon_url)
             e.description = "\n".join(
-                [f"\n• {cmd} - `{desc}`" for cmd, desc in commands_.items()]
+                [f"\n• `{cmd}` - {desc}" for cmd, desc in commands_.items()]
             )
             embeds.append(e)
 
@@ -158,9 +155,9 @@ class Core(commands.Cog):
 
             def pred(react, usr):
                 return (
-                    react.message.id == msg.id
-                    and usr == ctx.author
-                    and str(react.emoji) in emojis
+                        react.message.id == msg.id
+                        and usr == ctx.author
+                        and str(react.emoji) in emojis
                 )
 
             try:
@@ -196,22 +193,19 @@ class Core(commands.Cog):
     @commands.has_permissions(administrator=True)
     @commands.bot_has_permissions(embed_links=True)
     async def enable(
-        self,
-        ctx,
-        command,
-        location: Union[discord.TextChannel, discord.CategoryChannel] = None,
+            self,
+            ctx,
+            command,
+            location: Union[discord.TextChannel, discord.CategoryChannel] = None,
     ):
         """Enable or commands in a channel, or category"""
-        fp = "./data/disabled_commands.json"
-        if not path.isfile(fp):
-            with open(fp, "w") as f:
-                json.dump({}, f, ensure_ascii=False)
-        with open(fp) as f:
-            config = json.load(f)  # type: dict
-        guild_id = str(ctx.guild.id)
-        if guild_id not in config:
-            config[guild_id] = {"global": [], "channels": {}, "categories": {}}
-        conf = config[guild_id]
+        if str(ctx.guild.id) not in self.bot.core_commands:
+            self.bot.core_commands[str(ctx.guild.id)] = {
+                "global": [],
+                "channels": {},
+                "categories": {},
+            }
+        conf = self.bot.core_commands[str(ctx.guild.id)]
         channel_id = str(ctx.channel.id)
         if not location:
             if command in conf["global"]:
@@ -241,39 +235,34 @@ class Core(commands.Cog):
             if command not in conf["categories"][channel_id]:
                 return await ctx.send(f"{command} isn't disabled in that category")
             conf["categories"][channel_id].remove(command)
-        with open(fp, "w") as f:
-            json.dump(config, f, ensure_ascii=False)
+        self.bot.save()
 
     @commands.command(name="disable", enabled=False)
     @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(administrator=True)
     @commands.bot_has_permissions(embed_links=True)
     async def disable(
-        self,
-        ctx,
-        command,
-        location: Union[discord.TextChannel, discord.CategoryChannel] = None,
+            self,
+            ctx,
+            command,
+            location: Union[discord.TextChannel, discord.CategoryChannel] = None,
     ):
         """Enable or commands in a channel, or category"""
-        fp = "./data/disabled_commands.json"
-        if not path.isfile(fp):
-            with open(fp, "w") as f:
-                json.dump({}, f, ensure_ascii=False)
-        with open(fp) as f:
-            config = json.load(f)  # type: dict
-        guild_id = str(ctx.guild.id)
-        if guild_id not in config:
-            config[guild_id] = {"global": [], "channels": {}, "categories": {}}
-        conf = config[guild_id]
-        channel_id = str(ctx.channel.id)
+        if str(ctx.guild.id) not in self.bot.core_commands:
+            self.bot.core_commands[str(ctx.guild.id)] = {
+                "global": [],
+                "channels": {},
+                "categories": {},
+            }
+        conf = self.bot.core_commands[str(ctx.guild.id)]
         if not location:
-            if channel_id not in conf["channels"]:
-                conf["channels"][channel_id] = []
+            if str(ctx.channel.id) not in conf["channels"]:
+                conf["channels"][str(ctx.channel.id)] = []
             if command not in conf["global"]:
                 conf["global"].append(command)
                 await ctx.send(f"Globally disabled {command}")
-            elif command not in conf["channels"][channel_id]:
-                conf["channels"][channel_id].append(command)
+            elif command not in conf["channels"][str(ctx.channel.id)]:
+                conf["channels"][str(ctx.channel.id)].append(command)
                 await ctx.send(f"Disabled {command} in {ctx.channel.mention}")
             elif ctx.channel.category:
                 category_id = str(ctx.channel.category.id)
@@ -283,22 +272,18 @@ class Core(commands.Cog):
                     conf["categories"][category_id].append(category_id)
                     await ctx.send(f"Disabled {command} in {ctx.channel.category}")
         elif isinstance(location, discord.TextChannel):
-            channel_id = str(location.id)
-            if channel_id not in conf["channels"]:
-                conf["channels"][channel_id] = []
-            if command in conf["channels"][channel_id]:
+            if str(location.id) not in conf["channels"]:
+                conf["channels"][str(location.id)] = []
+            if command in conf["channels"][str(location.id)]:
                 return await ctx.send(f"{command} is already disabled in that channel")
-            conf["channels"][channel_id].append(command)
+            conf["channels"][str(location.id)].append(command)
         elif isinstance(location, discord.CategoryChannel):
-            channel_id = str(location.id)
-            if channel_id not in conf["categories"]:
-                conf["categories"][channel_id] = []
-            if command in conf["categories"][channel_id]:
+            if str(location.id) not in conf["categories"]:
+                conf["categories"][str(location.id)] = []
+            if command in conf["categories"][str(location.id)]:
                 return await ctx.send(f"{command} is already disabled in that category")
-            conf["categories"][channel_id].append(command)
-        config[guild_id] = conf
-        with open(fp, "w") as f:
-            json.dump(config, f, ensure_ascii=False)
+            conf["categories"][str(location.id)].append(command)
+        self.bot.save()
 
 
 def setup(bot):

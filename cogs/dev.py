@@ -1,5 +1,4 @@
 # dev only stuff
-import json
 import os
 
 import discord
@@ -11,8 +10,6 @@ from utils import checks
 class Dev(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        with open("config/config.json") as f:
-            self.config = json.load(f)
 
     def cog_check(self, ctx):
         """Checks if the author can use a command from this cog."""
@@ -42,7 +39,7 @@ class Dev(commands.Cog):
     @commands.command(description="Performs git pull.")
     async def pull(self, ctx: commands.Context):
         """Performs `git pull` and reloads."""
-        if self.config["dev-manage"]:
+        if self.bot.config["dev-manage"]:
             os.system("git pull")
             await self.bot.reload()
         else:

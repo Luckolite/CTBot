@@ -10,8 +10,8 @@ def has_required_permissions(**kwargs):
 
     async def predicate(ctx):
         if all(
-            (perm, value) in list(ctx.author.guild_permissions)
-            for perm, value in kwargs.items()
+                (perm, value) in list(ctx.author.guild_permissions)
+                for perm, value in kwargs.items()
         ):
             if kwargs:  # Make sure it's not empty because all() returns True if empty
                 return True
@@ -157,8 +157,10 @@ class ModCommands(commands.Cog):
     @commands.command(description="Moves a member to the specified channel")
     @commands.bot_has_guild_permissions(embed_links=True, move_members=True)
     @commands.has_guild_permissions(move_members=True)
-    async def move(self, ctx, member: discord.Member, *, channel: discord.VoiceChannel):
-        await member.move_to(channel=channel)
+    async def move(
+            self, ctx, member: discord.Member, channel: discord.VoiceChannel, reason=None
+    ):
+        await member.move_to(channel=channel, reason=reason)
         await ctx.send(f"Moved {member} to {channel}")
 
 

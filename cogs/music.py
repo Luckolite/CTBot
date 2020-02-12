@@ -45,12 +45,12 @@ class YTDLSource(discord.PCMVolumeTransformer):
     ytdl = youtube_dl.YoutubeDL(YTDL_OPTIONS)
 
     def __init__(
-        self,
-        ctx: commands.Context,
-        source: discord.FFmpegPCMAudio,
-        *,
-        data: dict,
-        volume: float = 0.5
+            self,
+            ctx: commands.Context,
+            source: discord.FFmpegPCMAudio,
+            *,
+            data: dict,
+            volume: float = 0.5
     ):
         super().__init__(source, volume)
 
@@ -78,7 +78,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     @classmethod
     async def create_source(
-        cls, ctx: commands.Context, search: str, *, loop: asyncio.BaseEventLoop = None
+            cls, ctx: commands.Context, search: str, *, loop: asyncio.BaseEventLoop = None
     ):
         loop = loop or asyncio.get_event_loop()
 
@@ -156,14 +156,14 @@ class Song:
                 description="```css\n{0.source.title}\n```".format(self),
                 color=discord.Color.blurple(),
             )
-            .add_field(name="Duration", value=self.source.duration)
-            .add_field(name="Requested by", value=self.requester.mention)
-            .add_field(
+                .add_field(name="Duration", value=self.source.duration)
+                .add_field(name="Requested by", value=self.requester.mention)
+                .add_field(
                 name="Uploader",
                 value="[{0.source.uploader}]({0.source.uploader_url})".format(self),
             )
-            .add_field(name="URL", value="[Click]({0.source.url})".format(self))
-            .set_thumbnail(url=self.source.thumbnail)
+                .add_field(name="URL", value="[Click]({0.source.url})".format(self))
+                .set_thumbnail(url=self.source.thumbnail)
         )
 
 
@@ -295,7 +295,7 @@ class Music(commands.Cog):
         self.voice_state = self.get_voice_state(ctx)
 
     async def cog_command_error(
-        self, ctx: commands.Context, error: commands.CommandError
+            self, ctx: commands.Context, error: commands.CommandError
     ):
         await ctx.send("Error: {}".format(str(error)))
 
@@ -311,7 +311,7 @@ class Music(commands.Cog):
     @commands.command(name="summon")
     @commands.has_permissions(manage_guild=True)
     async def _summon(
-        self, ctx: commands.Context, *, channel: discord.VoiceChannel = None
+            self, ctx: commands.Context, *, channel: discord.VoiceChannel = None
     ):
         if not channel and not ctx.author.voice:
             raise VoiceError(

@@ -1,6 +1,4 @@
 import asyncio
-import json
-from os import path
 from time import time
 
 import discord
@@ -12,17 +10,8 @@ from utils import utils
 class Appeals(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.path = "./data/appeal_blacklist.json"
-        if path.isfile(self.path):
-            with open(self.path) as f:
-                self.blacklist = json.load(f)
         self.ct_id = bot.config["ids"]["server"]
         self.channel_id = bot.config["ids"]["appeal_channel"]
-
-    def save_data(self):
-        """Saves appeal blacklist to file"""
-        with open(self.path, "w+") as f:
-            json.dump(self.blacklist, f)
 
     @commands.command(description="Requests a ban appeal.")
     @commands.cooldown(2, 30, commands.BucketType.user)
@@ -30,10 +19,10 @@ class Appeals(commands.Cog):
     async def appeal(self, ctx, *, appeal):
         """Appeal a ban from the Followers of the Crafting Table."""
         user_id = str(ctx.author.id)
-        if user_id in self.blacklist:
-            if self.blacklist[user_id]["banned"]:
+        if user_id in self.bot.appeal_ban_db:
+            if self.bot.appeal_ban_db[user_id]["banned"]:
                 return await ctx.send("You are banned from submitting appeals!")
-            cooldown = self.blacklist[user_id][
+            cooldown = self.bot.appeal_ban_db[user_id][
                 "cooldown"
             ]  # cooldown until can appeal again
             if cooldown:
@@ -69,13 +58,13 @@ class Appeals(commands.Cog):
             e = discord.Embed(
                 color=utils.get_color(ctx.bot),
                 description="Appeals need to contain why you are "
-                "banned, and a reason for being unbanned. "
-                "Lack of either, or abuse of this command "
-                "results in not being able to use the "
-                "command anymore!",
+                            "banned, and a reason for being unbanned. "
+                            "Lack of either, or abuse of this command "
+                            "results in not being able to use the "
+                            "command anymore!",
             )
             for text_group in [
-                appeal[i : i + 1000] for i in range(0, len(appeal), 1000)
+                appeal[i: i + 1000] for i in range(0, len(appeal), 1000)
             ]:
                 e.add_field(name="◈ Your Appeal", value=text_group, inline=False)
             e.set_footer(text="React to accept/deny")
@@ -106,11 +95,11 @@ class Appeals(commands.Cog):
                 await appeal.add_reaction("👎")
                 await appeal.add_reaction("🛑")
                 await ctx.send("Sent your appeal request to CT")
-                self.blacklist[user_id] = {
+                self.bot.appeal_ban_db[user_id] = {
                     "cooldown": time() + 60 * 60 * 2,
                     "banned": False,
                 }
-                self.save_data()
+                self.bot.save()
             elif str(reaction.emoji) == "👎":
                 await ctx.send(
                     "Alright, feel free to resubmit with the correct parameters"
@@ -144,11 +133,11 @@ class Appeals(commands.Cog):
                     content=f"Appeal rejected by {user}", embed=msg.embeds[0]
                 )
                 await msg.clear_reactions()
-                self.blacklist[target_id] = {
+                self.bot.appeal_ban_db[target_id] = {
                     "cooldown": time() + 60 * 60 * 24 * 2,
                     "banned": False,
                 }
-                self.save_data()
+                self.bot.save()
                 try:
                     await target.send(
                         "Your ban appeal was denied, you can retry in 2 days"
@@ -160,8 +149,8 @@ class Appeals(commands.Cog):
                     content=f"Banned from appeals by {user}", embed=msg.embeds[0]
                 )
                 await msg.clear_reactions()
-                self.blacklist[target_id] = {"cooldown": None, "banned": True}
-                self.save_data()
+                self.bot.appeal_ban_db[target_id] = {"cooldown": None, "banned": True}
+                self.bot.save()
                 try:
                     await target.send(
                         "Your ban appeal was rejected an you've been banned from ban appeals"

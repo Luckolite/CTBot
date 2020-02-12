@@ -12,7 +12,7 @@ class LoginError(ConnectionError):
 
 class Client:
     def __init__(
-        self, address, port=25565, target_state: packet.State = packet.State.STATUS
+            self, address, port=25565, target_state: packet.State = packet.State.STATUS
     ):
         if target_state not in (packet.State.STATUS, packet.State.LOGIN):
             raise ValueError(

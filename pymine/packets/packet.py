@@ -28,7 +28,7 @@ class Packet:
 
     def __init__(self, stream=None, **kwargs):
         if (
-            self.id is None or self.contents is None
+                self.id is None or self.contents is None
         ):  # Should be redefined in subclasses
             raise ValueError("Invalid packet signature or Packet creation attempt")
         self.__dict__["data"] = {}  # Initialize data
@@ -80,7 +80,7 @@ class Packet:
             data_len = types.VarInt.unpack(data.read)
             if data_len != 0:  # Compression is enabled and the packet is compressed
                 if (
-                    data_len < compressionThreshold
+                        data_len < compressionThreshold
                 ):  # Uncompressed length should be over the threshold
                     raise ProtocolError(
                         "packets should be compressed only if length over the threshold, the server may be compromised"
@@ -99,7 +99,7 @@ class Packet:
             buf.extend(self.contents[key].pack(value))
         if compressionThreshold >= 0:
             if (
-                len(buf) > compressionThreshold
+                    len(buf) > compressionThreshold
             ):  # Compression is enabled and the amount of data is over the threshold
                 buf = types.VarInt.pack(len(buf)) + zlib.compress(buf)
             else:  # Compression is enabled, but can send without compression

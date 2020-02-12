@@ -1,7 +1,7 @@
 import asyncio
-from datetime import datetime
 import json
 import traceback
+from datetime import datetime
 from os import path
 from random import choice
 
@@ -14,56 +14,41 @@ from utils import utils
 
 class CTBot(commands.Bot):
     def __init__(self, **options):
-        self.config = None
-        self.coindb = None
-        self.ldb = None
-        self.xpdb = None
+        self.config = {}
+        self.data = "appeal_ban", "coin", "core_commands", "levels", "levels_xp"
+        for name in self.data:
+            self.__dict__[name] = {}
 
         self.load_config()
 
         super().__init__(
-            self.config["prefix"], activity=discord.Game(name="Back Online"), **options
+            commands.when_mentioned_or(self.config["prefix"]),
+            activity=discord.Game(name="Back Online"),
+            **options,
         )
 
         self.remove_command("help")
 
     def load_config(self):
-        if path.isfile("data/coindb.json"):
-            with open("data/coindb.json") as f:
-                self.coindb = json.load(f)
-        else:
-            with open("data/coindb.json", "w") as f:
-                json.dump({}, f, ensure_ascii=False)
-
         with open("config/config.json") as f:
+            old_config = self.config
             self.config = json.load(f)
+            for k in old_config:  # To only add fields, not replace the existing ones
+                self.config[k] = old_config[k]
 
-        if path.isfile("data/ldb.json"):
-            with open("data/ldb.json") as f:
-                self.ldb = json.load(f)
-        else:
-            with open("data/ldb.json", "w") as f:
-                json.dump({}, f, ensure_ascii=False)
+        self.save()
+        for name in self.data:
+            if path.isfile(name):
+                with open(f"data/{name}.json") as f:
+                    self.__dict__[name] = json.load(f)
+            else:
+                with open(f"data/{name}.json", "w") as f:
+                    json.dump(self.__dict__[name], f, ensure_ascii=False)
 
-        if path.isfile("data/xpdb.json"):
-            with open("data/xpdb.json") as f:
-                self.xpdb = json.load(f)
-        else:
-            with open("data/xpdb.json", "w") as f:
-                json.dump({}, f, ensure_ascii=False)
-
-    def save_coindb(self):
-        """Saves the coin database."""
-        with open("data/coindb.json", "w") as f:
-            json.dump(self.coindb, f, ensure_ascii=False)
-
-    def save_ldb(self):
-        with open("data/ldb.json", "w") as f:
-            json.dump(self.coindb, f, ensure_ascii=False)
-
-    def save_xpdb(self):
-        with open("data/ldb.json", "w") as f:
-            json.dump(self.coindb, f, ensure_ascii=False)
+    def save(self):
+        for name in self.data:
+            with open(f"data/{name}.json", "w") as f:
+                json.dump(self.__dict__[name], f, ensure_ascii=False)
 
     def run(self):
         super().run(self.config["token"])
@@ -80,12 +65,14 @@ class CTBot(commands.Bot):
         for ext in self.extensions:
             try:
                 self.reload_extension(ext)
-                print(f"Reloaded {ext}...")
+                await self.log("Reload", f"Reloaded `{ext}`...")
             except ExtensionError:
                 errors.append((ext, str(traceback.format_exc())))
-                print(f"Failed to reload {ext}")
-        for cog, error in errors:
-            await bot.log(f"Error reloading {cog}", f"```{error}```", "error")
+                await self.log("Reload", f"Failed to reload `{ext}`")
+        for ext, error in errors:
+            await bot.log(
+                f"Reload", f"Error reloading `{ext}`:\n```{error}```", "error"
+            )
 
         await self.change_presence(
             status=discord.Status.online, activity=discord.Game(name="Back Online")
@@ -101,7 +88,7 @@ class CTBot(commands.Bot):
             description=description[:1000],
         )
         for text_group in [
-            description[i : i + 1000] for i in range(1000, len(description), 1000)
+            description[i: i + 1000] for i in range(1000, len(description), 1000)
         ]:
             e.add_field(name=".", value=text_group)
         await self.get_channel(self.config["ids"]["log_channel"]).send(embed=e)
@@ -125,11 +112,11 @@ async def status_task():
 
 @bot.event
 async def on_ready():
-    bot.server = bot.get_guild(bot.config["ids"]["server"])
-    bot.loop.create_task(status_task())
+    for ext, error in errors:
+        await bot.log(f"Load", f"Error loading `{ext}`:\n```{error}```", "error")
+
     await bot.log(f"Login", f"Logged in as {bot.user} with user id {bot.user.id}")
-    for cog, error in errors:
-        await bot.log(f"Error loading {cog}", f"```{error}```", "error")
+    bot.loop.create_task(status_task())
 
 
 def main():
@@ -140,10 +127,10 @@ def main():
         "cogs.core",
         "cogs.dev",
         "cogs.error_handler",
+        "cogs.levels",
         "cogs.lockdown",
         "cogs.moderation",
         "utils.checks",
-        "cogs.levels",
     ]
     for ext in initial_extensions:
         try:
@@ -155,6 +142,7 @@ def main():
 
     print("Logging in")
     bot.run()
+    bot.save()
 
 
 if __name__ == "__main__":
