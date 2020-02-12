@@ -19,7 +19,7 @@ class CTBot(commands.Bot):
         for name in self.data:
             self.__dict__[name] = {}
 
-        self.load_config()
+        self.load()
 
         super().__init__(
             commands.when_mentioned_or(self.config["prefix"]),
@@ -29,7 +29,7 @@ class CTBot(commands.Bot):
 
         self.remove_command("help")
 
-    def load_config(self):
+    def load(self):
         with open("config/config.json") as f:
             old_config = self.config
             self.config = json.load(f)
@@ -58,7 +58,7 @@ class CTBot(commands.Bot):
         await self.change_presence(
             status=discord.Status.dnd, activity=discord.Game(name="Reloading")
         )
-        self.load_config()
+        self.load()
         self.command_prefix = self.config["prefix"]
         await self.log("Reload", "Reloaded config")
         errors = []

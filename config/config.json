@@ -1,5 +1,5 @@
 {
-    "token": "Njc0MDM2MTQ2NjM2MDYyNzIx.XkQzZw.xBr2LNnkPO12MYJBScLgcWm9WHU",
+    "token": "",
     "prefix": "ct!",
     "activities": [
         {
@@ -29,7 +29,7 @@
     "thumbnail_url": "https://cdn.discordapp.com/icons/614889263183560840/a_b130223671a2a6ee646d8681a65077f4.webp?size=1024",
     "server_inv": "https://discord.gg/2b2t",
     "dev_server_inv": "https://discord.gg/vJGBSnW",
-    "dev-manage": true,
+    "dev-manage": false,
     "pm2-name": "ctbot",
     "colors": {
         "debug": "#0f7",
