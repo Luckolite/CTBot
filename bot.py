@@ -92,14 +92,16 @@ class CTBot(commands.Bot):
         )
 
     async def log(self, title, description, status="info"):
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{status.upper()}]: {description}")
+        print(
+            f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{status.upper()}]: {description}"
+        )
         e = discord.Embed(
             color=utils.get_color(self, status),
             title=title,
-            description=description[:1000]
+            description=description[:1000],
         )
         for text_group in [
-            description[i: i + 1000] for i in range(1000, len(description), 1000)
+            description[i : i + 1000] for i in range(1000, len(description), 1000)
         ]:
             e.add_field(name=".", value=text_group)
         await self.get_channel(self.config["ids"]["log_channel"]).send(embed=e)

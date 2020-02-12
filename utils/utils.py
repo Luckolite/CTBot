@@ -19,7 +19,7 @@ def get_color(bot, status="info"):
     color = bot.config["colors"][status.lower()]
     if color[0] == "#":
         if len(color) == 4:
-            return Color(int(''.join([x*2 for x in color[1:]]), 16))
+            return Color(int("".join([x * 2 for x in color[1:]]), 16))
         else:
             return Color(int(color[1:], 16))
     return Color(color)

@@ -15,16 +15,23 @@ class Levels(commands.Cog):
             if user_id not in self.bot.xpdb:
                 self.bot.xpdb[user_id] = 0
             self.bot.xpdb[user_id] += 1
-            
+
             if user_id not in self.bot.ldb:
                 self.bot.ldb[user_id] = 0
 
-            lxp = (self.bot.ldb[user_id] + 1) * (100 + (2 ** (self.bot.ldb[user_id] + 1)))
+            lxp = (self.bot.ldb[user_id] + 1) * (
+                100 + (2 ** (self.bot.ldb[user_id] + 1))
+            )
             if self.bot.xpdb[user.id] >= lxp:
                 self.bot.ldb[user_id] += 1
-                await message.channel.send(message.author.id + ", you leveled up to " + str(self.bot.ldb[user_id]))
+                await message.channel.send(
+                    message.author.id
+                    + ", you leveled up to "
+                    + str(self.bot.ldb[user_id])
+                )
             self.bot.save_ldb()
             self.bot.save_xpdb()
+
 
 def setup(bot):
     bot.add_cog(Levels(bot))

@@ -63,11 +63,13 @@ class ErrorHandler(commands.Cog):
             traceback.print_exception(
                 type(error), error, error.__traceback__, file=sys.stderr
             )
-            await ctx.send(embed=discord.Embed(
-                color=utils.get_color(ctx.bot, "error"),
-                title="Uh oh...There was an error!",
-                description=str(error)
-            ))
+            await ctx.send(
+                embed=discord.Embed(
+                    color=utils.get_color(ctx.bot, "error"),
+                    title="Uh oh...There was an error!",
+                    description=str(error),
+                )
+            )
 
 
 def setup(bot):
