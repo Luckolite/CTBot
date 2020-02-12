@@ -13,7 +13,7 @@ Join the dev discord to be added as an instant-push contributor.
 ## Getting Started
 
 ### Compatibility
-Python 3.6 or higher due to f-strings & discord.py requirements.
+Python 3.7 or higher due to f-strings & discord.py requirements.
 
 ### Installation
 > Clone the Project
@@ -51,3 +51,17 @@ for more details.
 The Followers of the Crafting Table are a semi-religious group created on 2b2t 
 in January 2020. We make builds with/of crafting tables like the Crafting Table 
 Valley or the super-sized crafting tables that are now common close to spawn. 
+
+## How can I set up a development mirror?
+Setting up a development mirror greatly helps us in case our main VPS goes down, and also allows us to test new features.
+> Join the Discord
+
+At the top of this README file there is a link to join the dev Discord. You must join it to have your mirror recognized.
+
+> Install onto a 24/7 server
+
+Following the installation instructions, run the bot on a server going 24/7. You can just leave a computer, RPi, or Arduino on long-term to do this.
+
+> Ask the devs to recognize the mirror
+
+On approval of your mirror, the devs will add it to the development Discord for testing.
