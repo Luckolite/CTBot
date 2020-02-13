@@ -24,9 +24,9 @@ def bytes2human(n):
     return "%sB" % n
 
 
-def get_color(bot, status):
+def get_color(bot, log_level=LogLevel.INFO):
     """Returns the theme color."""
-    color = bot.config["colors"][status]
+    color = bot.config["colors"][log_level]
     if color[0] == "#":
         if len(color) == 4:
             return Color(int("".join([x * 2 for x in color[1:]]), 16))

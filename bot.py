@@ -101,7 +101,7 @@ class CTBot(commands.Bot):
                 description=description[:1997],
             )
             text = [
-                description[i : i + 1991] for i in range(1997, len(description), 1991)
+                description[i: i + 1991] for i in range(1997, len(description), 1991)
             ]
             code = description[:1997].count("```") % 2 == 1
             if code:
