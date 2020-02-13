@@ -57,15 +57,15 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, KeyError):
             return await ctx.send(f"No data under the key `{error}`")
         else:
-            print(
-                "Ignoring exception in command {}:".format(ctx.command), file=sys.stderr
+            await ctx.bot.log(
+                ctx.command.name,
+                f"Ignoring exception in command {ctx.command}: ```py\n" + ''.join(traceback.format_exception(type(error), error, error.__traceback__)) + "```",
+                utils.LogLevel.ERROR
             )
-            traceback.print_exception(
-                type(error), error, error.__traceback__, file=sys.stderr
-            )
+
             await ctx.send(
                 embed=discord.Embed(
-                    color=utils.get_color(ctx.bot, "error"),
+                    color=utils.get_color(ctx.bot, utils.LogLevel.ERROR),
                     title="Uh oh...There was an error!",
                     description=str(error),
                 )

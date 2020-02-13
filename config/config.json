@@ -1,6 +1,6 @@
 {
-    "token": "",
-    "prefix": "ct!",
+    "token": "Njc0MDM2MTQ2NjM2MDYyNzIx.XkVO0w.4C-F8gWPJfhKAIR6AWMAw2Z7bro",
+    "prefix": "!?",
     "activities": [
         {
             "status": "watching",
@@ -29,7 +29,7 @@
     "thumbnail_url": "https://cdn.discordapp.com/icons/614889263183560840/a_b130223671a2a6ee646d8681a65077f4.webp?size=1024",
     "server_inv": "https://discord.gg/2b2t",
     "dev_server_inv": "https://discord.gg/vJGBSnW",
-    "dev_manage": false,
+    "dev_manage": true,
     "colors": [
         "#0f7",
         "#08f",

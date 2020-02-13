@@ -1,5 +1,6 @@
 import asyncio
 import json
+import sys
 import traceback
 from datetime import datetime
 from os import path
@@ -13,8 +14,12 @@ from utils import utils
 
 
 def log(title, description, level=utils.LogLevel.INFO):
+    if level < utils.LogLevel.ERROR:
+        f = sys.stdout
+    else:
+        f = sys.stderr
     print(
-        f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}"
+        f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}", file=f
     )
 
 
@@ -88,14 +93,25 @@ class CTBot(commands.Bot):
         log(title, description, level)
         if level.value >= self.config["log_level"]:
             e = discord.Embed(
-                color=utils.get_color(self, level.value),
+                color=utils.get_color(self, level),
                 title=title,
-                description=description[:1000],
+                description=description[:1997],
             )
-            for text_group in [
-                description[i:i + 1000] for i in range(1000, len(description), 1000)
-            ]:
-                e.add_field(name=".", value=text_group)
+            text = [
+                description[i:i + 1991] for i in range(1997, len(description), 1991)
+            ]
+            code = description[:1997].count("```") % 2 == 1
+            if code:
+                e.description += "```"
+            for group in text:
+                g = group
+                if code:
+                    g = "```py\n" + g
+                if group.count("```") % 2 == 1:
+                    code = not code
+                if code:
+                    g += "```"
+                e.add_field(name=".", value=g)
             await self.get_channel(self.config["ids"]["log_channel"]).send(embed=e)
 
 
@@ -118,7 +134,7 @@ async def status_task():
 @bot.event
 async def on_ready():
     for ext, error in errors:
-        await bot.log(f"Load", f"Error loading `{ext}`:\n```{error}```", utils.LogLevel.ERROR)
+        await bot.log(f"Load", f"Error loading `{ext}`: ```py\n{error}```", utils.LogLevel.ERROR)
 
     await bot.log(f"Login", f"Logged in as {bot.user} with user id {bot.user.id}")
     bot.loop.create_task(status_task())
@@ -146,8 +162,12 @@ def main():
             log("Load", f"Failed to load {ext}")
 
     log("Login", "Logging in")
-    bot.run()
-    bot.save()
+    while True:
+        try:
+            bot.run()
+        except SystemExit:
+            log("Stop", "Stopped bot")
+            return bot.save()
 
 
 if __name__ == "__main__":

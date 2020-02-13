@@ -3,7 +3,7 @@ import enum
 from discord import Color
 
 
-class LogLevel(enum.Enum):
+class LogLevel(enum.IntEnum):
     DEBUG = 0
     INFO = 1
     WARN = 2
