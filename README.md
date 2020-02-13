@@ -11,7 +11,7 @@ Feel free to open a pull request and add anything you like! Join the dev discord
 
 ## Getting Started
 
-You'll need Python 3.6 or higher to run the bot due to f-strings & discord.py requirements.
+You'll need Python 3.6 or higher to run the bot due to f-strings and dependencies.
 
 ### Installation
 1. Clone this repository.
