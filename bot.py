@@ -156,6 +156,7 @@ def main():
         "cogs.levels",
         "cogs.lockdown",
         "cogs.moderation",
+        "cogs.chat",
         "utils.checks",
     ]
     for ext in initial_extensions:
