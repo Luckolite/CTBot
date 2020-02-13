@@ -88,7 +88,7 @@ class CTBot(commands.Bot):
             description=description[:1000],
         )
         for text_group in [
-            description[i: i + 1000] for i in range(1000, len(description), 1000)
+            description[i : i + 1000] for i in range(1000, len(description), 1000)
         ]:
             e.add_field(name=".", value=text_group)
         await self.get_channel(self.config["ids"]["log_channel"]).send(embed=e)

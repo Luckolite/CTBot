@@ -19,10 +19,10 @@ class Appeals(commands.Cog):
     async def appeal(self, ctx, *, appeal):
         """Appeal a ban from the Followers of the Crafting Table."""
         user_id = str(ctx.author.id)
-        if user_id in self.bot.appeal_ban_db:
-            if self.bot.appeal_ban_db[user_id]["banned"]:
+        if user_id in self.bot.appeal_ban:
+            if self.bot.appeal_ban[user_id]["banned"]:
                 return await ctx.send("You are banned from submitting appeals!")
-            cooldown = self.bot.appeal_ban_db[user_id][
+            cooldown = self.bot.appeal_ban[user_id][
                 "cooldown"
             ]  # cooldown until can appeal again
             if cooldown:
@@ -58,13 +58,13 @@ class Appeals(commands.Cog):
             e = discord.Embed(
                 color=utils.get_color(ctx.bot),
                 description="Appeals need to contain why you are "
-                            "banned, and a reason for being unbanned. "
-                            "Lack of either, or abuse of this command "
-                            "results in not being able to use the "
-                            "command anymore!",
+                "banned, and a reason for being unbanned. "
+                "Lack of either, or abuse of this command "
+                "results in not being able to use the "
+                "command anymore!",
             )
             for text_group in [
-                appeal[i: i + 1000] for i in range(0, len(appeal), 1000)
+                appeal[i : i + 1000] for i in range(0, len(appeal), 1000)
             ]:
                 e.add_field(name="◈ Your Appeal", value=text_group, inline=False)
             e.set_footer(text="React to accept/deny")
@@ -95,7 +95,7 @@ class Appeals(commands.Cog):
                 await appeal.add_reaction("👎")
                 await appeal.add_reaction("🛑")
                 await ctx.send("Sent your appeal request to CT")
-                self.bot.appeal_ban_db[user_id] = {
+                self.bot.appeal_ban[user_id] = {
                     "cooldown": time() + 60 * 60 * 2,
                     "banned": False,
                 }
@@ -133,7 +133,7 @@ class Appeals(commands.Cog):
                     content=f"Appeal rejected by {user}", embed=msg.embeds[0]
                 )
                 await msg.clear_reactions()
-                self.bot.appeal_ban_db[target_id] = {
+                self.bot.appeal_ban[target_id] = {
                     "cooldown": time() + 60 * 60 * 24 * 2,
                     "banned": False,
                 }
@@ -149,7 +149,7 @@ class Appeals(commands.Cog):
                     content=f"Banned from appeals by {user}", embed=msg.embeds[0]
                 )
                 await msg.clear_reactions()
-                self.bot.appeal_ban_db[target_id] = {"cooldown": None, "banned": True}
+                self.bot.appeal_ban[target_id] = {"cooldown": None, "banned": True}
                 self.bot.save()
                 try:
                     await target.send(
