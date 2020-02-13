@@ -57,8 +57,12 @@ class Dev(commands.Cog):
             )
 
     @commands.command(description="Tests logging.")
-    async def log(self, ctx: commands.Context, level: str, title: str, *description: str):
-        await ctx.bot.log(title, ' '.join(description), utils.LogLevel.__dict__[level.upper()])
+    async def log(
+        self, ctx: commands.Context, level: str, title: str, *description: str
+    ):
+        await ctx.bot.log(
+            title, " ".join(description), utils.LogLevel.__dict__[level.upper()]
+        )
 
 
 def setup(bot):

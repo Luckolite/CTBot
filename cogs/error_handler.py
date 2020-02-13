@@ -59,8 +59,12 @@ class ErrorHandler(commands.Cog):
         else:
             await ctx.bot.log(
                 ctx.command.name,
-                f"Ignoring exception in command {ctx.command}: ```py\n" + ''.join(traceback.format_exception(type(error), error, error.__traceback__)) + "```",
-                utils.LogLevel.ERROR
+                f"Ignoring exception in command {ctx.command}: ```py\n"
+                + "".join(
+                    traceback.format_exception(type(error), error, error.__traceback__)
+                )
+                + "```",
+                utils.LogLevel.ERROR,
             )
 
             await ctx.send(

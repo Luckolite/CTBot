@@ -19,7 +19,8 @@ def log(title, description, level=utils.LogLevel.INFO):
     else:
         f = sys.stderr
     print(
-        f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}", file=f
+        f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}",
+        file=f,
     )
 
 
@@ -82,7 +83,9 @@ class CTBot(commands.Bot):
                 await self.log("Reload", f"Failed to reload `{ext}`")
         for ext, error in errors:
             await bot.log(
-                f"Reload", f"Error reloading `{ext}`:\n```{error}```", utils.LogLevel.ERROR
+                f"Reload",
+                f"Error reloading `{ext}`:\n```{error}```",
+                utils.LogLevel.ERROR,
             )
 
         await self.change_presence(
@@ -98,7 +101,7 @@ class CTBot(commands.Bot):
                 description=description[:1997],
             )
             text = [
-                description[i:i + 1991] for i in range(1997, len(description), 1991)
+                description[i : i + 1991] for i in range(1997, len(description), 1991)
             ]
             code = description[:1997].count("```") % 2 == 1
             if code:
@@ -134,7 +137,9 @@ async def status_task():
 @bot.event
 async def on_ready():
     for ext, error in errors:
-        await bot.log(f"Load", f"Error loading `{ext}`: ```py\n{error}```", utils.LogLevel.ERROR)
+        await bot.log(
+            f"Load", f"Error loading `{ext}`: ```py\n{error}```", utils.LogLevel.ERROR
+        )
 
     await bot.log(f"Login", f"Logged in as {bot.user} with user id {bot.user.id}")
     bot.loop.create_task(status_task())
@@ -151,7 +156,7 @@ def main():
         "cogs.levels",
         "cogs.lockdown",
         "cogs.moderation",
-        "utils.checks"
+        "utils.checks",
     ]
     for ext in initial_extensions:
         try:
@@ -165,6 +170,9 @@ def main():
     while True:
         try:
             bot.run()
+        except discord.errors.LoginFailure:
+            log("Login", f"Login failed:\n{traceback.format_exc()}")
+            return
         except SystemExit:
             log("Stop", "Stopped bot")
             return bot.save()
