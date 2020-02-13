@@ -4,7 +4,7 @@ import os
 import discord
 from discord.ext import commands
 
-from utils import checks
+from utils import checks, utils
 
 
 class Dev(commands.Cog):
@@ -39,13 +39,17 @@ class Dev(commands.Cog):
     @commands.command(description="Performs git pull.")
     async def pull(self, ctx: commands.Context):
         """Performs `git pull` and reloads."""
-        if self.bot.config["dev-manage"]:
+        if self.bot.config["dev_manage"]:
             os.system("git pull")
             await self.bot.reload()
         else:
             return await ctx.send(
                 "The bot is not under developer management. You may not run this command."
             )
+
+    @commands.command(description="Tests logging.")
+    async def log(self, ctx: commands.Context, level: str, title: str, *description: str):
+        await ctx.bot.log(title, ' '.join(description), utils.LogLevel.__dict__[level.upper()])
 
 
 def setup(bot):

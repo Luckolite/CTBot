@@ -12,6 +12,12 @@ from discord.ext.commands import ExtensionError
 from utils import utils
 
 
+def log(title, description, level=utils.LogLevel.INFO):
+    print(
+        f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}"
+    )
+
+
 class CTBot(commands.Bot):
     def __init__(self, **options):
         self.config = {}
@@ -71,27 +77,26 @@ class CTBot(commands.Bot):
                 await self.log("Reload", f"Failed to reload `{ext}`")
         for ext, error in errors:
             await bot.log(
-                f"Reload", f"Error reloading `{ext}`:\n```{error}```", "error"
+                f"Reload", f"Error reloading `{ext}`:\n```{error}```", utils.LogLevel.ERROR
             )
 
         await self.change_presence(
             status=discord.Status.online, activity=discord.Game(name="Back Online")
         )
 
-    async def log(self, title, description, status="info"):
-        print(
-            f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{status.upper()}]: {description}"
-        )
-        e = discord.Embed(
-            color=utils.get_color(self, status),
-            title=title,
-            description=description[:1000],
-        )
-        for text_group in [
-            description[i : i + 1000] for i in range(1000, len(description), 1000)
-        ]:
-            e.add_field(name=".", value=text_group)
-        await self.get_channel(self.config["ids"]["log_channel"]).send(embed=e)
+    async def log(self, title, description, level=utils.LogLevel.INFO):
+        log(title, description, level)
+        if level.value >= self.config["log_level"]:
+            e = discord.Embed(
+                color=utils.get_color(self, level.value),
+                title=title,
+                description=description[:1000],
+            )
+            for text_group in [
+                description[i:i + 1000] for i in range(1000, len(description), 1000)
+            ]:
+                e.add_field(name=".", value=text_group)
+            await self.get_channel(self.config["ids"]["log_channel"]).send(embed=e)
 
 
 bot = CTBot(case_insensitive=True)
@@ -113,7 +118,7 @@ async def status_task():
 @bot.event
 async def on_ready():
     for ext, error in errors:
-        await bot.log(f"Load", f"Error loading `{ext}`:\n```{error}```", "error")
+        await bot.log(f"Load", f"Error loading `{ext}`:\n```{error}```", utils.LogLevel.ERROR)
 
     await bot.log(f"Login", f"Logged in as {bot.user} with user id {bot.user.id}")
     bot.loop.create_task(status_task())
@@ -130,17 +135,17 @@ def main():
         "cogs.levels",
         "cogs.lockdown",
         "cogs.moderation",
-        "utils.checks",
+        "utils.checks"
     ]
     for ext in initial_extensions:
         try:
             bot.load_extension(ext)
-            print(f"Loaded {ext}")
+            log("Load", f"Loaded {ext}")
         except ExtensionError:
             errors.append((ext, str(traceback.format_exc())))
-            print(f"Failed to load {ext}")
+            log("Load", f"Failed to load {ext}")
 
-    print("Logging in")
+    log("Login", "Logging in")
     bot.run()
     bot.save()
 

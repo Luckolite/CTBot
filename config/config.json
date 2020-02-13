@@ -29,15 +29,15 @@
     "thumbnail_url": "https://cdn.discordapp.com/icons/614889263183560840/a_b130223671a2a6ee646d8681a65077f4.webp?size=1024",
     "server_inv": "https://discord.gg/2b2t",
     "dev_server_inv": "https://discord.gg/vJGBSnW",
-    "dev-manage": false,
-    "pm2-name": "ctbot",
-    "colors": {
-        "debug": "#0f7",
-        "info": "#08f",
-        "warn": "#fc0",
-        "error": "#f30",
-        "fatal": "#c06"
-    },
+    "dev_manage": false,
+    "colors": [
+        "#0f7",
+        "#08f",
+        "#fc0",
+        "#f30",
+        "#c06"
+    ],
+    "log_level": 1,
     "theme": "#00e1ff",
     "owners": {
         "Elon": 544911653058248734,
@@ -56,6 +56,5 @@
         "mute": [],
         "kick": [],
         "ban": []
-    },
-    "debug": false
+    }
 }

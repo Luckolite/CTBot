@@ -1,4 +1,14 @@
+import enum
+
 from discord import Color
+
+
+class LogLevel(enum.Enum):
+    DEBUG = 0
+    INFO = 1
+    WARN = 2
+    ERROR = 3
+    FATAL = 4
 
 
 def bytes2human(n):
@@ -14,9 +24,9 @@ def bytes2human(n):
     return "%sB" % n
 
 
-def get_color(bot, status="info"):
+def get_color(bot, status):
     """Returns the theme color."""
-    color = bot.config["colors"][status.lower()]
+    color = bot.config["colors"][status]
     if color[0] == "#":
         if len(color) == 4:
             return Color(int("".join([x * 2 for x in color[1:]]), 16))
