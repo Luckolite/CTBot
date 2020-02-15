@@ -1,7 +1,9 @@
 from discord.ext import commands
 import cleverbotfree.cbfree
 import sys
+
 cb = cleverbotfree.cbfree.Cleverbot()
+
 
 class Chat(commands.Cog):
     def __init__(self, bot):
@@ -9,7 +11,7 @@ class Chat(commands.Cog):
 
     @client.event()
     @commands.command(description="Enter chat")
-    async def chat(ctx):
+    async def chat(self):
         try:
             cb.browser.get(cb.url)
         except:
@@ -21,13 +23,14 @@ class Chat(commands.Cog):
             except:
                 sys.exit()
             msg = await client.wait_for('message', check=check)
-            userInput = msg.content
-            if userInput == 'quit':
+            user_input: object = msg.content
+            if user_input == 'quit':
                 break
-            cb.send_input(userInput)
+            cb.send_input(user_input)
             resp = cb.get_response()
             ctx.send(resp)
-        cb.browserr.close()
+        cb.browser.close()
+
 
 def setup(bot):
     bot.add_cog(Chat(bot))
