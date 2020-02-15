@@ -14,7 +14,7 @@ class Coin(commands.Cog):
         if not message.author.bot and random_ct_int == 250:
             user_id = str(message.author.id)
 
-            if user_id not in self.bot.coindb:
+            if user_id not in self.bot.coin:
                 self.bot.coindb[user_id] = 0
             self.bot.coindb[user_id] += 1
 
