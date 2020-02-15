@@ -9,7 +9,7 @@ class Chat(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @bot.event()
+    @commands.Cog.listener()
     @commands.command(description="Enter chat")
     async def chat(self):
         try:
@@ -22,13 +22,13 @@ class Chat(commands.Cog):
                 cb.get_form()
             except:
                 sys.exit()
-            msg = await bot.wait_for('message', check=check)
+            msg = await self.wait_for('message', check=check)
             user_input: object = msg.content
             if user_input == 'quit':
                 break
             cb.send_input(user_input)
             resp = cb.get_response()
-            ctx.send(resp)
+            self.send(resp)
         cb.browser.close()
 
 
