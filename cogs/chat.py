@@ -32,7 +32,7 @@ class Chat(commands.Cog):
                 break
             cb.send_input(user_input)
             resp = cb.get_response()
-            ctx.send(resp)
+            await ctx.send(resp)
         cb.browser.close()
 
 
