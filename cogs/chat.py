@@ -27,7 +27,7 @@ class Chat(commands.Cog):
 
             msg = await self.bot.wait_for('message', check=check)
             input_text: object = msg.content
-            user_input: str(input_text)
+            user_input = str(input_text)
             if user_input == 'quit':
                 break
             cb.send_input(user_input)
