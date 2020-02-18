@@ -3,8 +3,11 @@ import json
 import sentry_sdk
 with open('config/config.json') as f:
     dat = json.load(f)
-if dat["sentry_dsn"]:
-    sentry_sdk.init(dat["sentry_dsn"])
+
+# if dat["sentry_dsn"] != "nO":
+#     sentry_sdk.init(dat["sentry_dsn"])
+if not dat["sentry_dsn"] or dat["sentry_dsn"] != "nO":
+    sentry_sdk.init(str(dat["sentry_dsn"]))
 import sys
 import traceback
 from datetime import datetime
