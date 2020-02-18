@@ -4,3 +4,4 @@ ffmpeg
 psutil
 profanity-check
 cleverbotfree
+sentry-sdk==0.14.1
