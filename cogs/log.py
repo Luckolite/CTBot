@@ -9,7 +9,7 @@ class Log(commands.Cog):
     @commands.command(description="Show log")
     async def logs(self, ctx):
         with open("../log.txt") as c:
-            ctx.send(str(c))
+            await ctx.send(str(c))
 
     @commands.command(description="Clear log")
     async def clog(self):
