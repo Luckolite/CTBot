@@ -136,7 +136,10 @@ dmypy.json
 
 # tests
 testing.py
-
+config/
+/config
+cogs/log.txt
+config/config.json
 # bot data
 /data
 log.txt
