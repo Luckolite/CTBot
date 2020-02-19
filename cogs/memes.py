@@ -12,15 +12,15 @@ class Memes(commands.Cog):
     async def meme(self, ctx):
         try:
             sub = randint(0, 4)
-            if sub is 0:
+            if sub == 0:
                 gs = 'memes'
-            elif sub is 1:
+            elif sub == 1:
                 gs = 'dankmemes'
-            elif sub is 2:
+            elif sub == 2:
                 gs = 'deepfriedmemes'
-            elif sub is 3:
+            elif sub == 3:
                 gs = 'specialsnowflake'
-            elif sub is 4:
+            elif sub == 4:
                 gs = 'imtoriginals'
             r = praw.Reddit(user_agent='example')
         
