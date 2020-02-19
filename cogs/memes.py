@@ -22,7 +22,7 @@ class Memes(commands.Cog):
                 gs = 'specialsnowflake'
             elif sub == 4:
                 gs = 'imtoriginals'
-            r = praw.Reddit(user_agent='example')
+            r = praw.Reddit(user_agent='Firefox 73.0 on Ubuntu Linux', client_id='aIm3Qc5zFyMljQ', client_secret='yupA7e-s8BOB9HDytRRwNhJDLE0')
         
             rs = r.get_subreddit(gs)
             posts = rs.get_random_submission()
