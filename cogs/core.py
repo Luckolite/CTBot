@@ -9,7 +9,10 @@ from discord.ext import commands
 from utils import checks, utils
 
 
-class Core(commands.Cog, command_attrs={"cooldown": commands.Cooldown(2, 5, commands.BucketType.user)}):
+class Core(
+    commands.Cog,
+    command_attrs={"cooldown": commands.Cooldown(2, 5, commands.BucketType.user)},
+):
     def __init__(self, bot):
         self.bot = bot
 
@@ -38,7 +41,7 @@ class Core(commands.Cog, command_attrs={"cooldown": commands.Cooldown(2, 5, comm
         e.add_field(
             name="◈ Github",
             value="> If you wish to report bugs, suggest changes or contribute to the development "
-                  "[visit the repo](https://github.com/FrequencyX4/CTBot)",
+            "[visit the repo](https://github.com/FrequencyX4/CTBot)",
             inline=False,
         )
         e.add_field(
@@ -53,9 +56,9 @@ class Core(commands.Cog, command_attrs={"cooldown": commands.Cooldown(2, 5, comm
         e.add_field(
             name="◈ Links",
             value=f"• [Crafting Table]({self.bot.config['server_inv']})\n"
-                  f"• [Github](https://github.com/FrequencyX4/CTBot)\n"
-                  f"• [Dev Discord]({self.bot.config['dev_server_inv']})\n"
-                  f"• [Invite Me]({inv})",
+            f"• [Github](https://github.com/FrequencyX4/CTBot)\n"
+            f"• [Dev Discord]({self.bot.config['dev_server_inv']})\n"
+            f"• [Invite Me]({inv})",
         )
         e.set_footer(
             text=f"CPU: {psutil.cpu_percent()}% | Ram: {c(p.memory_full_info().rss)} ({round(p.memory_percent())}%)",
@@ -151,9 +154,9 @@ class Core(commands.Cog, command_attrs={"cooldown": commands.Cooldown(2, 5, comm
 
             def pred(react, usr):
                 return (
-                        react.message.id == msg.id
-                        and usr == ctx.author
-                        and str(react.emoji) in emojis
+                    react.message.id == msg.id
+                    and usr == ctx.author
+                    and str(react.emoji) in emojis
                 )
 
             try:
@@ -188,10 +191,10 @@ class Core(commands.Cog, command_attrs={"cooldown": commands.Cooldown(2, 5, comm
     @commands.has_permissions(administrator=True)
     @commands.bot_has_permissions(embed_links=True)
     async def enable(
-            self,
-            ctx,
-            command,
-            location: Union[discord.TextChannel, discord.CategoryChannel] = None,
+        self,
+        ctx,
+        command,
+        location: Union[discord.TextChannel, discord.CategoryChannel] = None,
     ):
         """Enable or commands in a channel, or category"""
         if str(ctx.guild.id) not in self.bot.core_commands:
@@ -236,10 +239,10 @@ class Core(commands.Cog, command_attrs={"cooldown": commands.Cooldown(2, 5, comm
     @commands.has_permissions(administrator=True)
     @commands.bot_has_permissions(embed_links=True)
     async def disable(
-            self,
-            ctx,
-            command,
-            location: Union[discord.TextChannel, discord.CategoryChannel] = None,
+        self,
+        ctx,
+        command,
+        location: Union[discord.TextChannel, discord.CategoryChannel] = None,
     ):
         """Enable or commands in a channel, or category"""
         if str(ctx.guild.id) not in self.bot.core_commands:

@@ -15,13 +15,13 @@ class Coin(commands.Cog):
             user_id = str(message.author.id)
 
             if user_id not in self.bot.coin:
-                self.bot.coindb[user_id] = 0
-            self.bot.coindb[user_id] += 1
+                self.bot.coin[user_id] = 0
+            self.bot.coin[user_id] += 1
 
             await message.channel.send(
                 message.author.id + ", you just earned a crafting table!"
             )
-            self.bot.save_coindb()
+            self.bot.save()
 
 
 def setup(bot):

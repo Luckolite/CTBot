@@ -30,14 +30,17 @@ def log(title, description, level=utils.LogLevel.INFO):
     )
     if path.isfile("log.txt"):
         f = open("log.txt", "a")
-        f.write(f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}")
+        f.write(
+            f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}"
+        )
         f.close()
     else:
-        print("Log file has not been initialized - please do so! If it exists, this may indicate an error")
+        print(
+            "Log file has not been initialized - please do so! If it exists, this may indicate an error"
+        )
 
 
 class CTBot(commands.Bot):
-
     def __init__(self, **options):
         self.config = {}
         self.data = "appeal_ban", "coin", "core_commands", "levels", "levels_xp"
@@ -114,7 +117,7 @@ class CTBot(commands.Bot):
                 description=description[:1997],
             )
             text = [
-                description[i: i + 1991] for i in range(1997, len(description), 1991)
+                description[i : i + 1991] for i in range(1997, len(description), 1991)
             ]
             code = description[:1997].count("```") % 2 == 1
             if code:
@@ -159,7 +162,7 @@ async def on_ready():
 
 
 def main():
-    with open('config/config.json') as f:
+    with open("config/config.json") as f:
         dat = json.load(f)
     if not dat["sentry_dsn"] or dat["sentry_dsn"] != "nO":
         use_sentry(
