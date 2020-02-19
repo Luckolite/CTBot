@@ -26,12 +26,13 @@ class Chat(commands.Cog):
                 return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
             msg = await self.bot.wait_for('message', check=check)
-            user_input: object = msg.content
+            input_text: object = msg.content
+            user_input = str(input_text)
             if user_input == 'quit':
                 break
             cb.send_input(user_input)
             resp = cb.get_response()
-            ctx.send(resp)
+            await ctx.send(str(resp))
         cb.browser.close()
 
 

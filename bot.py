@@ -1,5 +1,13 @@
 import asyncio
 import json
+from discord_sentry_reporting import use_sentry
+
+
+
+
+# if dat["sentry_dsn"] != "nO":
+#     sentry_sdk.init(dat["sentry_dsn"])
+
 import sys
 import traceback
 from datetime import datetime
@@ -9,7 +17,6 @@ from random import choice
 import discord
 from discord.ext import commands
 from discord.ext.commands import ExtensionError
-
 from utils import utils
 
 
@@ -146,6 +153,15 @@ async def on_ready():
 
 
 def main():
+    with open('config/config.json') as f:
+        dat = json.load(f)
+    if not dat["sentry_dsn"] or dat["sentry_dsn"] != "nO":
+        use_sentry(
+            bot,  # it is typically named client or bot
+            dsn=str(dat["sentry_dsn"])
+            # put in any sentry keyword arguments (**kwargs) here
+        )
+
     initial_extensions = [
         "cogs.appeals",
         "cogs.autoresponse",

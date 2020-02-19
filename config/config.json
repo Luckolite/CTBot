@@ -56,5 +56,6 @@
         "mute": [],
         "kick": [],
         "ban": []
-    }
+    },
+    "sentry_dsn": "nO"
 }
