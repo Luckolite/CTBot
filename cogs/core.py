@@ -9,12 +9,11 @@ from discord.ext import commands
 from utils import checks, utils
 
 
-class Core(commands.Cog):
+class Core(commands.Cog, command_attrs={"cooldown": commands.Cooldown(2, 5, commands.BucketType.user)}):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(description="Displays information about the bot.")
-    @commands.cooldown(2, 5, commands.BucketType.user)
     async def info(self, ctx):
         """Displays information about the bot."""
         e = discord.Embed(color=utils.get_color(ctx.bot))
@@ -39,7 +38,7 @@ class Core(commands.Cog):
         e.add_field(
             name="◈ Github",
             value="> If you wish to report bugs, suggest changes or contribute to the development "
-            "[visit the repo](https://github.com/FrequencyX4/CTBot)",
+                  "[visit the repo](https://github.com/FrequencyX4/CTBot)",
             inline=False,
         )
         e.add_field(
@@ -54,9 +53,9 @@ class Core(commands.Cog):
         e.add_field(
             name="◈ Links",
             value=f"• [Crafting Table]({self.bot.config['server_inv']})\n"
-            f"• [Github](https://github.com/FrequencyX4/CTBot)\n"
-            f"• [Dev Discord]({self.bot.config['dev_server_inv']})\n"
-            f"• [Invite Me]({inv})",
+                  f"• [Github](https://github.com/FrequencyX4/CTBot)\n"
+                  f"• [Dev Discord]({self.bot.config['dev_server_inv']})\n"
+                  f"• [Invite Me]({inv})",
         )
         e.set_footer(
             text=f"CPU: {psutil.cpu_percent()}% | Ram: {c(p.memory_full_info().rss)} ({round(p.memory_percent())}%)",
@@ -65,7 +64,6 @@ class Core(commands.Cog):
         await ctx.send(embed=e)
 
     @commands.command(description="Submits a suggestion.")
-    @commands.cooldown(2, 5, commands.BucketType.user)
     async def suggest(self, ctx, *, suggestion):
         """Submits a suggestion to the dedicated channel."""
         channel = self.bot.get_channel(self.bot.config["ids"]["suggestion_channel"])
@@ -81,7 +79,6 @@ class Core(commands.Cog):
         )
 
     @commands.command(description="Edits a suggestion.")
-    @commands.cooldown(2, 5, commands.BucketType.user)
     async def edit(self, ctx, msg_id: int, *, new_suggestion):
         """Edits an existing suggestion."""
         channel = self.bot.get_channel(self.bot.config["ids"]["suggestion_channel"])
@@ -98,7 +95,6 @@ class Core(commands.Cog):
             await ctx.send("You can't edit this suggestion")
 
     @commands.command(hidden=True)
-    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     async def help(self, ctx, command=None):
@@ -155,9 +151,9 @@ class Core(commands.Cog):
 
             def pred(react, usr):
                 return (
-                    react.message.id == msg.id
-                    and usr == ctx.author
-                    and str(react.emoji) in emojis
+                        react.message.id == msg.id
+                        and usr == ctx.author
+                        and str(react.emoji) in emojis
                 )
 
             try:
@@ -189,14 +185,13 @@ class Core(commands.Cog):
             await msg.edit(embed=embeds[pos])
 
     @commands.command(name="enable", enabled=False)
-    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(administrator=True)
     @commands.bot_has_permissions(embed_links=True)
     async def enable(
-        self,
-        ctx,
-        command,
-        location: Union[discord.TextChannel, discord.CategoryChannel] = None,
+            self,
+            ctx,
+            command,
+            location: Union[discord.TextChannel, discord.CategoryChannel] = None,
     ):
         """Enable or commands in a channel, or category"""
         if str(ctx.guild.id) not in self.bot.core_commands:
@@ -238,14 +233,13 @@ class Core(commands.Cog):
         self.bot.save()
 
     @commands.command(name="disable", enabled=False)
-    @commands.cooldown(2, 5, commands.BucketType.user)
     @commands.has_permissions(administrator=True)
     @commands.bot_has_permissions(embed_links=True)
     async def disable(
-        self,
-        ctx,
-        command,
-        location: Union[discord.TextChannel, discord.CategoryChannel] = None,
+            self,
+            ctx,
+            command,
+            location: Union[discord.TextChannel, discord.CategoryChannel] = None,
     ):
         """Enable or commands in a channel, or category"""
         if str(ctx.guild.id) not in self.bot.core_commands:
