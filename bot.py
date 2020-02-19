@@ -179,6 +179,8 @@ def main():
         "cogs.lockdown",
         "cogs.moderation",
         "cogs.chat",
+        "cogs.verify",
+        "cogs.log",
         "utils.checks",
     ]
     for ext in initial_extensions:
