@@ -184,6 +184,7 @@ def main():
         "cogs.chat",
         "cogs.verify",
         "cogs.log",
+        "cogs.memes",
         "utils.checks",
     ]
     for ext in initial_extensions:
