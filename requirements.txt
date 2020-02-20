@@ -6,3 +6,4 @@ profanity-check
 cleverbotfree
 # sentry-sdk==0.14.1
 discord-sentry-reporting
+praw
