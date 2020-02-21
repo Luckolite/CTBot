@@ -114,7 +114,7 @@ class Search(commands.Cog):
                             value=str(ctx.author.name),
                             inline=False)
             embed.set_thumbnail(url=ctx.author.avatar_url)
-            async ctx.send(embed)
+            await ctx.send(embed)
         else:
             ctx.send("No content in violation of the TOS was found.")
 
