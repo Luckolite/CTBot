@@ -58,7 +58,7 @@ class Search(commands.Cog):
             item.strip()
             item.lower()
 
-        channels = discord.utils.get(ctx.guild.get_all_channels())
+        channels = discord.utils.get(ctx.guild.channels())
 
         for channel in channels:
             messages = await channel.history(limit=None)
