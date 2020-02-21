@@ -35,7 +35,7 @@ class Search(commands.Cog):
 
     @commands.command(description="Find TOS-breaking content in the channel.")
     async def search(self, ctx, guild_id: int):
-        await ctx.send('starting')
+        await ctx.send('starting the `TOS BREAKING SEARCH`')
         delmsg = None
         delcnt = 0
 
@@ -66,7 +66,7 @@ class Search(commands.Cog):
                 msg = str(message.content)
 
                 for lname in lna:
-                    if lname in msg:
+                    if msg.count(lname) > 0:
                         await ctx.send(f"Message was deleted!\n{msg}")
                         delcnt += 1
                         await message.delete()
@@ -76,7 +76,7 @@ class Search(commands.Cog):
                 for cname in cna:
                     if delmsg:
                         break
-                    if cname in msg:
+                    if msg.count(cname) > 0:
                         await ctx.send(f"Message was deleted!\n{msg}")
                         delcnt += 1
                         await message.delete()
@@ -86,14 +86,15 @@ class Search(commands.Cog):
                 for fname in fna:
                     if delmsg:
                         break
-                    if fname in msg:
+                    if msg.count(fname) > 0:
                         await ctx.send(f"Message was deleted!\n{msg}")
                         delcnt += 1
                         await message.delete()
                         delmsg = True
                         break
 
-                if "pastebin.com" in msg or "doxbin.org" in msg:
+                # if "pastebin.com" in msg or "doxbin.org" in msg:
+                if msg.count("pastebin") > 0 or msg.count("dox") > 0:
                     if delmsg:
                         break
                     await ctx.send(f"Message was deleted!\n{msg}")
