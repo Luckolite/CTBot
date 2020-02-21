@@ -9,24 +9,24 @@ class Search(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        if path.isfile('lastnames.txt'):
-            dataln = open("lastnames.txt", "r")
+        if path.isfile('./lastnames.txt'):
+            dataln = open("./lastnames.txt", "r")
             self.ln = dataln.read()
             dataln.close()
         else:
             print("We are missing the lastnames file.")
             exit()
 
-        if path.isfile('firstnames.txt'):
-            datafn = open("firstnames.txt", "r")
+        if path.isfile('./firstnames.txt'):
+            datafn = open("./firstnames.txt", "r")
             self.fn = datafn.read()
             datafn.close()
         else:
             print("We are missing the firstnames file.")
             exit()
 
-        if path.isfile('cities.txt'):
-            datacn = open("cities.txt", "r")
+        if path.isfile('./cities.txt'):
+            datacn = open("./cities.txt", "r")
             self.cn = datacn.read()
             datacn.close()
         else:
@@ -34,10 +34,8 @@ class Search(commands.Cog):
             exit()
 
     @commands.command(description="Find TOS-breaking content in the channel.")
-    async def search(self, ctx):
-
-        print("Initiated")
-
+    async def search(self, ctx, guild_id: int):
+        await ctx.send('starting')
         delmsg = None
         delcnt = 0
 
@@ -58,20 +56,18 @@ class Search(commands.Cog):
             item.strip()
             item.lower()
 
-        channels = discord.utils.get(ctx.guild.channels())
+        guild = self.bot.get_guild(guild_id)
+        channels = guild.text_channels
 
         for channel in channels:
-            messages = await channel.history(limit=None)
+            messages = channel.history(limit=None)
 
-            for message in messages:
+            async for message in messages:
                 msg = str(message.content)
-
-                print("Began a message tract")
-                print("This will repeat")
 
                 for lname in lna:
                     if lname in msg:
-                        await ctx.send("Message was deleted!")
+                        await ctx.send(f"Message was deleted!\n{msg}")
                         delcnt += 1
                         await message.delete()
                         delmsg = True
@@ -81,7 +77,7 @@ class Search(commands.Cog):
                     if delmsg:
                         continue
                     if cname in msg:
-                        await ctx.send("Message was deleted!")
+                        await ctx.send(f"Message was deleted!\n{msg}")
                         delcnt += 1
                         await message.delete()
                         delmsg = True
@@ -91,7 +87,7 @@ class Search(commands.Cog):
                     if delmsg:
                         continue
                     if fname in msg:
-                        await ctx.send("Message was deleted!")
+                        await ctx.send(f"Message was deleted!\n{msg}")
                         delcnt += 1
                         await message.delete()
                         delmsg = True
@@ -100,7 +96,7 @@ class Search(commands.Cog):
                 if "pastebin.com" in msg or "doxbin.org" in msg:
                     if delmsg:
                         continue
-                    await ctx.send("Message was deleted!")
+                    await ctx.send(f"Message was deleted!\n{msg}")
                     delcnt += 1
                     await message.delete()
                     delmsg = True
