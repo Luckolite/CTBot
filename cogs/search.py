@@ -36,6 +36,8 @@ class Search(commands.Cog):
     @commands.command(description="Find TOS-breaking content in the channel.")
     async def search(self, ctx):
 
+        print("Initiated")
+
         delmsg = None
         delcnt = 0
 
@@ -63,6 +65,9 @@ class Search(commands.Cog):
 
             for message in messages:
                 msg = str(message.content)
+
+                print("Began a message tract")
+                print("This will repeat")
 
                 for lname in lna:
                     if lname in msg:
