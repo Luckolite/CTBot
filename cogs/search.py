@@ -71,27 +71,27 @@ class Search(commands.Cog):
                         delcnt += 1
                         await message.delete()
                         delmsg = True
-                        continue
+                        break
 
                 for cname in cna:
                     if delmsg:
-                        continue
+                        break
                     if cname in msg:
                         await ctx.send(f"Message was deleted!\n{msg}")
                         delcnt += 1
                         await message.delete()
                         delmsg = True
-                        continue
+                        break
 
                 for fname in fna:
                     if delmsg:
-                        continue
+                        break
                     if fname in msg:
                         await ctx.send(f"Message was deleted!\n{msg}")
                         delcnt += 1
                         await message.delete()
                         delmsg = True
-                        continue
+                        break
 
                 if "pastebin.com" in msg or "doxbin.org" in msg:
                     if delmsg:
@@ -100,7 +100,7 @@ class Search(commands.Cog):
                     delcnt += 1
                     await message.delete()
                     delmsg = True
-                    continue
+                    break
 
 
         if delmsg:
