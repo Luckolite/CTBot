@@ -9,24 +9,24 @@ class Search(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        if path.isfile('../lastnames.txt'):
-            dataln = open("../lastnames.txt", "r")
+        if path.isfile('lastnames.txt'):
+            dataln = open("lastnames.txt", "r")
             self.ln = dataln.read()
             dataln.close()
         else:
             print("We are missing the lastnames file.")
             exit()
 
-        if path.isfile('../firstnames.txt'):
-            datafn = open("../firstnames.txt", "r")
+        if path.isfile('firstnames.txt'):
+            datafn = open("firstnames.txt", "r")
             self.fn = datafn.read()
             datafn.close()
         else:
             print("We are missing the firstnames file.")
             exit()
 
-        if path.isfile('../cities.txt'):
-            datacn = open("../cities.txt", "r")
+        if path.isfile('cities.txt'):
+            datacn = open("cities.txt", "r")
             self.cn = datacn.read()
             datacn.close()
         else:
