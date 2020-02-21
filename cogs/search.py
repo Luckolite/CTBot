@@ -68,7 +68,7 @@ class Search(commands.Cog):
                     if lname in msg:
                         await ctx.send("Message was deleted!")
                         delcnt += 1
-                        await ctx.message.delete()
+                        await message.delete()
                         delmsg = True
                         continue
 
@@ -78,7 +78,7 @@ class Search(commands.Cog):
                     if cname in msg:
                         await ctx.send("Message was deleted!")
                         delcnt += 1
-                        await ctx.message.delete()
+                        await message.delete()
                         delmsg = True
                         continue
 
@@ -88,9 +88,19 @@ class Search(commands.Cog):
                     if fname in msg:
                         await ctx.send("Message was deleted!")
                         delcnt += 1
-                        await ctx.message.delete()
+                        await message.delete()
                         delmsg = True
                         continue
+
+                if "pastebin.com" in msg or "doxbin.org" in msg:
+                    if delmsg:
+                        continue
+                    await ctx.send("Message was deleted!")
+                    delcnt += 1
+                    await message.delete()
+                    delmsg = True
+                    continue
+
 
         if delmsg:
             embed = discord.Embed(title="Removed Messages (TOS Safety)",
