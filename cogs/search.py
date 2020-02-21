@@ -93,7 +93,6 @@ class Search(commands.Cog):
                         delmsg = True
                         break
 
-                # if "pastebin.com" in msg or "doxbin.org" in msg:
                 if msg.count("pastebin") > 0 or msg.count("dox") > 0:
                     if delmsg:
                         break
