@@ -95,7 +95,7 @@ class Search(commands.Cog):
 
                 if "pastebin.com" in msg or "doxbin.org" in msg:
                     if delmsg:
-                        continue
+                        break
                     await ctx.send(f"Message was deleted!\n{msg}")
                     delcnt += 1
                     await message.delete()
