@@ -118,7 +118,7 @@ venv.bak/
 .ropeproject
 
 # mkdocs documentation
-/site
+site/
 
 # mypy
 .mypy_cache/
@@ -134,13 +134,12 @@ dmypy.json
 # Wing IDE project files
 .*.sw*
 
-# tests
-testing.py
+# bot config
 config/
-/config
-cogs/log.txt
-config/config.json
+
 # bot data
-/data
-log.txt
-backup.txt
+data/
+
+# bot logs
+latest.log
+logs/

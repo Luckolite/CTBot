@@ -1,6 +1,10 @@
-from random import randint
+from datetime import datetime, timedelta
+from random import randrange
 
+import discord
 from discord.ext import commands
+
+from utils.utils import LogLevel
 
 
 class Levels(commands.Cog):
@@ -8,24 +12,41 @@ class Levels(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message):
-        rand = randint(1, 5)
-        if not message.author.bot and rand == 5:
-            user_id = str(message.author.id)
-            if user_id not in self.bot.levels_xp:
-                self.bot.levels_xp[user_id] = 0
-            self.bot.levels_xp[user_id] += 1
-
-            if user_id not in self.bot.levels:
-                self.bot.levels[user_id] = 0
-
-            if self.bot.levels_xp[user_id] >= (self.bot.levels[user_id] + 1) * (
-                100 + (2 ** (self.bot.levels[user_id] + 1))
+    async def on_message(self, message: discord.Message):
+        if not message.author.bot:
+            if str(message.guild.id) not in self.bot.levels:
+                self.bot.levels[str(message.guild.id)] = {}
+            if str(message.author.id) not in self.bot.levels[str(message.guild.id)]:
+                self.bot.levels[str(message.guild.id)][str(message.author.id)] = {
+                    "timestamp": 0,
+                    "xp": 0,
+                    "level": 0,
+                }
+            xp = self.bot.levels[str(message.guild.id)][str(message.author.id)]
+            if message.created_at - datetime.fromtimestamp(xp["timestamp"]) > timedelta(
+                minutes=2
             ):
-                self.bot.levels[user_id] += 1
-                await message.channel.send(
-                    f"{message.author.mention}, you leveled up to {self.bot.levels[user_id]}!"
-                )
+                rand = randrange(10)
+                if rand == 0:
+                    xp["timestamp"] = message.created_at.timestamp()
+                    add = randrange(10, 16)
+                    xp["xp"] += add
+                    if xp["xp"] >= int(200 * 1.32 ** (xp["level"]) - 100):
+                        xp["level"] += 1
+                        await self.bot.log(
+                            "Levels",
+                            f"{message.author.mention} leveled up to {xp['level']}",
+                            LogLevel.DEBUG,
+                        )
+                        await message.channel.send(
+                            f"{message.author.id}, you leveled up to {xp['level']}!"
+                        )
+                    else:
+                        await self.bot.log(
+                            "Levels",
+                            f"Gave {message.author.mention} {add} xp",
+                            LogLevel.DEBUG,
+                        )
             self.bot.save()
 
 

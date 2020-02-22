@@ -1,9 +1,11 @@
-from discord.ext import commands
-import cleverbotfree.cbfree
 import sys
+
+import cleverbotfree.cbfree
+from discord.ext import commands
 from selenium import webdriver
+
 driver = webdriver.Firefox(executable_path="/usr/local/bin/geckodriver")
-driver.get('http://inventwithpython.com')
+driver.get("http://inventwithpython.com")
 
 cb = cleverbotfree.cbfree.Cleverbot()
 

@@ -1,9 +1,10 @@
-from discord.ext import commands
+import random
+import string
+from random import *
+
 import discord
 import discord.utils
-import random
-from random import *
-import string
+from discord.ext import commands
 
 
 class Verify(commands.Cog):

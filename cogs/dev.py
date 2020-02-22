@@ -41,7 +41,7 @@ class Dev(commands.Cog):
         await ctx.send("I'll be back 👍")
         ctx.bot.save()
         try:
-            subprocess.run(["pm2", "stop", "ctbot"])
+            return subprocess.run(["pm2", "stop", "ctbot"])
         except FileNotFoundError:
             exit()
 

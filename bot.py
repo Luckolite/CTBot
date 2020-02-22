@@ -1,49 +1,40 @@
 import asyncio
 import json
-from typing import Tuple
-
-from discord_sentry_reporting import use_sentry
-
-# if dat["sentry_dsn"] != "nO":
-#     sentry_sdk.init(dat["sentry_dsn"])
-
 import sys
 import traceback
 from datetime import datetime
+from gzip import compress
 from os import path
 from random import choice
 
 import discord
 from discord.ext import commands
 from discord.ext.commands import ExtensionError
+from discord_sentry_reporting import use_sentry
+
 from utils import utils
 
 
+logname = datetime.now().strftime("logs/%d-%m-%Y %H:%M:%S.log.gz")
+logfile = open("latest.log", "a+")
+
+
 def log(title, description, level=utils.LogLevel.INFO):
-    if level < utils.LogLevel.ERROR:
-        f = sys.stdout
-    else:
-        f = sys.stderr
     print(
         f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}",
-        file=f,
+        file=sys.stdout if level < utils.LogLevel.ERROR else sys.stderr,
     )
-    if path.isfile("log.txt"):
-        f = open("log.txt", "a")
-        f.write(
-            f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}"
-        )
-        f.close()
-    else:
-        print(
-            "Log file has not been initialized - please do so! If it exists, this may indicate an error"
-        )
+    print(
+        f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}",
+        file=logfile,
+    )
+    logfile.flush()
 
 
 class CTBot(commands.Bot):
     def __init__(self, **options):
         self.config = {}
-        self.data = "appeal_ban", "coin", "core_commands", "levels", "levels_xp"
+        self.data = "appeal_ban", "coin", "core_commands", "levels"
         for name in self.data:
             self.__dict__[name] = {}
 
@@ -64,9 +55,8 @@ class CTBot(commands.Bot):
             for k in old_config:  # To only add fields, not replace the existing ones
                 self.config[k] = old_config[k]
 
-        self.save()
         for name in self.data:
-            if path.isfile(name):
+            if path.isfile(f"data/{name}.json"):
                 with open(f"data/{name}.json") as f:
                     self.__dict__[name] = json.load(f)
             else:
@@ -86,6 +76,7 @@ class CTBot(commands.Bot):
         await self.change_presence(
             status=discord.Status.dnd, activity=discord.Game(name="Reloading")
         )
+        self.save()
         self.load()
         self.command_prefix = self.config["prefix"]
         await self.log("Reload", "Reloaded config")
@@ -205,7 +196,10 @@ def main():
             return
         except SystemExit:
             log("Stop", "Stopped bot")
-            return bot.save()
+            bot.save()
+            logfile.close()
+            with open("latest.log") as latest, open(logname, "wb+") as compressed:
+                compressed.write(compress(latest.read()))
 
 
 if __name__ == "__main__":

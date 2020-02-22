@@ -9,7 +9,7 @@ class Search(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        if path.isfile('./lastnames.txt'):
+        if path.isfile("./lastnames.txt"):
             dataln = open("./lastnames.txt", "r")
             self.ln = dataln.read()
             dataln.close()
@@ -17,7 +17,7 @@ class Search(commands.Cog):
             print("We are missing the lastnames file.")
             exit()
 
-        if path.isfile('./firstnames.txt'):
+        if path.isfile("./firstnames.txt"):
             datafn = open("./firstnames.txt", "r")
             self.fn = datafn.read()
             datafn.close()
@@ -25,7 +25,7 @@ class Search(commands.Cog):
             print("We are missing the firstnames file.")
             exit()
 
-        if path.isfile('./cities.txt'):
+        if path.isfile("./cities.txt"):
             datacn = open("./cities.txt", "r")
             self.cn = datacn.read()
             datacn.close()
@@ -35,7 +35,7 @@ class Search(commands.Cog):
 
     @commands.command(description="Find TOS-breaking content in the channel.")
     async def search(self, ctx, guild_id: int):
-        await ctx.send('starting the `TOS BREAKING SEARCH`')
+        await ctx.send("starting the `TOS BREAKING SEARCH`")
         delmsg = None
         delcnt = 0
 
@@ -102,18 +102,14 @@ class Search(commands.Cog):
                     delmsg = True
                     break
 
-
         if delmsg:
-            embed = discord.Embed(title="Removed Messages (TOS Safety)",
-                                  description="Messages were removed for"
-                                              "breaking the TOS",
-                                  color=0xff2103)
-            embed.add_field(name="Count:",
-                            value=str(delcnt),
-                            inline=False)
-            embed.add_field(name="Issuer",
-                            value=str(ctx.author.name),
-                            inline=False)
+            embed = discord.Embed(
+                title="Removed Messages (TOS Safety)",
+                description="Messages were removed for" "breaking the TOS",
+                color=0xFF2103,
+            )
+            embed.add_field(name="Count:", value=str(delcnt), inline=False)
+            embed.add_field(name="Issuer", value=str(ctx.author.name), inline=False)
             embed.set_thumbnail(url=ctx.author.avatar_url)
             await ctx.send(embed)
         else:
