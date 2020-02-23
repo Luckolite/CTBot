@@ -82,6 +82,8 @@ class Core(
             f"Use `ct!edit {msg.id} Edited suggestion` to update it.",
             embed=embed,
         )
+        await msg.add_reaction("🟩")
+        await msg.add_reaction("🟥")
 
     @commands.command(description="Edits a suggestion.")
     async def edit(self, ctx: commands.Context, msg_id: int, *, new_suggestion: str):
@@ -92,7 +94,7 @@ class Core(
         except discord.errors.NotFound:
             return await ctx.send("There's no suggestion under that id")
         e = msg.embeds[0]
-        if ctx.author.id == e.author.id or checks.dev(ctx):
+        if ctx.author.name + "#" + ctx.author.discriminator == e.author.name or checks.dev(ctx):
             e.set_field_at(0, name="Suggestion", value=f"{new_suggestion} *(edited)*")
             await msg.edit(embed=e)
             await ctx.send("Updated your suggestion:", embed=e)
