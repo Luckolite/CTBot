@@ -3,14 +3,16 @@ from os import path
 import discord
 from discord.ext import commands
 
-
 # noinspection SpellCheckingInspection,PyUnusedLocal
+from bot import CTBot
+
+
 class Search(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CTBot):
         self.bot = bot
 
         if path.isfile("./lastnames.txt"):
-            dataln = open("./lastnames.txt", "r")
+            dataln = open("./lastnames.txt")
             self.ln = dataln.read()
             dataln.close()
         else:
@@ -18,7 +20,7 @@ class Search(commands.Cog):
             exit()
 
         if path.isfile("./firstnames.txt"):
-            datafn = open("./firstnames.txt", "r")
+            datafn = open("./firstnames.txt")
             self.fn = datafn.read()
             datafn.close()
         else:
@@ -26,7 +28,7 @@ class Search(commands.Cog):
             exit()
 
         if path.isfile("./cities.txt"):
-            datacn = open("./cities.txt", "r")
+            datacn = open("./cities.txt")
             self.cn = datacn.read()
             datacn.close()
         else:
@@ -34,7 +36,7 @@ class Search(commands.Cog):
             exit()
 
     @commands.command(description="Find TOS-breaking content in the channel.")
-    async def search(self, ctx, guild_id: int):
+    async def search(self, ctx: commands.Context, guild_id: int):
         await ctx.send("starting the `TOS BREAKING SEARCH`")
         delmsg = None
         delcnt = 0
@@ -111,10 +113,10 @@ class Search(commands.Cog):
             embed.add_field(name="Count:", value=str(delcnt), inline=False)
             embed.add_field(name="Issuer", value=str(ctx.author.name), inline=False)
             embed.set_thumbnail(url=ctx.author.avatar_url)
-            await ctx.send(embed)
+            await ctx.send(embed=embed)
         else:
-            ctx.send("No content in violation of the TOS was found.")
+            await ctx.send("No content in violation of the TOS was found.")
 
 
-def setup(bot):
+def setup(bot: CTBot):
     bot.add_cog(Search(bot))

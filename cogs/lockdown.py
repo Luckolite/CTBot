@@ -1,8 +1,7 @@
-# prevent users from sending messages throughout the server
-
 import discord
 from discord.ext import commands
 
+from bot import CTBot
 from utils import checks
 
 
@@ -16,11 +15,11 @@ def usage():
 
 
 class Lockdown(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CTBot):
         self.bot = bot
         self.overwrites = {}
 
-    async def cog_check(self, ctx):
+    async def cog_check(self, ctx: commands.Context):
         """Checks if the author can use commands from this cog in the server, where the command was sent."""
         # if ctx.guild.id != 1234:  # replace with crafting table id
         #     await ctx.send("This can only be used in the crafting table!")
@@ -34,7 +33,7 @@ class Lockdown(commands.Cog):
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.bot_has_permissions(administrator=True)
-    async def lockdown(self, ctx):
+    async def lockdown(self, ctx: commands.Context):
         """Mass updates channel overrides to deny everyone permissions to send messages."""
         await ctx.send(
             f"Locking down the server..\nEstimated time: {len(ctx.guild.text_channels)}s"
@@ -55,7 +54,7 @@ class Lockdown(commands.Cog):
     @commands.command(description="Un-does the actions of ct!lockdown.")
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.bot_has_permissions(administrator=True)
-    async def unlock(self, ctx):
+    async def unlock(self, ctx: commands.Context):
         """Un-does the actions of ct!lockdown."""
         await ctx.send(
             f"Unlocking the server..\nEstimated time: {len(ctx.guild.text_channels)}s"
@@ -66,5 +65,5 @@ class Lockdown(commands.Cog):
         self.overwrites = {}
 
 
-def setup(bot):
+def setup(bot: CTBot):
     bot.add_cog(Lockdown(bot))

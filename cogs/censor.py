@@ -4,6 +4,8 @@ import discord
 from discord.ext import commands
 from profanity_check import predict
 
+from bot import CTBot
+
 
 async def remove_message(message: discord.Message, reason: str):
     await message.delete()
@@ -13,7 +15,7 @@ async def remove_message(message: discord.Message, reason: str):
 
 
 class Censor(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CTBot):
         self.bot = bot
         with open("config/censor.json") as f:
             self.config = json.load(f)
@@ -22,20 +24,20 @@ class Censor(commands.Cog):
 
     def should_run(self, author: discord.Member):
         if (
-            self.config["enabled"]
-            and author.id not in self.config["word_filter_exception_user_ids"]
-            and author.id not in self.config["all_exempt_user_ids"]
+                self.config["enabled"]
+                and author.id not in self.config["word_filter_exception_user_ids"]
+                and author.id not in self.config["all_exempt_user_ids"]
         ):
             for role in author.roles:
                 if (
-                    role.id in self.config["word_filter_exception_role_ids"]
-                    or role.id in self.config["all_exempt_roles"]
+                        role.id in self.config["word_filter_exception_role_ids"]
+                        or role.id in self.config["all_exempt_roles"]
                 ):
                     return False
             return True
         return False
 
-    def warn(self, member):
+    def warn(self, member: discord.Member):
         raise NotImplementedError("Warns have not been implemented yet")
 
     @commands.Cog.listener("on_message")
@@ -43,9 +45,9 @@ class Censor(commands.Cog):
     async def profanity_filter_ml(self, *args):
         message = args[-1]
         if (
-            self.should_run(message.author)
-            and self.config["profanity_filter_ml"]
-            and predict([message.content]) == [1]
+                self.should_run(message.author)
+                and self.config["profanity_filter_ml"]
+                and predict([message.content]) == [1]
         ):
             await remove_message(message, "a banned word")
             if self.config["warn_on_censor"]:
@@ -127,5 +129,5 @@ class Censor(commands.Cog):
                         )
 
 
-def setup(bot):
+def setup(bot: CTBot):
     bot.add_cog(Censor(bot))

@@ -4,11 +4,12 @@ from time import time
 import discord
 from discord.ext import commands
 
+from bot import CTBot
 from utils import utils
 
 
 class Appeals(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CTBot):
         self.bot = bot
         self.ct_id = bot.config["ids"]["server"]
         self.channel_id = bot.config["ids"]["appeal_channel"]
@@ -16,7 +17,7 @@ class Appeals(commands.Cog):
     @commands.command(description="Requests a ban appeal.")
     @commands.cooldown(2, 30, commands.BucketType.user)
     @commands.cooldown(1, 1)
-    async def appeal(self, ctx, *, appeal):
+    async def appeal(self, ctx: commands.Context, *, appeal: str):
         """Appeal a ban from the Followers of the Crafting Table."""
         user_id = str(ctx.author.id)
         if user_id in self.bot.appeal_ban:
@@ -58,13 +59,13 @@ class Appeals(commands.Cog):
             e = discord.Embed(
                 color=utils.get_color(ctx.bot),
                 description="Appeals need to contain why you are "
-                "banned, and a reason for being unbanned. "
-                "Lack of either, or abuse of this command "
-                "results in not being able to use the "
-                "command anymore!",
+                            "banned, and a reason for being unbanned. "
+                            "Lack of either, or abuse of this command "
+                            "results in not being able to use the "
+                            "command anymore!",
             )
             for text_group in [
-                appeal[i : i + 1000] for i in range(0, len(appeal), 1000)
+                appeal[i: i + 1000] for i in range(0, len(appeal), 1000)
             ]:
                 e.add_field(name="◈ Your Appeal", value=text_group, inline=False)
             e.set_footer(text="React to accept/deny")
@@ -72,13 +73,13 @@ class Appeals(commands.Cog):
             await msg.add_reaction("👍")
             await msg.add_reaction("👎")
 
-            def pred(r, u):
+            def predicate(r, u):
                 """Assures the conditions of the reaction are in the right location."""
                 return u.id == ctx.author.id and r.message.channel.id == ctx.channel.id
 
             try:
                 reaction, user = await self.bot.wait_for(
-                    "reaction_add", check=pred, timeout=360
+                    "reaction_add", check=predicate, timeout=360
                 )
             except asyncio.TimeoutError:
                 return await msg.edit(content="This menu has expired", embed=e)
@@ -99,7 +100,7 @@ class Appeals(commands.Cog):
                     "cooldown": time() + 60 * 60 * 2,
                     "banned": False,
                 }
-                self.bot.save()
+                await self.bot.save()
             elif str(reaction.emoji) == "👎":
                 await ctx.send(
                     "Alright, feel free to resubmit with the correct parameters"
@@ -137,7 +138,7 @@ class Appeals(commands.Cog):
                     "cooldown": time() + 60 * 60 * 24 * 2,
                     "banned": False,
                 }
-                self.bot.save()
+                await self.bot.save()
                 try:
                     await target.send(
                         "Your ban appeal was denied, you can retry in 2 days"
@@ -150,7 +151,7 @@ class Appeals(commands.Cog):
                 )
                 await msg.clear_reactions()
                 self.bot.appeal_ban[target_id] = {"cooldown": None, "banned": True}
-                self.bot.save()
+                await self.bot.save()
                 try:
                     await target.send(
                         "Your ban appeal was rejected an you've been banned from ban appeals"
@@ -161,5 +162,5 @@ class Appeals(commands.Cog):
                 await msg.clear_reaction(payload.emoji)
 
 
-def setup(bot):
+def setup(bot: CTBot):
     bot.add_cog(Appeals(bot))

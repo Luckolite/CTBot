@@ -1,17 +1,17 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands import Greedy
 
+from bot import CTBot
 from utils import utils
 
 
 def has_required_permissions(**kwargs):
     """Permission and role check."""
 
-    async def predicate(ctx):
+    async def predicate(ctx: commands.Context):
         if all(
-            (perm, value) in list(ctx.author.guild_permissions)
-            for perm, value in kwargs.items()
+                (perm, value) in list(ctx.author.guild_permissions)
+                for perm, value in kwargs.items()
         ):
             if kwargs:  # Make sure it's not empty because all() returns True if empty
                 return True
@@ -26,7 +26,7 @@ def has_required_permissions(**kwargs):
 
 
 class ModCommands(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CTBot):
         self.bot = bot
 
     @commands.command(description="Mutes a user.")
@@ -36,7 +36,7 @@ class ModCommands(commands.Cog):
     @commands.guild_only()
     @has_required_permissions(manage_roles=True)
     @commands.bot_has_permissions(embed_links=True, manage_roles=True)
-    async def mute(self, ctx, member: discord.Member):
+    async def mute(self, ctx: commands.Context, member: discord.Member):
         """Mutes the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
         if member.top_role.position >= ctx.author.top_role.position:
@@ -54,7 +54,7 @@ class ModCommands(commands.Cog):
     @commands.guild_only()
     @has_required_permissions(manage_roles=True)
     @commands.bot_has_permissions(embed_links=True, manage_roles=True)
-    async def unmute(self, ctx, member: discord.Member):
+    async def unmute(self, ctx: commands.Context, member: discord.Member):
         """Unmutes the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
         if member.top_role.position >= ctx.author.top_role.position:
@@ -72,7 +72,9 @@ class ModCommands(commands.Cog):
     @commands.guild_only()
     @has_required_permissions(kick_members=True)
     @commands.bot_has_permissions(embed_links=True, kick_members=True)
-    async def kick(self, ctx, members: Greedy[discord.Member], *, reason=None):
+    async def kick(
+            self, ctx: commands.Context, members: commands.Greedy[discord.Member], *, reason=None
+    ):
         """Kicks the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
         if not reason:
@@ -99,7 +101,7 @@ class ModCommands(commands.Cog):
         ban_members=True
     )  # i swapped out the ban one cuz this one has a perm check as well
     @commands.bot_has_permissions(embed_links=True, ban_members=True)
-    async def ban(self, ctx, locator: str, *, reason: str = None):
+    async def ban(self, ctx: commands.Context, locator: str, *, reason: str = None):
         """Bans the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
         member = await commands.MemberConverter().convert(ctx, locator)
@@ -135,7 +137,7 @@ class ModCommands(commands.Cog):
     @commands.guild_only()
     @has_required_permissions(ban_members=True)
     @commands.bot_has_permissions(embed_links=True, ban_members=True)
-    async def unban(self, ctx, user: str, reason="unspecified"):
+    async def unban(self, ctx: commands.Context, user: str, reason="unspecified"):
         """Unbans the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
         banlist = await ctx.guild.bans()
@@ -158,11 +160,15 @@ class ModCommands(commands.Cog):
     @commands.bot_has_guild_permissions(embed_links=True, move_members=True)
     @commands.has_guild_permissions(move_members=True)
     async def move(
-        self, ctx, member: discord.Member, channel: discord.VoiceChannel, reason=None
+            self,
+            ctx: commands.Context,
+            member: discord.Member,
+            channel: discord.VoiceChannel,
+            reason=None,
     ):
         await member.move_to(channel=channel, reason=reason)
         await ctx.send(f"Moved {member} to {channel}")
 
 
-def setup(bot):
+def setup(bot: CTBot):
     bot.add_cog(ModCommands(bot))

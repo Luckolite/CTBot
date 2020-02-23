@@ -1,3 +1,4 @@
+selenium
 discord.py
 youtube_dl
 ffmpeg

@@ -1,22 +1,22 @@
-# dev only stuff
 import subprocess
 
 import discord
 from discord.ext import commands
 
+from bot import CTBot
 from utils import checks, utils
 
 
 class Dev(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CTBot):
         self.bot = bot
 
-    def cog_check(self, ctx):
+    def cog_check(self, ctx: commands.Context):
         """Checks if the author can use a command from this cog."""
         return checks.dev(ctx)
 
     @commands.command(description="Restarts the bot.")
-    async def restart(self, ctx):
+    async def restart(self, ctx: commands.Context):
         """Restarts the bot."""
         await self.bot.change_presence(
             status=discord.Status.dnd, activity=discord.Game(name="Restarting")
@@ -30,7 +30,7 @@ class Dev(commands.Cog):
         await ctx.send("Restarting.. check my status for updates")
 
     @commands.command(description="Reloads cogs.")
-    async def reload(self, ctx):
+    async def reload(self, ctx: commands.Context):
         """Reloads cogs."""
         await self.bot.reload()
         await ctx.send("Reloaded bot")
@@ -58,12 +58,12 @@ class Dev(commands.Cog):
 
     @commands.command(description="Tests logging.")
     async def log(
-        self, ctx: commands.Context, level: str, title: str, *description: str
+            self, ctx: commands.Context, level: str, title: str, *description: str
     ):
         await ctx.bot.log(
             title, " ".join(description), utils.LogLevel.__dict__[level.upper()]
         )
 
 
-def setup(bot):
+def setup(bot: CTBot):
     bot.add_cog(Dev(bot))

@@ -3,19 +3,21 @@ import json
 import discord
 from discord.ext import commands
 
+from bot import CTBot
 
-def owner(ctx):
+
+def owner(ctx: commands.Context):
     """A bot owner command check."""
     return ctx.author.id in ctx.bot.config["owners"].values()
 
 
-def dev(ctx):
+def dev(ctx: commands.Context):
     """A bot developer command check."""
     return ctx.author.id in ctx.bot.config["devs"].values()
 
 
 def command_is_enabled():
-    async def predicate(ctx):
+    async def predicate(ctx: commands.Context):
         with open("./data/disabled_commands.json") as f:
             config = json.load(f)  # type: dict
         guild_id = str(ctx.guild.id)
@@ -45,5 +47,5 @@ class Checks(
     pass
 
 
-def setup(bot):
+def setup(bot: CTBot):
     bot.add_cog(Checks())

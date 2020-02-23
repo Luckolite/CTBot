@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 
 
@@ -6,7 +7,7 @@ class AutoResponse(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         """Checks if the message contains an AutoResponse trigger."""
         if not message.author.bot:
             words = message.content.lower().split()
