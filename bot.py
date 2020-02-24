@@ -1,4 +1,3 @@
-import asyncio
 import json
 import traceback
 from os import path
@@ -15,10 +14,8 @@ class CTBot(commands.Bot):
             self.log_func = log_func
         self.config = {}
         self._data = {}
-        self._sema = {}
         for name in "appeal_ban", "coin", "core_commands", "levels":
             self._data[name] = {}
-            self._sema[name] = asyncio.Semaphore()
 
         self.load()
 
@@ -32,20 +29,11 @@ class CTBot(commands.Bot):
 
     def __getattr__(self, item):
         if item in self._data:
-            asyncio.create_task(self._sema[item].acquire())
             return self._data[item]
         else:
             raise AttributeError(f"CTBot has no attribute '{item}'")
 
     def load(self):
-        try:
-            asyncio.get_running_loop()
-            for sema in self._sema.values():
-                sema.release()
-                asyncio.create_task(sema.acquire())
-        except RuntimeError:
-            pass
-
         with open("config/config.json") as f:
             old_config = self.config
             self.config = json.load(f)
@@ -60,20 +48,10 @@ class CTBot(commands.Bot):
                 with open(f"data/{name}.json", "w") as f:
                     json.dump(self._data[name], f, ensure_ascii=False)
 
-        for sema in self._sema.values():
-            sema.release()
-
-    async def save(self):
-        for sema in self._sema.values():
-            sema.release()
-            await sema.acquire()
-
+    def save(self):
         for name in self._data:
             with open(f"data/{name}.json", "w") as f:
                 json.dump(self._data[name], f, ensure_ascii=False)
-
-        for sema in self._sema.values():
-            sema.release()
 
     def run(self):
         super().run(self.config["token"])
@@ -83,7 +61,7 @@ class CTBot(commands.Bot):
         await self.change_presence(
             status=discord.Status.dnd, activity=discord.Game(name="Reloading")
         )
-        await self.save()
+        self.save()
         self.load()
         self.command_prefix = self.config["prefix"]
         await self.log("Reload", "Reloaded config")

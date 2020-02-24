@@ -1,6 +1,6 @@
 import asyncio
 from time import time
-
+# 48 11 0 34 0 14 0
 import discord
 from discord.ext import commands
 
@@ -100,7 +100,7 @@ class Appeals(commands.Cog):
                     "cooldown": time() + 60 * 60 * 2,
                     "banned": False,
                 }
-                await self.bot.save()
+                self.bot.save()
             elif str(reaction.emoji) == "👎":
                 await ctx.send(
                     "Alright, feel free to resubmit with the correct parameters"
@@ -138,7 +138,7 @@ class Appeals(commands.Cog):
                     "cooldown": time() + 60 * 60 * 24 * 2,
                     "banned": False,
                 }
-                await self.bot.save()
+                self.bot.save()
                 try:
                     await target.send(
                         "Your ban appeal was denied, you can retry in 2 days"
@@ -151,7 +151,7 @@ class Appeals(commands.Cog):
                 )
                 await msg.clear_reactions()
                 self.bot.appeal_ban[target_id] = {"cooldown": None, "banned": True}
-                await self.bot.save()
+                self.bot.save()
                 try:
                     await target.send(
                         "Your ban appeal was rejected an you've been banned from ban appeals"

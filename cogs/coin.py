@@ -24,7 +24,7 @@ class Coin(commands.Cog):
             await message.channel.send(
                 f"{message.author.id}, you just earned a crafting table!"
             )
-            await self.bot.save()
+            self.bot.save()
 
 
 def setup(bot: CTBot):

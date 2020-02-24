@@ -21,7 +21,7 @@ class Dev(commands.Cog):
         await self.bot.change_presence(
             status=discord.Status.dnd, activity=discord.Game(name="Restarting")
         )
-        ctx.bot.save()
+        self.bot.save()
         try:
             subprocess.run(["pm2", "restart", "ctbot"])
         except FileNotFoundError:
@@ -39,7 +39,7 @@ class Dev(commands.Cog):
     async def stop(self, ctx: commands.Context):
         """Stops the bot."""
         await ctx.send("I'll be back 👍")
-        ctx.bot.save()
+        self.bot.save()
         try:
             return subprocess.run(["pm2", "stop", "ctbot"])
         except FileNotFoundError:

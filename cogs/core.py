@@ -237,7 +237,7 @@ class Core(
             if command not in conf["categories"][channel_id]:
                 return await ctx.send(f"{command} isn't disabled in that category")
             conf["categories"][channel_id].remove(command)
-        await self.bot.save()
+        self.bot.save()
 
     @commands.command(name="disable", enabled=False)
     @commands.has_permissions(administrator=True)
@@ -284,7 +284,7 @@ class Core(
             if command in conf["categories"][str(location.id)]:
                 return await ctx.send(f"{command} is already disabled in that category")
             conf["categories"][str(location.id)].append(command)
-        await self.bot.save()
+        self.bot.save()
 
 
 def setup(bot: CTBot):

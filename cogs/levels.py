@@ -48,7 +48,7 @@ class Levels(commands.Cog):
                             f"Gave {message.author.mention} {add} xp",
                             LogLevel.DEBUG,
                         )
-            await self.bot.save()
+            self.bot.save()
 
 
 def setup(bot):
