@@ -56,29 +56,50 @@ class CTBot(commands.Bot):
     def run(self):
         super().run(self.config["token"])
 
-    async def reload(self):
+    async def reload(self, cog: str):
         """Reloads all extensions."""
         await self.change_presence(
             status=discord.Status.dnd, activity=discord.Game(name="Reloading")
         )
-        self.save()
-        self.load()
-        self.command_prefix = self.config["prefix"]
-        await self.log("Reload", "Reloaded config")
-        errors = []
-        for ext in self.extensions:
-            try:
-                self.reload_extension(ext)
-                await self.log("Reload", f"Reloaded `{ext}`...")
-            except commands.ExtensionError:
-                errors.append((ext, str(traceback.format_exc())))
-                await self.log("Reload", f"Failed to reload `{ext}`")
-        for ext, error in errors:
-            await self.log(
-                f"Reload",
-                f"Error reloading `{ext}`:\n```{error}```",
-                utils.LogLevel.ERROR,
-            )
+
+        if cog:
+            if cog == "config":
+                self.save()
+                self.load()
+                self.command_prefix = self.config["prefix"]
+                await self.log("Reload", "Reloaded config")
+            elif "cogs." + cog in self.extensions:
+                try:
+                    self.reload_extension("cogs." + cog)
+                    await self.log("Reload", f"Reloaded `{cog}`...")
+                except commands.ExtensionError:
+                    await self.log(
+                        f"Reload",
+                        f"Error reloading `{cog}`:\n```{str(traceback.format_exc())}```",
+                        utils.LogLevel.ERROR,
+                    )
+                    await self.log("Reload", f"Failed to reload `{ext}`")
+            else:
+                raise ValueError(f"Cog '{cog}' doesn't exist or isn't loaded")
+        else:
+            self.save()
+            self.load()
+            self.command_prefix = self.config["prefix"]
+            await self.log("Reload", "Reloaded config")
+            errors = []
+            for ext in self.extensions:
+                try:
+                    self.reload_extension(ext)
+                    await self.log("Reload", f"Reloaded `{ext}`...")
+                except commands.ExtensionError:
+                    errors.append((ext, str(traceback.format_exc())))
+                    await self.log("Reload", f"Failed to reload `{ext}`")
+            for ext, error in errors:
+                await self.log(
+                    f"Reload",
+                    f"Error reloading `{ext}`:\n```{error}```",
+                    utils.LogLevel.ERROR,
+                )
 
         await self.change_presence(
             status=discord.Status.online, activity=discord.Game(name="Back Online")

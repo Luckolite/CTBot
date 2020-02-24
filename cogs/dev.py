@@ -30,10 +30,10 @@ class Dev(commands.Cog):
         await ctx.send("Restarting.. check my status for updates")
 
     @commands.command(description="Reloads cogs.")
-    async def reload(self, ctx: commands.Context):
+    async def reload(self, ctx: commands.Context, cog: str = None):
         """Reloads cogs."""
-        await self.bot.reload()
-        await ctx.send("Reloaded bot")
+        await self.bot.reload(cog)
+        await ctx.send("Reloaded cogs")
 
     @commands.command(description="Stops the bot.")
     async def stop(self, ctx: commands.Context):
