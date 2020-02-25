@@ -18,7 +18,7 @@ class AutoResponse(commands.Cog):
             }
 
             for item in statements:
-                if re.search(f"\b{item}\b", message.content, flags=re.IGNORECASE) is not None:
+                if re.search(f"\b{re.escape(item)}\b", message.content, flags=re.IGNORECASE) is not None:
                     await message.channel.send(statements[item])
 
 
