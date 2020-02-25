@@ -1,4 +1,5 @@
 import json
+import re
 
 import discord
 from discord.ext import commands
@@ -18,7 +19,14 @@ class Censor(commands.Cog):
         with open("config/censor.json") as f:
             self.config = json.load(f)
         with open("config/blocked_words.txt") as f:
-            self.blocked_words = f.read().split()
+            bw = f.read()
+            self.blocked_words = bw.split()
+
+            # Create RegEx from censored words file
+            self.blocked_words_regex = re.compile(
+                "|".join(map(re.escape, bw.strip().split('\n'))),
+                flags=re.IGNORECASE
+            )
 
     def should_run(self, author: discord.Member):
         if (
@@ -56,11 +64,10 @@ class Censor(commands.Cog):
     async def profanity_filter(self, *args):
         message = args[-1]
         if self.should_run(message.author) and self.config["profanity_filter"]:
-            for word in message.content.split():
-                if word.lower() in self.blocked_words:
-                    await remove_message(message, "a banned word")
-                    if self.config["warn_on_censor"]:
-                        self.warn(message.author)
+            if self.blocked_words_regex.search(message.content) is not None:
+                await remove_message(message, "a banned word")
+                if self.config["warn_on_censor"]:
+                    self.warn(message.author)
 
     @commands.Cog.listener("on_message")
     @commands.Cog.listener("on_message_edit")
