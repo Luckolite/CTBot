@@ -134,13 +134,11 @@ dmypy.json
 # Wing IDE project files
 .*.sw*
 
-# bot config
-config/
-
 # bot data
 data/
 
 # bot logs
+geckodriver.log
 latest.log
 logs/
 

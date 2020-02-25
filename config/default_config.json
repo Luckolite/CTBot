@@ -1,0 +1,61 @@
+{
+    "token": "",
+    "prefix": "ct!",
+    "activities": [
+        {
+            "status": "watching",
+            "name": "the Valley of Crafting Tables"
+        },
+        {
+            "status": "playing",
+            "name": "with 4 planks of wood"
+        },
+        {
+            "status": "playing",
+            "name": "on 2B2T"
+        },
+        {
+            "status": "watching",
+            "name": "stuff explode"
+        }
+    ],
+    "ids": {
+        "server": 614889263183560840,
+        "appeal_channel": 672498231103455233,
+        "suggestion_channel": 672135121469571092,
+        "error_channel": 672872728251990085,
+        "log_channel": 676879165357817877
+    },
+    "thumbnail_url": "https://cdn.discordapp.com/icons/614889263183560840/a_b130223671a2a6ee646d8681a65077f4.webp?size=1024",
+    "server_inv": "https://discord.gg/2b2t",
+    "dev_server_inv": "https://discord.gg/vJGBSnW",
+    "dev_manage": false,
+    "colors": [
+        "#0f7",
+        "#08f",
+        "#fc0",
+        "#f30",
+        "#c06"
+    ],
+    "log_level": 1,
+    "theme": "#00e1ff",
+    "owners": {
+        "Elon": 544911653058248734,
+        "Luck": 264838866480005122
+    },
+    "devs": {
+        "Luck": 264838866480005122,
+        "Tother": 355026215137968129,
+        "Programmer": 607776237737345044,
+        "korochun": 308628182213459989,
+        "Lach": 292134677936865280,
+        "Galfar": 523474477917536258,
+        "EPFFORCE": 611108193275478018
+    },
+    "moderator": {
+        "mute": [],
+        "kick": [],
+        "ban": []
+    },
+    "sentry_dsn": ""
+}
