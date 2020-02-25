@@ -143,3 +143,6 @@ data/
 # bot logs
 latest.log
 logs/
+
+# actual bot config
+config/config.json
