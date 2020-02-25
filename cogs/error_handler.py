@@ -5,21 +5,24 @@ from time import time
 import discord
 from discord.ext import commands
 
+from bot import CTBot
 from utils import utils
 
 
 class ErrorHandler(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CTBot):
         self.bot = bot
         self.cd = {}
 
     @commands.Cog.listener()
-    async def on_error(self, event):
+    async def on_error(self, event: str):
         """Unexpected error handler."""
-        self.bot.log(str(event), str(sys.exc_info()), "error")
+        await self.bot.log(event, str(sys.exc_info()), utils.LogLevel.ERROR)
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
+    async def on_command_error(
+            self, ctx: commands.Context, error: commands.CommandError
+    ):
         """Command error handler."""
         if hasattr(ctx.command, "on_error"):
             return
@@ -34,24 +37,24 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.DisabledCommand):
             return await ctx.send(f"`{ctx.command}` has been disabled.")
         elif isinstance(error, commands.BadArgument):
-            return await ctx.send(error)
+            return await ctx.send(str(error))
         elif isinstance(error, commands.CommandOnCooldown):
             user_id = str(ctx.author.id)
             await ctx.message.add_reaction("⏳")
             if user_id not in self.cd:
                 self.cd[user_id] = 0
             if self.cd[user_id] < time() - 10:
-                await ctx.send(error)
+                await ctx.send(str(error))
             self.cd[user_id] = time() + 10
         elif isinstance(error, commands.MissingRequiredArgument):
-            return await ctx.send(error)
+            return await ctx.send(str(error))
         elif isinstance(error, commands.CheckFailure):
             await ctx.send("You can't run this command!")
             return await ctx.message.add_reaction("⚠")
         elif isinstance(error, discord.errors.Forbidden):
             bot = ctx.guild.me
             if ctx.channel.permissions_for(bot).send_messages:
-                return await ctx.send(error)
+                return await ctx.send(str(error))
             elif ctx.channel.permissions_for(bot).add_reactions:
                 return await ctx.message.add_reaction("⚠")
         elif isinstance(error, KeyError):
@@ -76,5 +79,5 @@ class ErrorHandler(commands.Cog):
             )
 
 
-def setup(bot):
+def setup(bot: CTBot):
     bot.add_cog(ErrorHandler(bot))

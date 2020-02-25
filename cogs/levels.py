@@ -4,11 +4,12 @@ from random import randrange
 import discord
 from discord.ext import commands
 
+from bot import CTBot
 from utils.utils import LogLevel
 
 
 class Levels(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CTBot):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -24,7 +25,7 @@ class Levels(commands.Cog):
                 }
             xp = self.bot.levels[str(message.guild.id)][str(message.author.id)]
             if message.created_at - datetime.fromtimestamp(xp["timestamp"]) > timedelta(
-                minutes=2
+                    minutes=2
             ):
                 rand = randrange(10)
                 if rand == 0:

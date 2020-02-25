@@ -1,42 +1,21 @@
-import asyncio
 import json
-import sys
 import traceback
-from datetime import datetime
-from gzip import compress
 from os import path
-from random import choice
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import ExtensionError
-from discord_sentry_reporting import use_sentry
 
 from utils import utils
 
 
-logname = datetime.now().strftime("logs/%d-%m-%Y %H:%M:%S.log.gz")
-logfile = open("latest.log", "a+")
-
-
-def log(title, description, level=utils.LogLevel.INFO):
-    print(
-        f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}",
-        file=sys.stdout if level < utils.LogLevel.ERROR else sys.stderr,
-    )
-    print(
-        f"[{datetime.now().strftime('%H:%M:%S')}] [{title}/{level.name}]: {description}",
-        file=logfile,
-    )
-    logfile.flush()
-
-
 class CTBot(commands.Bot):
-    def __init__(self, **options):
+    def __init__(self, log_func=None, **options):
+        if log_func:
+            self.log_func = log_func
         self.config = {}
-        self.data = "appeal_ban", "coin", "core_commands", "levels"
-        for name in self.data:
-            self.__dict__[name] = {}
+        self._data = {}
+        for name in "appeal_ban", "coin", "core_commands", "levels":
+            self._data[name] = {}
 
         self.load()
 
@@ -48,6 +27,12 @@ class CTBot(commands.Bot):
 
         self.remove_command("help")
 
+    def __getattr__(self, item):
+        if item in self._data:
+            return self._data[item]
+        else:
+            raise AttributeError(f"CTBot has no attribute '{item}'")
+
     def load(self):
         with open("config/config.json") as f:
             old_config = self.config
@@ -55,52 +40,76 @@ class CTBot(commands.Bot):
             for k in old_config:  # To only add fields, not replace the existing ones
                 self.config[k] = old_config[k]
 
-        for name in self.data:
+        for name in self._data:
             if path.isfile(f"data/{name}.json"):
                 with open(f"data/{name}.json") as f:
-                    self.__dict__[name] = json.load(f)
+                    self._data[name] = json.load(f)
             else:
                 with open(f"data/{name}.json", "w") as f:
-                    json.dump(self.__dict__[name], f, ensure_ascii=False)
+                    json.dump(self._data[name], f, ensure_ascii=False)
 
     def save(self):
-        for name in self.data:
+        for name in self._data:
             with open(f"data/{name}.json", "w") as f:
-                json.dump(self.__dict__[name], f, ensure_ascii=False)
+                json.dump(self._data[name], f, ensure_ascii=False)
 
     def run(self):
         super().run(self.config["token"])
 
-    async def reload(self):
+    async def reload(self, cog: str):
         """Reloads all extensions."""
         await self.change_presence(
             status=discord.Status.dnd, activity=discord.Game(name="Reloading")
         )
-        self.save()
-        self.load()
-        self.command_prefix = self.config["prefix"]
-        await self.log("Reload", "Reloaded config")
-        errors = []
-        for ext in self.extensions:
-            try:
-                self.reload_extension(ext)
-                await self.log("Reload", f"Reloaded `{ext}`...")
-            except ExtensionError:
-                errors.append((ext, str(traceback.format_exc())))
-                await self.log("Reload", f"Failed to reload `{ext}`")
-        for ext, error in errors:
-            await bot.log(
-                f"Reload",
-                f"Error reloading `{ext}`:\n```{error}```",
-                utils.LogLevel.ERROR,
-            )
+
+        if cog:
+            if cog == "config":
+                self.save()
+                self.load()
+                self.command_prefix = self.config["prefix"]
+                await self.log("Reload", "Reloaded config")
+            elif "cogs." + cog in self.extensions:
+                try:
+                    self.reload_extension("cogs." + cog)
+                    await self.log("Reload", f"Reloaded `{cog}`...")
+                except commands.ExtensionError:
+                    await self.log(
+                        f"Reload",
+                        f"Error reloading `{cog}`:\n```{str(traceback.format_exc())}```",
+                        utils.LogLevel.ERROR,
+                    )
+                    await self.log("Reload", f"Failed to reload `{ext}`")
+            else:
+                raise ValueError(f"Cog '{cog}' doesn't exist or isn't loaded")
+        else:
+            self.save()
+            self.load()
+            self.command_prefix = self.config["prefix"]
+            await self.log("Reload", "Reloaded config")
+            errors = []
+            for ext in self.extensions:
+                try:
+                    self.reload_extension(ext)
+                    await self.log("Reload", f"Reloaded `{ext}`...")
+                except commands.ExtensionError:
+                    errors.append((ext, str(traceback.format_exc())))
+                    await self.log("Reload", f"Failed to reload `{ext}`")
+            for ext, error in errors:
+                await self.log(
+                    f"Reload",
+                    f"Error reloading `{ext}`:\n```{error}```",
+                    utils.LogLevel.ERROR,
+                )
 
         await self.change_presence(
             status=discord.Status.online, activity=discord.Game(name="Back Online")
         )
 
-    async def log(self, title, description, level=utils.LogLevel.INFO):
-        log(title, description, level)
+    async def log(
+            self, title: str, description: str, level: utils.LogLevel = utils.LogLevel.INFO
+    ):
+        if self.log_func:
+            self.log_func(title, description, level)
         if level.value >= self.config["log_level"]:
             e = discord.Embed(
                 color=utils.get_color(self, level),
@@ -108,7 +117,7 @@ class CTBot(commands.Bot):
                 description=description[:1997],
             )
             text = [
-                description[i : i + 1991] for i in range(1997, len(description), 1991)
+                description[i: i + 1991] for i in range(1997, len(description), 1991)
             ]
             code = description[:1997].count("```") % 2 == 1
             if code:
@@ -123,84 +132,3 @@ class CTBot(commands.Bot):
                     g += "```"
                 e.add_field(name=".", value=g)
             await self.get_channel(self.config["ids"]["log_channel"]).send(embed=e)
-
-
-bot = CTBot(case_insensitive=True)
-errors = []
-
-
-async def status_task():
-    """Randomly changes status every 15 seconds."""
-    while True:
-        await asyncio.sleep(15)
-        activity = choice(bot.config["activities"])
-        await bot.change_presence(
-            activity=discord.Activity(
-                name=activity["name"], type=discord.ActivityType[activity["status"]]
-            )
-        )
-
-
-@bot.event
-async def on_ready():
-    for ext, error in errors:
-        await bot.log(
-            f"Load", f"Error loading `{ext}`: ```py\n{error}```", utils.LogLevel.ERROR
-        )
-
-    await bot.log(f"Login", f"Logged in as {bot.user} with user id {bot.user.id}")
-    bot.loop.create_task(status_task())
-
-
-def main():
-    with open("config/config.json") as f:
-        dat = json.load(f)
-    if not dat["sentry_dsn"] or dat["sentry_dsn"] != "nO":
-        use_sentry(
-            bot,  # it is typically named client or bot
-            dsn=str(dat["sentry_dsn"])
-            # put in any sentry keyword arguments (**kwargs) here
-        )
-
-    initial_extensions = [
-        "cogs.appeals",
-        "cogs.autoresponse",
-        "cogs.coin",
-        "cogs.core",
-        "cogs.dev",
-        "cogs.error_handler",
-        "cogs.levels",
-        "cogs.lockdown",
-        "cogs.moderation",
-        "cogs.chat",
-        "cogs.verify",
-        "cogs.log",
-        "cogs.memes",
-        "cogs.search",
-        "utils.checks",
-    ]
-    for ext in initial_extensions:
-        try:
-            bot.load_extension(ext)
-            log("Load", f"Loaded {ext}")
-        except ExtensionError:
-            errors.append((ext, str(traceback.format_exc())))
-            log("Load", f"Failed to load {ext}")
-
-    log("Login", "Logging in")
-    while True:
-        try:
-            bot.run()
-        except discord.errors.LoginFailure:
-            log("Login", f"Login failed:\n{traceback.format_exc()}")
-            return
-        except SystemExit:
-            log("Stop", "Stopped bot")
-            bot.save()
-            logfile.close()
-            with open("latest.log") as latest, open(logname, "wb+") as compressed:
-                compressed.write(compress(latest.read()))
-
-
-if __name__ == "__main__":
-    main()

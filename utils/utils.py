@@ -11,7 +11,7 @@ class LogLevel(enum.IntEnum):
     FATAL = 4
 
 
-def bytes2human(n):
+def bytes2human(n: int):
     """Converts the number of bytes into a more convenient format."""
     symbols = ("KB", "MB", "GB", "TB", "PT", "EB", "ZB", "YB")
     prefix = {}
@@ -24,7 +24,7 @@ def bytes2human(n):
     return "%sB" % n
 
 
-def get_color(bot, log_level=LogLevel.INFO):
+def get_color(bot, log_level: LogLevel = LogLevel.INFO):
     """Returns the theme color."""
     color = bot.config["colors"][log_level]
     if color[0] == "#":
