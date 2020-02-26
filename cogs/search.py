@@ -1,9 +1,8 @@
-from os import path
+from pathlib import Path
 
 import discord
 from discord.ext import commands
 
-# noinspection SpellCheckingInspection,PyUnusedLocal
 from bot import CTBot
 
 
@@ -11,29 +10,23 @@ class Search(commands.Cog):
     def __init__(self, bot: CTBot):
         self.bot = bot
 
-        if path.isfile("./lastnames.txt"):
-            dataln = open("./lastnames.txt")
-            self.ln = dataln.read()
-            dataln.close()
+        pathln = Path("./lastnames.txt")
+        if pathln.is_file():
+            self.ln = pathln.read_text()
         else:
-            print("We are missing the lastnames file.")
-            exit()
+            raise ValueError("We are missing the lastnames file.")
 
-        if path.isfile("./firstnames.txt"):
-            datafn = open("./firstnames.txt")
-            self.fn = datafn.read()
-            datafn.close()
+        pathfn = Path("./firstnames.txt")
+        if pathfn.is_file():
+            self.fn = pathfn.read_text()
         else:
-            print("We are missing the firstnames file.")
-            exit()
+            raise ValueError("We are missing the firstnames file.")
 
-        if path.isfile("./cities.txt"):
-            datacn = open("./cities.txt")
-            self.cn = datacn.read()
-            datacn.close()
+        pathcn = Path("./cities.txt")
+        if pathcn.is_file():
+            self.cn = pathcn.read_text()
         else:
-            print("We are missing the cities file.")
-            exit()
+            raise ValueError("We are missing the cities file.")
 
     @commands.command(description="Find TOS-breaking content in the channel.")
     async def search(self, ctx: commands.Context, guild_id: int):

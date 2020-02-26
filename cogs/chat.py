@@ -3,30 +3,26 @@ import sys
 import cleverbotfree.cbfree
 import discord
 from discord.ext import commands
-from selenium import webdriver
 
 from bot import CTBot
-
-driver = webdriver.Firefox(executable_path="/usr/local/bin/geckodriver")
-driver.get("http://inventwithpython.com")
-
-cb = cleverbotfree.cbfree.Cleverbot()
 
 
 class Chat(commands.Cog):
     def __init__(self, bot: CTBot):
         self.bot = bot
 
+        self.cb = cleverbotfree.cbfree.Cleverbot()
+
     @commands.command(description="Enter chat")
     async def chat(self, ctx: commands.Context):
         try:
-            cb.browser.get(cb.url)
+            self.cb.browser.get(self.cb.url)
         except:
-            cb.browser.close()
+            self.cb.browser.close()
             sys.exit()
         while True:
             try:
-                cb.get_form()
+                self.cb.get_form()
             except:
                 sys.exit()
 

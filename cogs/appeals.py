@@ -1,6 +1,6 @@
 import asyncio
 from time import time
-# 48 11 0 34 0 14 0
+
 import discord
 from discord.ext import commands
 

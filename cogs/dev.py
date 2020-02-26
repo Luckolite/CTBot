@@ -50,7 +50,7 @@ class Dev(commands.Cog):
         """Performs `git pull` and reloads."""
         if self.bot.config["dev_manage"]:
             subprocess.run(["git", "pull"])
-            await self.bot.reload()
+            await self.bot.reload(None)
         else:
             return await ctx.send(
                 "The bot is not under developer management. You may not run this command."

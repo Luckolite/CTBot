@@ -137,10 +137,12 @@ dmypy.json
 # bot data
 data/
 
-# bot logs
+# logs
 geckodriver.log
 latest.log
 logs/
 
-# actual bot config
+# bot config
 config/config.json
+
+.DS_Store

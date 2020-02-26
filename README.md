@@ -22,6 +22,9 @@ git clone https://github.com/FrequencyX4/CTBot
 ```py
 pip install -r requirements.txt
 ```
+3. Configure the bot.
+
+   Copy `config/default_config.json` to `config/config.json` and edit it. You'll have to get a bot token.
 ### Running
 ```py
 python bot.py

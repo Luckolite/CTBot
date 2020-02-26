@@ -25,9 +25,9 @@ class Levels(commands.Cog):
                 }
             xp = self.bot.levels[str(message.guild.id)][str(message.author.id)]
             if message.created_at - datetime.fromtimestamp(xp["timestamp"]) > timedelta(
-                    minutes=2
+                minutes=2
             ):
-                rand = randrange(10)
+                rand = randrange(5)
                 if rand == 0:
                     xp["timestamp"] = message.created_at.timestamp()
                     add = randrange(10, 16)
@@ -40,7 +40,7 @@ class Levels(commands.Cog):
                             LogLevel.DEBUG,
                         )
                         await message.channel.send(
-                            f"{message.author.id}, you leveled up to {xp['level']}!"
+                            f"{message.author.mention}, you leveled up to {xp['level']}!"
                         )
                     else:
                         await self.bot.log(

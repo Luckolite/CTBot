@@ -1,6 +1,6 @@
 import json
 import traceback
-from os import path
+from pathlib import Path
 
 import discord
 from discord.ext import commands
@@ -13,6 +13,9 @@ class CTBot(commands.Bot):
         if log_func:
             self.log_func = log_func
         self.config = {}
+
+        Path("data").mkdir(exist_ok=True)
+
         self._data = {}
         for name in "appeal_ban", "coin", "core_commands", "levels":
             self._data[name] = {}
@@ -41,12 +44,11 @@ class CTBot(commands.Bot):
                 self.config[k] = old_config[k]
 
         for name in self._data:
-            if path.isfile(f"data/{name}.json"):
-                with open(f"data/{name}.json") as f:
-                    self._data[name] = json.load(f)
+            path = Path(f"data/{name}.json")
+            if path.is_file():
+                self._data[name] = json.loads(path.read_text())
             else:
-                with open(f"data/{name}.json", "w") as f:
-                    json.dump(self._data[name], f, ensure_ascii=False)
+                path.write_text(json.dumps(self._data[name], ensure_ascii=False))
 
     def save(self):
         for name in self._data:
@@ -78,7 +80,7 @@ class CTBot(commands.Bot):
                         f"Error reloading `{cog}`:\n```{str(traceback.format_exc())}```",
                         utils.LogLevel.ERROR,
                     )
-                    await self.log("Reload", f"Failed to reload `{ext}`")
+                    await self.log("Reload", f"Failed to reload `{cog}`")
             else:
                 raise ValueError(f"Cog '{cog}' doesn't exist or isn't loaded")
         else:

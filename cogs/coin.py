@@ -22,7 +22,7 @@ class Coin(commands.Cog):
             self.bot.coin[user_id] += 1
 
             await message.channel.send(
-                f"{message.author.id}, you just earned a crafting table!"
+                f"{message.author.mention}, you just earned a crafting table!"
             )
             self.bot.save()
 
