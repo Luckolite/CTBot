@@ -12,7 +12,11 @@ from utils.utils import LogLevel
 
 
 async def remove_message(message: discord.Message, reason: str, notify: bool = True):
-    await message.delete()
+    # remove_messages may be called multiple times for messages which trigger multiple conditions.
+    try:
+        await message.delete()
+    except discord.errors.NotFound:
+        return
 
     if notify:
         await message.channel.send(
@@ -33,6 +37,14 @@ class Censor(commands.Cog):
             self.blocked_words_regex = re.compile(
                 "|".join(map(re.escape, bw.strip().split('\n'))),
                 flags=re.IGNORECASE
+            )
+
+        domain_str = "(https?://)?(www\.)?"
+        with open("config/blocked_domains.txt", 'r') as f:
+
+            self.blocked_domains_regex = re.compile(
+                f"{domain_str}({'|'.join(map(re.escape, f.read().strip().splitlines()))})",
+                re.IGNORECASE
             )
 
     def should_run(self, author: discord.Member):
@@ -125,22 +137,16 @@ class Censor(commands.Cog):
     async def domain_filter(self, *args):
         message = args[-1]
         if self.should_run(message.author) and self.config["filter_domains"]:
-            for word in message.content.split():
-                if word.lower() in self.config["domain_blacklist"]:
-                    if self.bot.config["debug"]:
-                        print(
-                            f"Message: {message.content} has been blocked because it contains "
-                            f"{word} {message.content.lower().count(word.lower())} time(s)"
-                        )
-                    await remove_message(message, "a banned URL", notify=self.config['notify_on_censor'])
-            if len(self.config["domain_whitelist"]) > 0:
-                for word in message.content.split():
-                    if word.lower() in self.config["domain_whitelist"]:
-                        if self.bot.config["debug"]:
-                            print(
-                                f"Message: {message.content} has been blocked because it contains"
-                                f"{word} {message.content.lower().count(word.lower())} time(s)"
-                            )
+
+            match = self.blocked_domains_regex.search(message.content)
+            if match is not None:
+                if self.config["debug"]:
+                    await self.bot.log(
+                        "CENSOR",
+                        f"Message: {message.content} has been blocked because it contains {match.group(0)}."
+                    )
+
+                await remove_message(message, "a banned URL", notify=self.config['notify_on_censor'])
 
     @commands.Cog.listener("on_member_update")
     async def nick_censor(self, _: discord.Member, after: discord.Member):
