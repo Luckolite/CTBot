@@ -7,7 +7,7 @@
     "word_filter_exception_user_ids": [],
     "all_exempt_roles": [],
     "all_exempt_user_ids": [],
-    "nickname_filter_enabled": false,
+    "nickname_filter_enabled": true,
     "censored_nickname": "CENSORED",
     "warn_on_censor": false,
     "message_char_limit": 0,
