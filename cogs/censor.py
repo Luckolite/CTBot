@@ -1,11 +1,14 @@
 import json
 import re
 
+
 import discord
+import discord.errors
 from discord.ext import commands
 from profanity_check import predict
 
 from bot import CTBot
+from utils.utils import LogLevel
 
 
 async def remove_message(message: discord.Message, reason: str):
@@ -65,11 +68,21 @@ class Censor(commands.Cog):
     @commands.Cog.listener("on_message_edit")
     async def profanity_filter(self, *args):
         message = args[-1]
+
         if self.should_run(message.author) and self.config["profanity_filter"]:
-            if self.blocked_words_regex.search(message.content) is not None:
+            match = self.blocked_words_regex.search(message.content)
+            if match is not None:
                 await remove_message(message, "a banned word")
+
                 if self.config["warn_on_censor"]:
                     self.warn(message.author)
+
+                if self.config["debug"]:
+                    await self.bot.log(
+                        "CENSOR",
+                        f"Removed message \"{message.content}\" for \"{match.group(0)}\"",
+                        LogLevel.DEBUG
+                    )
 
     @commands.Cog.listener("on_message")
     @commands.Cog.listener("on_message_edit")
@@ -120,19 +133,33 @@ class Censor(commands.Cog):
 
     @commands.Cog.listener("on_member_update")
     async def nick_censor(self, _: discord.Member, after: discord.Member):
-        if self.should_run(after) and self.config["nickname_filter_enabled"]:
+        if self.should_run(after) and self.config["nickname_filter_enabled"] and after.nick is not None:
+
+            if self.config["debug"]:
+                await self.bot.log(
+                    "CENSOR", f"Running nickname censor on {after}, nickname {after.nick}",
+                    LogLevel.DEBUG
+                )
+
             for word in after.nick.lower().split():
                 if word.lower() in self.blocked_words:
-                    await after.edit(
-                        nick=self.config["censored_nickname"],
-                        reason="CENSORED BY CT BOT",
-                    )
+
+                    try:
+                        await after.edit(
+                            nick=None,
+                            reason="CENSORED BY CT BOT",
+                        )
+                    except discord.errors.Forbidden:
+                        return
+
                     if self.config["warn_on_censor"]:
                         self.warn(after)
+
                     if self.config["debug"]:
-                        print(
-                            f"nick: {after.nick} has been blocked because it contains {word} "
-                            f"{after.nick.lower().count(word.lower())} times"
+                        await self.bot.log(
+                            "CENSOR",
+                            f"nick: {after.nick} has been blocked because it contains {word}",
+                            LogLevel.DEBUG
                         )
 
 

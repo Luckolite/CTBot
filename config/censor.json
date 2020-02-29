@@ -1,5 +1,5 @@
 {
-    "enabled": false,
+    "enabled": true,
     "blocked_words": [],
     "word_filter_enabled": false,
     "word_filter_channel_exceptions_array_ids": [],
@@ -16,8 +16,9 @@
     "filter_domains": false,
     "domain_blacklist": [],
     "domain_whitelist": [],
-    "profanity_filter": false,
+    "profanity_filter": true,
     "profanity_filter_ml": false,
+    "debug": true,
     "notes": "THIS IS ONLY FOR NOTES, 'message_char_limit' if set to 0 then is not limited || domain shit does not work right now."
 }
 
