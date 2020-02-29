@@ -1,5 +1,5 @@
 {
-    "enabled": false,
+    "enabled": true,
     "blocked_words": [],
     "word_filter_enabled": false,
     "word_filter_channel_exceptions_array_ids": [],
@@ -7,17 +7,21 @@
     "word_filter_exception_user_ids": [],
     "all_exempt_roles": [],
     "all_exempt_user_ids": [],
-    "nickname_filter_enabled": false,
-    "censored_nickname": "CENSORED",
+    "nickname_filter_enabled": true,
+    "notify_on_censor": false,
     "warn_on_censor": false,
     "message_char_limit": 0,
     "caps_limit_enabled": false,
     "caps_limit": 10,
-    "filter_domains": false,
-    "domain_blacklist": [],
-    "domain_whitelist": [],
-    "profanity_filter": false,
+    "filter_domains": true,
+    "profanity_filter": true,
     "profanity_filter_ml": false,
-    "notes": "THIS IS ONLY FOR NOTES, 'message_char_limit' if set to 0 then is not limited || domain shit does not work right now."
+    "debug": true,
+    "notes": [
+        "THIS IS ONLY FOR NOTES",
+        "'message_char_limit' if set to 0 then is not limited",
+        "domain shit does not work right now",
+        "'notify_on_censor' controls messages in chat notifying of removal, 'warn_on_censor' sends user pm with warning."
+    ]
 }
 

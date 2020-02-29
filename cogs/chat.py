@@ -34,10 +34,10 @@ class Chat(commands.Cog):
             user_input = str(input_text)
             if user_input == "quit":
                 break
-            cb.send_input(user_input)
-            resp = cb.get_response()
+            self.cb.send_input(user_input)
+            resp = self.cb.get_response()
             await ctx.send(str(resp))
-        cb.browser.close()
+        self.cb.browser.close()
 
 
 def setup(bot: CTBot):
