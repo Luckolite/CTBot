@@ -48,7 +48,7 @@ class Censor(commands.Cog):
             )
 
     def should_run(self, author: discord.Member):
-        if author.bot:
+        if author.bot or isinstance(author, discord.User):
             return False
 
         if (

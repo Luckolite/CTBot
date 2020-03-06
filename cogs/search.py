@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 import discord
 from discord.ext import commands
@@ -7,49 +8,43 @@ from bot import CTBot
 
 
 class Search(commands.Cog):
+
+    other_words = ['dox', 'pastebin']
+
     def __init__(self, bot: CTBot):
         self.bot = bot
 
+        read = lambda x: str(x.read_text()).lower().strip().split('\n')
+
         pathln = Path("./lastnames.txt")
         if pathln.is_file():
-            self.ln = pathln.read_text()
+            ln = read(pathln)
         else:
             raise ValueError("We are missing the lastnames file.")
 
         pathfn = Path("./firstnames.txt")
         if pathfn.is_file():
-            self.fn = pathfn.read_text()
+            fn = [x.split(",", 1)[0] for x in read(pathfn)]
         else:
             raise ValueError("We are missing the firstnames file.")
 
         pathcn = Path("./cities.txt")
         if pathcn.is_file():
-            self.cn = pathcn.read_text()
+            cn = read(pathcn)
         else:
             raise ValueError("We are missing the cities file.")
+
+        search_terms = filter(lambda x: x, map(str.strip, fn + ln + cn + self.other_words))
+        self.regex = re.compile(
+            f"\\b({'|'.join(search_terms)})\\b",
+            flags=re.IGNORECASE
+        )
 
     @commands.command(description="Find TOS-breaking content in the channel.")
     async def search(self, ctx: commands.Context, guild_id: int):
         await ctx.send("starting the `TOS BREAKING SEARCH`")
         delmsg = None
         delcnt = 0
-
-        lna = str(self.ln).split("\n")
-        fna = str(self.fn).split("\n")
-        cna = str(self.cn).split("\n")
-
-        for item in lna:
-            item.strip()
-            item = item.split(",", 1)[0]
-            item.lower()
-
-        for item in fna:
-            item.strip()
-            item.lower()
-
-        for item in cna:
-            item.strip()
-            item.lower()
 
         guild = self.bot.get_guild(guild_id)
         channels = guild.text_channels
@@ -60,42 +55,11 @@ class Search(commands.Cog):
             async for message in messages:
                 msg = str(message.content)
 
-                for lname in lna:
-                    if msg.count(lname) > 0:
-                        await ctx.send(f"Message was deleted!\n{msg}")
-                        delcnt += 1
-                        await message.delete()
-                        delmsg = True
-                        break
-
-                for cname in cna:
-                    if delmsg:
-                        break
-                    if msg.count(cname) > 0:
-                        await ctx.send(f"Message was deleted!\n{msg}")
-                        delcnt += 1
-                        await message.delete()
-                        delmsg = True
-                        break
-
-                for fname in fna:
-                    if delmsg:
-                        break
-                    if msg.count(fname) > 0:
-                        await ctx.send(f"Message was deleted!\n{msg}")
-                        delcnt += 1
-                        await message.delete()
-                        delmsg = True
-                        break
-
-                if msg.count("pastebin") > 0 or msg.count("dox") > 0:
-                    if delmsg:
-                        break
-                    await ctx.send(f"Message was deleted!\n{msg}")
+                if self.regex.search(msg) is not None:
                     delcnt += 1
-                    await message.delete()
                     delmsg = True
-                    break
+
+                    await message.delete()
 
         if delmsg:
             embed = discord.Embed(

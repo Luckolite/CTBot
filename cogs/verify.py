@@ -13,23 +13,28 @@ class Verify(commands.Cog):
         self.bot = bot
 
     # noinspection PyMethodParameters
-    async def on_member_join(self, ctx: commands.Context, member: discord.Member):
+    @commands.Cog.listener()
+    async def on_member_join(self, member: discord.Member):
         # noinspection PyUnusedLocal
         key = "".join(
-            [random.choice(strong.ascii_letters + string.digits) for n in range(32)]
+            [choice(string.ascii_letters + string.digits) for n in range(32)]
         )
         await member.send(
             "Hello! Thank you for joining! This server is "
-            "powered by CTBot. Please "
-            "solve repeat this simple key "
+            "powered by CTBot. Please respond "
+            "by repeating this simple key "
             "(you can copy and paste) back to the bot to"
             "get the Verified role: " + key
         )
+
+        def check(m):
+            return m.author == member
+
         while True:
-            msg = self.bot.wait_for("message", check=check)
-            if msg.guild is None:
-                continue
-            if str(msg) is key:
+            msg = await self.bot.wait_for("message", check=check)
+            await self.bot.log("VERIFY", f"Received message {str(msg.content)}")
+
+            if str(msg.content) == key:
                 await member.send("Thank you, you have been verified!")
             else:
                 await member.send(
@@ -39,9 +44,11 @@ class Verify(commands.Cog):
                     "please DM `ProgrammerPlays#8264.`"
                 )
                 return
-            rolever = "Verified"
+
             try:
-                await member.add_roles(discord.utils.get(ctx.guild.roles, name=rolever))
+                await member.add_roles(
+                    discord.utils.get(member.guild.roles, name="Verified")
+                )
             except discord.HTTPException:
                 await member.send(
                     "An error occurred, please contact "

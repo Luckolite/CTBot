@@ -11,7 +11,7 @@ class AutoResponse(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         """Checks if the message contains an AutoResponse trigger."""
-        if not message.author.bot:
+        if not message.author.bot and message.channel:
             statements = {
                 "furnace": "crafting table is obviously the superior block",
                 "fit": "who dat",
