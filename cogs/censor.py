@@ -17,6 +17,8 @@ async def remove_message(message: discord.Message, reason: str, notify: bool = T
         await message.delete()
     except discord.errors.NotFound:
         return
+    except discord.errors.Forbidden:
+        return
 
     if notify:
         await message.channel.send(
