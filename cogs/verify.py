@@ -49,7 +49,7 @@ class Verify(commands.Cog):
                 await member.add_roles(
                     discord.utils.get(member.guild.roles, name="Verified")
                 )
-            except discord.HTTPException:
+            except discord.HTTPException or AttributeError:
                 await member.send(
                     "An error occurred, please contact "
                     "a developer or ProgrammerPlays#8264."
