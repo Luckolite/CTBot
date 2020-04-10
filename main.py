@@ -80,6 +80,7 @@ def main():
         "cogs.lockdown",
         "cogs.memes",
         "cogs.moderation",
+        "cogs.applications",
         # "cogs.search",
         "cogs.verify",
         "utils.checks",
