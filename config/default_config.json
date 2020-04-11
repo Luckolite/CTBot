@@ -57,5 +57,11 @@
         "kick": [],
         "ban": []
     },
-    "sentry_dsn": ""
+    "sentry_dsn": "",
+    "autoresponses": {
+        "fit": "who dat",
+        "furnace": "crafting table is obviously the superior block",
+        "@everyone": "<:ping:623235635897171999>",
+        "kek": "now thats a bruh moment"
+    }
 }
