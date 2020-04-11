@@ -16,6 +16,7 @@ class AutoResponse(commands.Cog):
                 "furnace": "crafting table is obviously the superior block",
                 "fit": "who dat",
                 "@everyone": "<:ping:623235635897171999>",
+                "kek": "now thats a bruh moment",
             }
 
             for item in statements:
