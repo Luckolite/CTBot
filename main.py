@@ -41,7 +41,8 @@ async def status_task():
         activity = choice(bot.config["activities"])
         await bot.change_presence(
             activity=discord.Activity(
-                name=activity["name"], type=discord.ActivityType[activity["status"]]
+                name=activity["name"],
+                type=discord.ActivityType.__getitem__(activity["status"]),
             )
         )
 
