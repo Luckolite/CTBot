@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 from discord.ext import commands
 
@@ -10,8 +12,8 @@ def has_required_permissions(**kwargs):
 
     async def predicate(ctx: commands.Context):
         if all(
-                (perm, value) in list(ctx.author.guild_permissions)
-                for perm, value in kwargs.items()
+            (perm, value) in list(ctx.author.guild_permissions)
+            for perm, value in kwargs.items()
         ):
             if kwargs:  # Make sure it's not empty because all() returns True if empty
                 return True
@@ -23,6 +25,10 @@ def has_required_permissions(**kwargs):
         )
 
     return commands.check(predicate)
+
+
+async def moderator_niv(ctx: commands.Context, aid):
+    return ctx.author.roles in ctx.bot.config["moderator"] and ctx.author.id != aid
 
 
 class ModCommands(commands.Cog):
@@ -42,6 +48,20 @@ class ModCommands(commands.Cog):
         if member.top_role.position >= ctx.author.top_role.position:
             return await ctx.send("That member has a higher rank than you.")
         muted = discord.utils.get(member.guild.roles, name="Muted")
+        anti_abuse_msg = await ctx.send(
+            embed=discord.Embed(
+                color=0x00E1FF,
+                title=f"Anti Abuse protector™",
+                description=f"Please can another moderator react with ✅ to permit this action!",
+            )
+        )
+        await anti_abuse_msg.add_reaction("✅")
+        try:
+            await self.bot.wait_for(
+                "reaction_add", timeout=1024.0, check=moderator_niv(ctx, ctx.author.id),
+            )
+        except asyncio.TimeoutError:
+            await ctx.send("❎")
         await member.add_roles(muted)
         e = discord.Embed()
         e.set_author(name=f"{member} was muted", icon_url=member.avatar_url)
@@ -73,7 +93,11 @@ class ModCommands(commands.Cog):
     @has_required_permissions(kick_members=True)
     @commands.bot_has_permissions(embed_links=True, kick_members=True)
     async def kick(
-            self, ctx: commands.Context, members: commands.Greedy[discord.Member], *, reason=None
+        self,
+        ctx: commands.Context,
+        members: commands.Greedy[discord.Member],
+        *,
+        reason=None,
     ):
         """Kicks the specified member."""
         # support = discord.utils.get(ctx.guild.roles, name="Support")
@@ -160,11 +184,11 @@ class ModCommands(commands.Cog):
     @commands.bot_has_guild_permissions(embed_links=True, move_members=True)
     @commands.has_guild_permissions(move_members=True)
     async def move(
-            self,
-            ctx: commands.Context,
-            member: discord.Member,
-            channel: discord.VoiceChannel,
-            reason=None,
+        self,
+        ctx: commands.Context,
+        member: discord.Member,
+        channel: discord.VoiceChannel,
+        reason=None,
     ):
         await member.move_to(channel=channel, reason=reason)
         await ctx.send(f"Moved {member} to {channel}")
