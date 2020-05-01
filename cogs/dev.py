@@ -23,10 +23,10 @@ class Dev(commands.Cog):
         )
         self.bot.save()
         try:
-            subprocess.run(["pm2", "restart", "ctbot"])
-        except FileNotFoundError:
-            subprocess.Popen(["python3", "bot.py"])
+            subprocess.run(["python", "main.py"])
             exit()
+        except Exception as e:
+            await ctx.send(f"🛑{e}")
         await ctx.send("Restarting.. check my status for updates")
 
     @commands.command(description="Reloads cogs.")
@@ -58,7 +58,7 @@ class Dev(commands.Cog):
 
     @commands.command(description="Tests logging.")
     async def log(
-            self, ctx: commands.Context, level: str, title: str, *description: str
+        self, ctx: commands.Context, level: str, title: str, *description: str
     ):
         await ctx.bot.log(
             title, " ".join(description), utils.LogLevel.__dict__[level.upper()]

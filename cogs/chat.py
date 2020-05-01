@@ -37,7 +37,7 @@ class Chat(commands.Cog):
             self.cb.send_input(user_input)
             resp = self.cb.get_response()
             await ctx.send(str(resp))
-        self.cb.browser.close()
+        self.cb.browser.close()  # this is fucking gay rofl, this doesnt deserve to even exist, I will not allow this gay shit to be loaded...
 
 
 def setup(bot: CTBot):
