@@ -85,7 +85,7 @@ def main():
         # "cogs.search",
         "cogs.verify",
         "utils.checks",
-        "utils.corona",
+        "cogs.corona",
         "cogs.vc_things",
     ]
     for ext in initial_extensions:

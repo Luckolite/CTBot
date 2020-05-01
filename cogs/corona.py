@@ -10,7 +10,7 @@ from discord.ext import commands, tasks
 
 
 def get_corona_stats():
-    r = get("http://corona.lmao.ninja/countries")
+    r = get("http://corona.lmao.ninja/v2/countries")
     if r.status_code == 200:
         data = {}
         for elem in r.json():
@@ -21,7 +21,7 @@ def get_corona_stats():
 
 
 def get_corona_total():
-    r = get("http://corona.lmao.ninja/all")
+    r = get("http://corona.lmao.ninja/v2/all")
     if r.status_code == 200:
         return r.json()
     else:
