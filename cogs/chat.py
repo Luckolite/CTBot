@@ -43,4 +43,5 @@ class Chat(commands.Cog):
 def setup(bot: CTBot):
     bot.add_cog(Chat(bot))
 
-#__#
+
+# __#
