@@ -70,7 +70,7 @@ def main():
 
     initial_extensions = [
         "cogs.appeals",
-        "cogs.autoresponse",
+        "cogs.autoreply",
         "cogs.censor",
         "cogs.chat",
         "cogs.coin",
@@ -85,6 +85,7 @@ def main():
         # "cogs.search",
         "cogs.verify",
         "utils.checks",
+        "utils.corona",
     ]
     for ext in initial_extensions:
         try:
