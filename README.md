@@ -50,7 +50,7 @@ This project is licensed under the GNU Lesser General Public License (except for
 
 
 ## What are the Followers of the Crafting Table?
-The Followers of the Crafting Table are a semi-religious group created on 2b2t in January 2020. We make builds with/of crafting tables like the Crafting Table Valley or the super-sized crafting tables that are now common close to spawn. 
+The Followers of the Crafting Table is a 2b2t group created in August 2019. We are a normal functioning group with a democratic leadership system. 
 
 ## How can I set up a development mirror?
 Setting up a development mirror greatly helps us in case our main VPS goes down, and also allows us to test new features.
