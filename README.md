@@ -1,5 +1,5 @@
 # CTBOT
-[![Discord](https://img.shields.io/discord/672129232146661377)](https://discord.gg/vJGBSnW)
+[![Discord](https://img.shields.io/discord/705905990989774858)]( https://discord.gg/8JMz2Pe)
 
 ![language](https://img.shields.io/badge/language-python-blue)
 ![python](https://img.shields.io/badge/python-3.6%20|%203.7%20|%203.8%20|%203.9-blue)
