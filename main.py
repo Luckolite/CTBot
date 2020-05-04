@@ -71,7 +71,7 @@ def main():
     initial_extensions = [
         "cogs.appeals",
         "cogs.autoresponse",
-        "cogs.censor",
+        # "cogs.censor",
         # "cogs.chat",
         "cogs.coin",
         "cogs.core",

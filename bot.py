@@ -1,6 +1,7 @@
 import json
 import traceback
 from pathlib import Path
+import os
 
 import discord
 from discord.ext import commands
@@ -46,7 +47,13 @@ class CTBot(commands.Bot):
         for name in self._data:
             path = Path(f"data/{name}.json")
             if path.is_file():
-                self._data[name] = json.loads(path.read_text())
+                try:
+                    self._data[name] = json.loads(path.read_text())
+                except json.JSONDecodeError:
+                    print("Load JSON", f"{name}.json didn't finish saving previously and can't be loaded")
+                else:
+                    os.rename(f"data/{name}.json", f"data/{name}.json.incomplete")
+                    path.write_text(json.dumps(self._data[name], ensure_ascii=False))
             else:
                 path.write_text(json.dumps(self._data[name], ensure_ascii=False))
 
