@@ -47,8 +47,6 @@ This project is licensed under the GNU Lesser General Public License (except for
 - @legendary-galfar (galfar#9119)
 - @mouncg (EPFFORCE#1337)
 - @MinerChAI (Mr_ChAI#1824)
-
-
 ## What are the Followers of the Crafting Table?
 The Followers of the Crafting Table is a 2b2t group created in August 2019. We are a normal functioning group with a democratic leadership system. 
 
@@ -65,3 +63,6 @@ Following the installation instructions, run the bot and keep it up 24/7. You ca
 3. Ask the devs to recognize the mirror.
 
 On approval of your mirror, the devs will add it to the development Discord for testing.
+
+## Porting to Discord.js(?)
+Im going to port this bot over to javascript seeing as for me personally, discord.py is a bit hard to learn, if you would like to help with that, i (https://github.com/elonmusksama) will be making a repo soonish, so stay tuned for that.
