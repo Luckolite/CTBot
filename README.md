@@ -27,7 +27,7 @@ pip install -r requirements.txt
    Copy `config/default_config.json` to `config/config.json` and edit it. You'll have to get a bot token.
 ### Running
 ```py
-python bot.py
+python main.py
 ```
 
 > Make sure you are using the appropriate version of Python! If the `python` command runs Python 2 on your OS, you should use `python3` and `pip3` instead.
